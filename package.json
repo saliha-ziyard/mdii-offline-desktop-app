@@ -1,0 +1,64 @@
+{
+  "name": "my-mdii-app",
+  "productName": "CGIAR MDII Inclusiveness Index",
+  "version": "1.0.0",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "esbuild src/index.jsx --bundle --platform=browser --outfile=public/index.js --watch",
+    "build:react": "esbuild src/index.jsx --bundle --platform=browser --outfile=public/index.js --minify",
+    "build": "npm run build:react && electron-builder"
+  },
+  "build": {
+    "appId": "com.cgiar.mdii.inclusiveness",
+    "productName": "CGIAR MDII Inclusiveness Index",
+    "files": [
+      "src/main.js",
+      "preload.js",
+      "public/**/*",
+      "backend/**/*",
+      "templates/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "kobo_output/",
+        "to": "kobo_output",
+        "filter": ["**/*"]
+      }
+    ],
+    "win": {
+      "target": "portable",
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "uninstallDisplayName": "CGIAR MDII Inclusiveness Index"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "build/icon.icns"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "concurrently": "^8.2.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "wait-on": "^7.2.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "A tool for generating MDII offline calculations",
+  "devDependencies": {
+    "electron": "^37.2.5",
+    "electron-builder": "^26.0.12",
+    "esbuild": "^0.25.8"
+  }
+}

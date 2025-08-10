@@ -1,0 +1,18 @@
+# Node.js
+node_modules/
+dist/
+build/
+.env
+*.log
+
+# Python
+__pycache__/
+*.pyc
+
+# OS/system
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Misc
+*.bak
