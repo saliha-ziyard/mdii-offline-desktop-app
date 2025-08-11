@@ -16,17 +16,20 @@ const HomePage = ({ setCurrentPage }) => (
             <div className="accent-line"></div>
 
             <div className="button-grid">
-                <div className="action-card purple-card">
+                <div
+                    onClick={() => setCurrentPage("howItWorks")}
+                    className="action-card purple-card"
+                >
                     <div className="card-icon">📖</div>
                     <h3 className="card-title">How It Works</h3>
                     <p className="card-description">Open offline manual</p>
                 </div>
 
-                <div className="action-card green-card">
+                {/* <div className="action-card green-card">
                     <div className="card-icon">📝</div>
                     <h3 className="card-title">Request Code</h3>
                     <p className="card-description">Open external survey</p>
-                </div>
+                </div> */}
 
                 <div
                     onClick={() => setCurrentPage("compilation")}

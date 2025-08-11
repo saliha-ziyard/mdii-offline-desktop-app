@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import HomePage from "./subcomponents/HomePage";
 import CompilationPage from "./subcomponents/CompilationPage";
+import HowItWorksGuide from "./subcomponents/HowItWorksGuide ";
 
 const App = () => {
     const [currentPage, setCurrentPage] = useState("home");
@@ -48,19 +49,25 @@ const App = () => {
         }
     };
 
-    return currentPage === "home" ? (
-        <HomePage setCurrentPage={setCurrentPage} />
-    ) : (
-        <CompilationPage
-            toolId={toolId}
-            setToolId={setToolId}
-            handleGenerateExcel={handleGenerateExcel}
-            status={status}
-            filePath={filePath}
-            handleOpenFile={handleOpenFile}
-            isLoading={isLoading}
-            setCurrentPage={setCurrentPage}
-        />
+    return (
+        <>
+            {currentPage === "home" ? (
+                <HomePage setCurrentPage={setCurrentPage} />
+            ) : currentPage === "howItWorks" ? (
+                <HowItWorksGuide setCurrentPage={setCurrentPage} />
+            ) : (
+                <CompilationPage
+                    toolId={toolId}
+                    setToolId={setToolId}
+                    handleGenerateExcel={handleGenerateExcel}
+                    status={status}
+                    filePath={filePath}
+                    handleOpenFile={handleOpenFile}
+                    isLoading={isLoading}
+                    setCurrentPage={setCurrentPage}
+                />
+            )}
+        </>
     );
 };
 
