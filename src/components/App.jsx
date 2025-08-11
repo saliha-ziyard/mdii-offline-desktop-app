@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import HomePage from "./subcomponents/HomePage";
 import CompilationPage from "./subcomponents/CompilationPage";
 import HowItWorksGuide from "./subcomponents/HowItWorksGuide ";
+import Footer from "./subcomponents/Footer";
 
 const App = () => {
     const [currentPage, setCurrentPage] = useState("home");
@@ -67,6 +68,7 @@ const App = () => {
                     setCurrentPage={setCurrentPage}
                 />
             )}
+        <Footer/>
         </>
     );
 };

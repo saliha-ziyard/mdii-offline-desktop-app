@@ -117,10 +117,6 @@ const HowItWorksGuide = ({ setCurrentPage }) => {
         {/* Back Button (Removed as it's now in header) */}
       </main>
 
-      {/* Footer */}
-      <footer className="how-it-works-footer">
-        <div className="footer-text">© 2025 MDII Evaluation Tool - Offline Version</div>
-      </footer>
     </div>
   );
 };
