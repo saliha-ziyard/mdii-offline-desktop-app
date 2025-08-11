@@ -1,68 +1,364 @@
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+}
+
+/* App Container */
+.app-container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+/* Header */
+.header {
+  background-color: #fff;
+  padding: 20px 40px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.header-title {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.mdii-text {
+  color: #8b5cf6;
+}
+
+.evaluation-text {
+  color: #374151;
+  margin-left: 8px;
+}
+
+/* Navigation */
+.navigation {
+  padding: 20px 40px;
+  background-color: #fff;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #374151;
+  cursor: pointer;
+  padding: 8px 0;
+  transition: color 0.2s;
+}
+
+.back-button:hover {
+  color: #8b5cf6;
+}
+
+.back-arrow {
+  margin-right: 8px;
+}
+
+.page-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 20px 0 0 0;
+}
+
+/* Home Page Styles */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 200px);
+  padding: 40px 20px;
+}
+
+.welcome-title {
+  font-size: 48px;
+  font-weight: 700;
+  color: #1f2937;
+  text-align: center;
+  margin-bottom: 24px;
+  line-height: 1.1;
+}
+
+.welcome-description {
+  font-size: 18px;
+  color: #6b7280;
+  text-align: center;
+  max-width: 600px;
+  margin-bottom: 48px;
+  line-height: 1.6;
+}
+
+.accent-line {
+  width: 80px;
+  height: 4px;
+  background-color: #10b981;
+  margin-bottom: 48px;
+  border-radius: 2px;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  max-width: 1000px;
+  width: 100%;
+}
+
+/* Action Cards */
+.action-card {
+  border-radius: 16px;
+  padding: 32px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.action-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.purple-card {
+  background-color: #8b5cf6;
+}
+
+.green-card {
+  background-color: #10b981;
+}
+
+.cyan-card {
+  background-color: #06b6d4;
+}
+
+.orange-card {
+  background-color: #f59e0b;
+}
+
+.card-icon {
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.card-title {
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  margin: 0 0 8px 0;
+}
+
+.card-description {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Compilation Page Styles */
+.compilation-content {
+  padding: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.compilation-form {
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.form-icon {
+  font-size: 24px;
+  margin-right: 12px;
+  color: #8b5cf6;
+}
+
+.form-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+/* Form Elements */
+.input-group {
+  margin-bottom: 24px;
+}
+
+.input-label {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #374151;
+}
+
+.tool-input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.tool-input:focus {
+  border-color: #8b5cf6;
+}
+
+/* Buttons */
+.generate-button {
+  width: 100%;
+  padding: 16px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  background-color: #8b5cf6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-bottom: 24px;
+}
+
+.generate-button:hover:not(.disabled) {
+  background-color: #7c3aed;
+}
+
+.generate-button.disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.open-file-button {
+  width: 100%;
+  padding: 16px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.open-file-button:hover {
+  background-color: #059669;
+}
+
+/* Status Messages */
+.status-message {
+  font-weight: 500;
+  text-align: center;
+  margin: 16px 0;
+}
+
+.status-message.error {
+  color: #ef4444;
+}
+
+.status-message.success {
+  color: #10b981;
+}
+
+/* File Actions */
+.file-actions {
+  margin-top: 24px;
+}
+
+.file-path {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 8px;
+  text-align: center;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 24px;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header {
+    padding: 16px 20px;
   }
-  .container {
-    max-width: 400px;
-    margin: 50px auto;
-    background: #fff;
+  
+  .header-title {
+    font-size: 20px;
+  }
+  
+  .navigation {
+    padding: 16px 20px;
+  }
+  
+  .page-title {
+    font-size: 28px;
+  }
+  
+  .welcome-title {
+    font-size: 36px;
+  }
+  
+  .welcome-description {
+    font-size: 16px;
+  }
+  
+  .button-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .compilation-content {
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
-  h1 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    text-align: center;
+  
+  .compilation-form {
+    padding: 24px;
   }
-  .input-group {
-    margin-bottom: 20px;
+  
+  .form-title {
+    font-size: 20px;
   }
-  label {
-    display: block;
-    font-size: 14px;
-    font-weight: bold;
-    margin-bottom: 8px;
-    color: #333;
+}
+
+@media (max-width: 480px) {
+  .welcome-title {
+    font-size: 28px;
   }
-  input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
+  
+  .action-card {
+    padding: 24px 16px;
   }
-  input:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  
+  .card-title {
+    font-size: 18px;
   }
-  button {
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-right: 10px;
-  }
-  button:hover {
-    background-color: #0056b3;
-  }
-  .download-button {
-    background-color: #28a745;
-  }
-  .download-button:hover {
-    background-color: #218838;
-  }
-  .status {
-    margin-top: 20px;
-    font-size: 14px;
-    color: #555;
-    text-align: center;
-  }
+}
