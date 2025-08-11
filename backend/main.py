@@ -637,9 +637,14 @@ def main():
     template_path = TEMPLATES[maturity_key]
     tool_name = record.get(TOOL_NAME_FIELD, "Unknown Tool")
     
-    # Create output filename
+    # Create output filename with new folder structure
     safe_tool_id = tool_id.replace("/", "_").replace("\\", "_").replace(":", "_")
-    output_path = OUTPUT_DIR / f"{safe_tool_id}_MDII_Toolkit.xlsm"
+
+    # Create the folder structure: toolid/innovator/
+    tool_folder = OUTPUT_DIR / safe_tool_id / "Innovator"
+    tool_folder.mkdir(parents=True, exist_ok=True)
+
+    output_path = tool_folder / f"{safe_tool_id}_MDII_Toolkit.xlsm"
 
     try:
         copy_and_fill_template(template_path, output_path, tool_name, tool_id, maturity_label, maturity_key, survey_data)
