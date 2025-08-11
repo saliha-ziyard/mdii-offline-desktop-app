@@ -6,6 +6,7 @@ import shutil
 import openpyxl
 import time
 import json
+from collections import defaultdict
 
 # ==== CONFIG ====
 API_TOKEN = "fc37a9329918014ef595b183adcef745a4beb217"
@@ -35,52 +36,6 @@ TEMPLATES = {
 }
 
 OUTPUT_DIR = Path(os.path.expanduser("~/Downloads"))
-
-# ==== QUESTION ORDER FOR ADVANCED TEMPLATE ====
-ADVANCED_QUESTION_ORDER = [
-    "Q_12319000",  # leadership
-    "Q_13122000", "Q_13123000", "Q_13124000", "Q_13125000", "Q_13211000", 
-    "Q_13212200", "Q_13212300", "Q_13212310", "Q_13212321", "Q_13212322", 
-    "Q_13214000", "Q_13215000",  # project management
-    "Q_13216000", "Q_13218000", "Q_13218100", "Q_13221000", "Q_13222000",  # leadership
-    "Q_13230000",  # technical - multi-answer question
-    "Q_13240000", "Q_13251100", "Q_13251200", "Q_13251400", "Q_13271110", 
-    "Q_13271120", "Q_13271130", "Q_13271140", "Q_13271150", "Q_13271160", 
-    "Q_13272100", "Q_13281000", "Q_13281100", "Q_13281200", "Q_13281300", 
-    "Q_13217000", "Q_13218200", "Q_13218300", "Q_13221000", "Q_13221110", 
-    "Q_13221120", "Q_13221130", "Q_13221140", "Q_13221141", "Q_13221200", 
-    "Q_13221210", "Q_13221211", "Q_13221212", "Q_13221213", "Q_13221220", 
-    "Q_13251110", "Q_13251310", "Q_13251320", "Q_13251330", "Q_13251340", 
-    "Q_13251350", "Q_13262000", "Q_13262100", "Q_13271111", "Q_13271121", 
-    "Q_13271131", "Q_13271141", "Q_13271151", "Q_13271161", "Q_13271210", 
-    "Q_13271300", "Q_13271400", "Q_13271210",  # leadership
-    "Q_14121000", "Q_14121100", "Q_13121000",  # technical
-    "Q_14131000", "Q_14133100", "Q_14132000", "Q_13251360",  # leadership
-    "Q_13213000",  # project management
-    "Q_13231100", "Q_13232100", "Q_13233100", "Q_13234100", "Q_13235100", "Q_13236100",  # technical
-    "Q_13261000",  # leadership
-    "Q_14311000",  # technical
-    "Q_13272200", "Q_13272300", "Q_13272400", "Q_13272410", "Q_13272420", 
-    "Q_14322100", "Q_14321000", "Q_14322000", "Q_14341000", "Q_14334100", 
-    "Q_14711000", "Q_14712000", "Q_14712100", "Q_14721000", "Q_14723100", 
-    "Q_14722000", "Q_14731000", "Q_14731100", "Q_14522000", "Q_14522100",  # leadership
-    "Q_14521000",  # technical
-    "Q_14531000", "Q_14531100",  # leadership
-    "Q_14612000", "Q_14632100",  # technical
-    "Q_14212000", "Q_14133000", "Q_14151000", "Q_14151100", "Q_14152000",  # leadership
-    "Q_14153000", "Q_14221000",  # technical
-    "Q_14212100",  # leadership
-    "Q_14222000", "Q_14312000", "Q_14511000", "Q_14513000", "Q_14512000", "Q_14513100",  # technical
-    "Q_14631000", "Q_14723000",  # leadership
-    "Q_14313000", "Q_14313100", "Q_14611000", "Q_14621000", "Q_14622100", 
-    "Q_14612100", "Q_14622000", "Q_14223000", "Q_14224000", "Q_14224100", 
-    "Q_14231000", "Q_14232000", "Q_14233000", "Q_14233100", "Q_14234000", 
-    "Q_14234100", "Q_14141000",  # technical
-    "Q_14142000", "Q_14143000", "Q_14143100", "Q_14122000", "Q_14122100", 
-    "Q_14331000", "Q_14332100", "Q_14332000", "Q_14411000", "Q_14411100", 
-    "Q_14421000", "Q_14422000", "Q_14422100",  # leadership
-    "Q_14431000", "Q_14432000", "Q_14432100"  # technical
-]
 
 # Question type definitions
 DEPENDENT_CODES = {
@@ -256,6 +211,7 @@ def get_answer_for_question(question_id, survey_data):
     for record in all_records:
         answer = find_answer_in_record(question_id, record)
         if answer:
+            debug_print(f"Found answer for {question_id}: {answer}")
             return answer
     
     # Check if it's a dependent question that should show special message
@@ -297,7 +253,7 @@ def find_answer_in_record(question_id, record):
                 # Handle different answer types
                 processed_answer = process_answer(question_id, value)
                 if processed_answer:
-                    debug_print(f"Found answer for {question_id}: {processed_answer[:50]}...")
+                    debug_print(f"Found answer for {question_id} at path {path}: {processed_answer[:50]}...")
                     return processed_answer
     
     return None
@@ -444,120 +400,126 @@ def copy_and_fill_template(template_path, output_path, tool_name, tool_id, matur
                 safe_set_cell_value(worksheet, cell_ref, value)
 
         def fill_survey_answers(worksheet):
-            """Fill survey answers using the predefined question order"""
-            debug_print("Filling survey answers using question order...")
+            """Fill survey answers by reading question codes from the sheet"""
+            debug_print("=== STARTING SURVEY ANSWER FILLING ===")
+            debug_print(f"Maturity key: {maturity_key}")
             
             # Determine column positions based on maturity
             if maturity_key == "advanced":
-                answer_col = 12    # L column (1-indexed: L=12)
-                start_row = 19
+                code_col = 9   # I
+                question_col = 11  # K
+                answer_col = 12  # L
+                debug_print("Using ADVANCED template column mapping:")
             else:
-                answer_col = 11    # K column (1-indexed: K=11)
-                start_row = 19
+                code_col = 8   # H
+                question_col = 10  # J
+                answer_col = 11  # K
+                debug_print("Using EARLY template column mapping:")
             
-            debug_print(f"Using answer column: {chr(64 + answer_col)} (column {answer_col})")
-            debug_print(f"Starting from row: {start_row}")
+            debug_print(f"  Code column: {chr(64 + code_col)} (column {code_col})")
+            debug_print(f"  Question text column: {chr(64 + question_col)} (column {question_col})")
+            debug_print(f"  Answer column: {chr(64 + answer_col)} (column {answer_col})")
             
-            # Use the predefined question order
-            question_order = ADVANCED_QUESTION_ORDER  # For now, use same order for both
-            
-            debug_print(f"Processing {len(question_order)} questions in order")
+            start_row = 19
+            max_row = worksheet.max_row or 500  # Safety limit
+            debug_print(f"  Processing rows {start_row} to {max_row}")
             
             # Check if we have any survey data for this tool
-            has_data = False
-            for survey_name, records in survey_data.items():
-                if records:  # If any survey form has records
-                    has_data = True
-                    break
+            has_data = any(len(records) > 0 for records in survey_data.values())
+            debug_print(f"  Has survey data: {has_data}")
+            if has_data:
+                total_records = sum(len(records) for records in survey_data.values())
+                debug_print(f"  Total survey records: {total_records}")
             
-            # First, clear all existing answers in the answer column
-            debug_print("Clearing existing template answers...")
-            for row_num in range(start_row, start_row + len(question_order) + 10):  # +10 for safety margin
-                answer_cell_ref = f"{chr(64 + answer_col)}{row_num}"
-                safe_set_cell_value(worksheet, answer_cell_ref, "")  # Clear the cell
-            
-            answers_filled = 0
-            current_row = start_row
-            
-            for question_id in question_order:
-                # Only fill the cell if we have survey data, otherwise leave it empty
-                if has_data:
-                    # Get answer for this question
-                    answer = get_answer_for_question(question_id, survey_data)
-                    
-                    # Handle special case for Q_13230000 technology types
-                    if question_id == "Q_13230000":
-                        # This question needs to be expanded into multiple rows
-                        tech_answers = handle_technology_expansion(survey_data, worksheet, current_row, answer_col)
-                        current_row += len(tech_answers)
-                        answers_filled += len(tech_answers)
-                        continue
-                    
-                    # Write the answer to the current row
-                    answer_cell_ref = f"{chr(64 + answer_col)}{current_row}"
-                    safe_set_cell_value(worksheet, answer_cell_ref, answer)
-                    answers_filled += 1
-                else:
-                    # No survey data available, leave cells empty
-                    if question_id == "Q_13230000":
-                        current_row += 6  # Skip the 6 technology sub-questions
-                    # Cell is already cleared above, just move to next row
+            # First, let's examine the first few rows to understand the structure
+            debug_print("=== EXAMINING SHEET STRUCTURE ===")
+            for row_num in range(start_row, min(start_row + 10, max_row + 1)):
+                code_value = worksheet.cell(row_num, code_col).value
+                question_text = worksheet.cell(row_num, question_col).value
+                current_answer = worksheet.cell(row_num, answer_col).value
                 
-                current_row += 1
+                debug_print(f"Row {row_num}: Code='{code_value}' | Question='{str(question_text)[:50] if question_text else None}...' | Current Answer='{current_answer}'")
             
-            debug_print(f"Filled {answers_filled} answers")
-        def handle_technology_expansion(survey_data, worksheet, start_row, answer_col):
-            """Handle the technology question expansion into multiple rows"""
-            tech_field = "group_used_technologies/Q_13230000"
+            # Combine all records
+            all_records = []
+            for records in survey_data.values():
+                all_records.extend(records)
+            
+            # Fetch technology values once
             tech_values = ""
-            
-            # Find technology values in survey data
-            for survey_name, records in survey_data.items():
-                for record in records:
-                    if tech_field in record and record[tech_field]:
-                        tech_values = str(record[tech_field]).strip()
-                        break
-                if tech_values:
+            for record in all_records:
+                tech_field = "group_used_technologies/Q_13230000"
+                if tech_field in record and record[tech_field]:
+                    tech_values = str(record[tech_field]).strip()
                     break
+            tech_types_lower = [t.lower() for t in tech_values.split() if t]
+            debug_print(f"Technology values found: '{tech_values}'")
+            debug_print(f"Tech types (lowercase): {tech_types_lower}")
             
-            # The 6 technology type questions in order
-            tech_questions = [
-                "What type of technology does the digital tool use? IoT and Connectivity*",
-                "What type of technology does the digital tool use? GeoSpatial*", 
-                "What type of technology does the digital tool use? AgriSpecific*",
-                "What type of technology does the digital tool use? Cloud and Blockchain*",
-                "What type of technology does the digital tool use? Storage and Logistics*",
-                "What type of technology does the digital tool use? Data Processing and Analysis*"
-            ]
+            # Group technology keys by their question text
+            tech_keys_by_text = defaultdict(list)
+            for key, text in TECHNOLOGY_TYPES.items():
+                tech_keys_by_text[text].append(key)
             
-            tech_keywords = [
-                ["iot", "connectivity"],
-                ["geospatial", "gis"],
-                ["agrispecific", "agriculture"],
-                ["cloud", "blockchain"],
-                ["storage", "logistics"],
-                ["data_analysis", "data_processing", "artificial_intelligence", "big_data", "data_analytics", "data_mining"]
-            ]
+            debug_print("=== PROCESSING ANSWERS ===")
+            # Clear all existing answers in the answer column first
+            debug_print("Clearing existing template answers...")
+            for row_num in range(start_row, max_row + 1):
+                answer_cell_ref = f"{chr(64 + answer_col)}{row_num}"
+                safe_set_cell_value(worksheet, answer_cell_ref, "")
             
-            answers = []
-            current_row = start_row
+            # Iterate through rows and fill answers
+            row = start_row
+            answers_filled = 0
+            questions_processed = 0
             
-            for i, (question, keywords) in enumerate(zip(tech_questions, tech_keywords)):
-                answer = "No"
-                if tech_values:
-                    tech_lower = tech_values.lower()
-                    for keyword in keywords:
-                        if keyword in tech_lower:
-                            answer = "Yes"
-                            break
+            while row <= max_row:
+                code_value = worksheet.cell(row, code_col).value
+                question_text_full = str(worksheet.cell(row, question_col).value or "").strip()
                 
-                # Set the answer in the worksheet
-                answer_cell_ref = f"{chr(64 + answer_col)}{current_row}"
-                safe_set_cell_value(worksheet, answer_cell_ref, answer)
-                answers.append(answer)
-                current_row += 1
+                if code_value is None and not question_text_full:
+                    row += 1
+                    continue  # Skip completely empty rows
+                
+                questions_processed += 1
+                
+                if code_value:
+                    code_str = str(code_value).strip()
+                    if len(code_str) == 8 and code_str.isdigit():
+                        question_id = "Q_" + code_str
+                        debug_print(f"Processing question {question_id} at row {row}")
+                        
+                        if has_data:
+                            if question_id == "Q_13230000":
+                                # Do not set answer for the main technology question row
+                                debug_print(f"  Skipping main tech question {question_id}")
+                                pass
+                            else:
+                                answer = get_answer_for_question(question_id, survey_data)
+                                answer_cell_ref = f"{chr(64 + answer_col)}{row}"
+                                safe_set_cell_value(worksheet, answer_cell_ref, answer)
+                                debug_print(f"  Set answer at {answer_cell_ref}: {answer}")
+                                answers_filled += 1
+                        else:
+                            debug_print(f"  No data available for {question_id}")
+                else:
+                    # No code, check if it's a technology sub-question
+                    if question_text_full in tech_keys_by_text and has_data:
+                        keys_for_this = tech_keys_by_text[question_text_full]
+                        if set(tech_types_lower) & set(keys_for_this):
+                            answer = "Yes"
+                        else:
+                            answer = "No"
+                        answer_cell_ref = f"{chr(64 + answer_col)}{row}"
+                        safe_set_cell_value(worksheet, answer_cell_ref, answer)
+                        debug_print(f"  Set tech sub-question at {answer_cell_ref}: {answer}")
+                        answers_filled += 1
+                
+                row += 1
             
-            return answers
+            debug_print(f"=== FILLING COMPLETE ===")
+            debug_print(f"Questions processed: {questions_processed}")
+            debug_print(f"Answers filled: {answers_filled}")
 
         # Fill the template
         fill_header_info(ws)
@@ -569,6 +531,8 @@ def copy_and_fill_template(template_path, output_path, tool_name, tool_id, matur
         
     except Exception as e:
         debug_print(f"Error working with Excel file: {e}")
+        import traceback
+        debug_print(f"Full traceback: {traceback.format_exc()}")
         raise Exception(f"Excel processing failed: {e}")
 
 def main():
