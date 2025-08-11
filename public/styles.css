@@ -195,7 +195,7 @@ body {
   border-radius: 16px;
   padding: 40px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-width: 600px;
+  max-width: 1000px;
   width: 100%;
 }
 
@@ -312,6 +312,175 @@ body {
   color: #6b7280;
   margin-top: 8px;
   text-align: center;
+}
+/* Additional styles for success message view - Add these to your existing CSS */
+
+/* Tool Input Display (readonly state) */
+.tool-input-display {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 16px;
+  background-color: #f3f4f6;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  color: #374151;
+  box-sizing: border-box;
+}
+
+/* Compilation Details Section */
+.compilation-details {
+  background-color: #f3f4f6;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.details-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 12px;
+}
+
+.details-description {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.file-info {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.file-info p {
+  margin-bottom: 4px;
+}
+
+/* Next Steps Box */
+.next-steps-box {
+  background-color: #fffbeb;
+  border-left: 4px solid #f59e0b;
+  padding: 20px;
+  border-radius: 0 8px 8px 0;
+}
+
+.next-steps-header {
+  display: flex;
+  align-items: flex-start;
+}
+
+.next-steps-icon {
+  font-size: 20px;
+  color: #d97706;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.next-steps-content {
+  flex: 1;
+}
+
+.next-steps-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 12px;
+}
+
+.next-steps-description {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+/* Email Template */
+.email-template {
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  padding: 16px;
+  border-radius: 6px;
+}
+
+.email-subject {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 12px;
+}
+
+.email-body {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.email-body p {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.email-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* Success View Modifications */
+.success-view .generate-button {
+  display: none; /* Hide the generate button in success view */
+}
+
+/* Responsive adjustments for success message */
+@media (max-width: 768px) {
+  .compilation-details {
+    padding: 16px;
+  }
+  
+  .next-steps-box {
+    padding: 16px;
+  }
+  
+  .email-template {
+    padding: 12px;
+  }
+  
+  .details-title {
+    font-size: 16px;
+  }
+  
+  .next-steps-title {
+    font-size: 16px;
+  }
+  
+  .details-description,
+  .next-steps-description,
+  .email-subject,
+  .email-body {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .next-steps-header {
+    flex-direction: column;
+  }
+  
+  .next-steps-icon {
+    margin-bottom: 8px;
+    margin-right: 0;
+  }
+  
+  .compilation-details {
+    padding: 12px;
+  }
+  
+  .next-steps-box {
+    padding: 12px;
+  }
+  
+  .email-template {
+    padding: 10px;
+  }
 }
 
 /* Footer */

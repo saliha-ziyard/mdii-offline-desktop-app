@@ -10,6 +10,8 @@ const App = () => {
     const [status, setStatus] = useState("");
     const [filePath, setFilePath] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+
 
     useEffect(() => {
         if (!window.electronAPI) {
@@ -18,31 +20,34 @@ const App = () => {
         }
     }, []);
 
-    const handleGenerateExcel = async () => {
-        if (!toolId) {
-            setStatus("Please enter a Tool ID");
-            return;
-        }
+const handleGenerateExcel = async () => {
+    if (!toolId) {
+        setStatus("Please enter a Tool ID");
+        return;
+    }
 
-        if (!window.electronAPI?.generateExcel) {
-            setStatus("Error: Electron API not available");
-            return;
-        }
+    if (!window.electronAPI?.generateExcel) {
+        setStatus("Error: Electron API not available");
+        return;
+    }
 
-        setIsLoading(true);
-        setStatus("Generating Excel file...");
+    setIsLoading(true);
+    setStatus("Generating Excel file...");
+    
+    try {
+        const result = await window.electronAPI.generateExcel(toolId);
+        setStatus("Excel generated successfully!");
+        setFilePath(result);
         
-        try {
-            const result = await window.electronAPI.generateExcel(toolId);
-            setStatus("Excel generated successfully!");
-            setFilePath(result);
-        } catch (error) {
-            console.error("Excel generation error:", error);
-            setStatus(`Error: ${error}`);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+        setShowSuccessMessage(true);
+        
+    } catch (error) {
+        console.error("Excel generation error:", error);
+        setStatus(`Error: ${error}`);
+    } finally {
+        setIsLoading(false);
+    }
+};
 
     const handleOpenFile = () => {
         if (filePath && window.electronAPI?.openFile) {
@@ -66,6 +71,7 @@ const App = () => {
                     handleOpenFile={handleOpenFile}
                     isLoading={isLoading}
                     setCurrentPage={setCurrentPage}
+                    showSuccessMessage={showSuccessMessage} 
                 />
             )}
         <Footer/>
