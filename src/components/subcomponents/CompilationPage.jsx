@@ -135,8 +135,6 @@ const CompilationPage = ({
                 </div>
             )}
         </div>
-
-        <Footer />
     </div>
 );
 
