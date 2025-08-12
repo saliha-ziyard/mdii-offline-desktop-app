@@ -42,7 +42,10 @@ const HomePage = ({ setCurrentPage }) => (
           <h3 className="card-title">Compilations</h3>
           <p className="card-description">After innovator answers</p>
         </div>
-        <div className="action-card orange-card">
+        <div 
+          onClick={() => setCurrentPage("userTypeCompilation")} 
+          className="action-card orange-card"
+        >
           <div className="card-icon">📄</div>
           <h3 className="card-title">Step 2: Generate</h3>
           <h3 className="card-title">Report</h3>

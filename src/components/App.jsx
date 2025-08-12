@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import HomePage from "./subcomponents/HomePage";
 import CompilationPage from "./subcomponents/CompilationPage";
 import HowItWorksGuide from "./subcomponents/HowItWorksGuide ";
+import UserTypeCompilationPage from "./subcomponents/UserTypeCompilationPage"
 import Footer from "./subcomponents/Footer";
 
 const App = () => {
@@ -12,7 +13,6 @@ const App = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
-
     useEffect(() => {
         if (!window.electronAPI) {
             setStatus("Error: Electron API not available. Please check preload script.");
@@ -20,34 +20,32 @@ const App = () => {
         }
     }, []);
 
-const handleGenerateExcel = async () => {
-    if (!toolId) {
-        setStatus("Please enter a Tool ID");
-        return;
-    }
+    const handleGenerateExcel = async () => {
+        if (!toolId) {
+            setStatus("Please enter a Tool ID");
+            return;
+        }
 
-    if (!window.electronAPI?.generateExcel) {
-        setStatus("Error: Electron API not available");
-        return;
-    }
+        if (!window.electronAPI?.generateExcel) {
+            setStatus("Error: Electron API not available");
+            return;
+        }
 
-    setIsLoading(true);
-    setStatus("Generating Excel file...");
-    
-    try {
-        const result = await window.electronAPI.generateExcel(toolId);
-        setStatus("Excel generated successfully!");
-        setFilePath(result);
+        setIsLoading(true);
+        setStatus("Generating Excel file...");
         
-        setShowSuccessMessage(true);
-        
-    } catch (error) {
-        console.error("Excel generation error:", error);
-        setStatus(`Error: ${error}`);
-    } finally {
-        setIsLoading(false);
-    }
-};
+        try {
+            const result = await window.electronAPI.generateExcel(toolId);
+            setStatus("Excel generated successfully!");
+            setFilePath(result);
+            setShowSuccessMessage(true);
+        } catch (error) {
+            console.error("Excel generation error:", error);
+            setStatus(`Error: ${error}`);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const handleOpenFile = () => {
         if (filePath && window.electronAPI?.openFile) {
@@ -61,7 +59,7 @@ const handleGenerateExcel = async () => {
                 <HomePage setCurrentPage={setCurrentPage} />
             ) : currentPage === "howItWorks" ? (
                 <HowItWorksGuide setCurrentPage={setCurrentPage} />
-            ) : (
+            ) : currentPage === "compilation" ? (
                 <CompilationPage
                     toolId={toolId}
                     setToolId={setToolId}
@@ -71,10 +69,23 @@ const handleGenerateExcel = async () => {
                     handleOpenFile={handleOpenFile}
                     isLoading={isLoading}
                     setCurrentPage={setCurrentPage}
-                    showSuccessMessage={showSuccessMessage} 
+                    showSuccessMessage={showSuccessMessage}
                 />
-            )}
-        <Footer/>
+            ) : currentPage === "userTypeCompilation" ? (
+                <UserTypeCompilationPage
+                    toolId={toolId}
+                    setToolId={setToolId}
+                    handleGenerateExcel={handleGenerateExcel}
+                    status={status}
+                    filePath={filePath}
+                    handleOpenFile={handleOpenFile}
+                    isLoading={isLoading}
+                    setCurrentPage={setCurrentPage}
+                    showSuccessMessage={showSuccessMessage}
+                />
+            ) : null}
+
+            <Footer />
         </>
     );
 };
