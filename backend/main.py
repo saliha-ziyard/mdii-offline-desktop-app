@@ -40,10 +40,18 @@ TEMPLATES = {
 OUTPUT_DIR = Path(os.path.expanduser("~/Downloads"))
 
 # PDF Generation Config - Updated for domain-based analysis
-DOMAIN_START_ROW = 16  # First row with X marks
-DOMAIN_COLUMNS = [1, 2, 3, 4, 5, 6]  # Columns A-F (1-6)
-FLAG_VALUE = "X"  # Marker to look for in domain columns
-
+PDF_CONFIG = {
+    "early": {
+        "DOMAIN_START_ROW": 16,
+        "DOMAIN_COLUMNS": [1, 2, 3, 4, 5, 6],  # Columns A-F (1-6)
+        "FLAG_VALUE": "X"
+    },
+    "advanced": {
+        "DOMAIN_START_ROW": 16,
+        "DOMAIN_COLUMNS": [1, 2, 3, 4, 5, 6, 7],  # Columns A-G (1-7)  
+        "FLAG_VALUE": "X"
+    }
+}
 # Question type definitions
 DEPENDENT_CODES = {
     "13221110", "13221120", "13221130", "13221140", "13221141", "13221200",
@@ -525,13 +533,24 @@ def clean_html_text(html_text):
     
     return text.strip()
 
-def analyze_domain_responses(ws_answers):
-    """Analyze which domains (columns A-F) have answered which questions"""
+def analyze_domain_responses(ws_answers, maturity_key):
+    """Analyze which domains (columns A-F/G) have answered which questions"""
     debug_print("=== ANALYZING DOMAIN RESPONSES ===")
+    debug_print(f"Using {maturity_key} stage configuration")
+    
+    # Get configuration based on maturity level
+    config = PDF_CONFIG[maturity_key]
+    domain_start_row = config["DOMAIN_START_ROW"]
+    domain_columns = config["DOMAIN_COLUMNS"]
+    flag_value = config["FLAG_VALUE"]
+    
+    debug_print(f"Domain start row: {domain_start_row}")
+    debug_print(f"Domain columns: {domain_columns}")
+    debug_print(f"Flag value: {flag_value}")
     
     # Get domain names from row 1
     domain_names = []
-    for col_idx in DOMAIN_COLUMNS:
+    for col_idx in domain_columns:
         domain_name = ws_answers.cell(1, col_idx).value
         if domain_name and str(domain_name).strip():
             domain_names.append((col_idx, str(domain_name).strip()))
@@ -550,11 +569,11 @@ def analyze_domain_responses(ws_answers):
         
         answered_questions = []
         
-        # Look for X marks starting from DOMAIN_START_ROW
-        for row_idx in range(DOMAIN_START_ROW, max_row + 1):
+        # Look for X marks starting from domain_start_row
+        for row_idx in range(domain_start_row, max_row + 1):
             cell_value = ws_answers.cell(row_idx, col_idx).value
             
-            if isinstance(cell_value, str) and cell_value.strip().upper() == FLAG_VALUE:
+            if isinstance(cell_value, str) and cell_value.strip().upper() == flag_value:
                 # Found an X mark, record this row
                 answered_questions.append(row_idx)
                 debug_print(f"  Found X mark at row {row_idx}")
@@ -569,6 +588,7 @@ def analyze_domain_responses(ws_answers):
             debug_print(f"Domain {domain_name} has no responses")
     
     return domain_responses
+
 
 def get_html_questions_mapping(ws_html):
     """Create mapping of question codes to HTML formatted questions"""
@@ -604,7 +624,7 @@ def get_html_questions_mapping(ws_html):
     debug_print(f"Created HTML mapping for {len(html_mapping)} questions")
     return html_mapping
 
-def generate_pdfs_from_excel(tool_code, excel_path):
+def generate_pdfs_from_excel(tool_code, excel_path, maturity_key):
     """Generate domain-specific PDFs based on X marks analysis with enhanced styling and proper heading structure"""
     try:
         from reportlab.lib.pagesizes import A4
@@ -628,8 +648,7 @@ def generate_pdfs_from_excel(tool_code, excel_path):
     pdf_dir.mkdir(parents=True, exist_ok=True)
     
     try:
-        wb = openpyxl.load_workbook(excel_path, data_only=True)
-        
+        wb = openpyxl.load_workbook(excel_path, data_only=True)        
         # Find the answers sheet (first sheet with X marks)
         ws_answers = None
         for sheet_name in ["Innovator Answers", "InnovatorAnswers", "Innovator_Answers"]:
@@ -651,8 +670,7 @@ def generate_pdfs_from_excel(tool_code, excel_path):
                 break
         
         # Analyze domain responses
-        domain_responses = analyze_domain_responses(ws_answers)
-        
+        domain_responses = analyze_domain_responses(ws_answers, maturity_key)        
         if not domain_responses:
             debug_print("No domain responses found, generating standard PDF")
             return generate_standard_pdf(tool_code, excel_path, wb, ws_answers)
@@ -893,71 +911,69 @@ def generate_pdfs_from_excel(tool_code, excel_path):
                 # Process each answered question for this domain
                 for row_idx in domain_info['answered_rows'][3:]:
                     try:
-                        # Get question code from column H (code column)
+                        # Get question code from column H (code column) - UPDATED FOR MATURITY
                         question_code = None
-                        for code_col in [8, 9]:  # Try both possible code columns
-                            code_value = ws_answers.cell(row_idx, code_col).value
-                            if code_value and str(code_value).strip().isdigit():
-                                if len(str(code_value).strip()) == 8:
-                                    question_code = str(code_value).strip()
-                                    break
-                        
-                        # Get question text - try multiple columns for question text
+                        code_col = 9 if maturity_key == "advanced" else 8  # Column I for advanced, H for early
+
+                        code_value = ws_answers.cell(row_idx, code_col).value
+                        if code_value and str(code_value).strip().isdigit():
+                            if len(str(code_value).strip()) == 8:
+                                question_code = str(code_value).strip()
+
+                        # Get question text - UPDATED FOR MATURITY
                         question_text = None
-                        for text_col in [10, 11, 23]:  # Try different possible text columns
-                            text_value = ws_answers.cell(row_idx, text_col).value
-                            if text_value and str(text_value).strip():
-                                question_text = str(text_value).strip()
-                                break
-                        
-                        # Get answer text
+                        question_col = 11 if maturity_key == "advanced" else 10  # Column K for advanced, J for early
+                        text_value = ws_answers.cell(row_idx, question_col).value
+                        if text_value and str(text_value).strip():
+                            question_text = str(text_value).strip()
+
+                        # Get answer text - UPDATED FOR MATURITY
                         answer_text = None
-                        for ans_col in [11, 12, 23]:  # Try different possible answer columns
-                            ans_value = ws_answers.cell(row_idx, ans_col).value
-                            if ans_value and str(ans_value).strip():
-                                answer_text = str(ans_value).strip()
-                                break
-                        
+                        answer_col = 12 if maturity_key == "advanced" else 11  # Column L for advanced, K for early
+                        ans_value = ws_answers.cell(row_idx, answer_col).value
+                        if ans_value and str(ans_value).strip():
+                            answer_text = str(ans_value).strip()
+
                         # Use HTML version if available and better
                         if question_code and question_code in html_mapping:
                             html_text = html_mapping[question_code]
                             if len(html_text) > len(question_text or ""):
                                 question_text = html_text
-                        
-                        # Process content based on type
+
+                        # Process content based on type (KEEP ALL EXISTING LOGIC)
                         if question_text and len(question_text.strip()) > 10:
                             clean_question = clean_html_text(question_text)
                             clean_question = re.sub(r'\[.*?\]', '', clean_question).strip()
-                            
+
                             if clean_question:
                                 # Identify content type
                                 content_type = identify_content_type(clean_question, answer_text)
-                                
+
                                 if content_type == "main_heading":
                                     # Main heading (Dimension)
                                     heading_text = clean_question.replace("Dimension:", "").strip()
                                     story.append(Paragraph(f"📊 {heading_text}", main_heading_style))
                                     story.append(Spacer(1, 10))
-                                
+
                                 elif content_type == "sub_heading":
                                     # Sub-heading (Sub-dimension)
                                     heading_text = clean_question.replace("Sub-dimension:", "").strip()
                                     story.append(Paragraph(f"▶ {heading_text}", sub_heading_style))
                                     story.append(Spacer(1, 8))
-                                
+
                                 elif content_type == "context_heading":
                                     # Context heading (Contextual Information)
                                     story.append(Paragraph(clean_question, context_heading_style))
                                     story.append(Spacer(1, 6))
-                                
+
                                 elif content_type == "description":
                                     # Description text (under headings)
                                     description_text = clean_question.replace("Description:", "").strip()
                                     story.append(Paragraph(description_text, description_style))
                                     story.append(Spacer(1, 12))
-                                
+
                                 else:
-                                    # Regular question-answer pair
+                                    # Regular question-answer pair (KEEP EXISTING ANSWER LOGIC)
                                     # Clean and format answer
                                     if answer_text and answer_text.strip() != "":
                                         clean_answer = clean_html_text(answer_text)
@@ -967,25 +983,26 @@ def generate_pdfs_from_excel(tool_code, excel_path):
                                             answer_formatted = '<font color="#dc2626"><i>"No response provided"</i></font>'
                                     else:
                                         answer_formatted = '<font color="#dc2626"><i>"No response provided"</i></font>'
-                                    
+
                                     # Enhanced formatting: Question number + Question + Answer
                                     question_number = f'<b><font color="#1e40af" size="11">{question_count + 1}.</font></b>'
                                     formatted_question = f'<b><font color="#374151">{clean_question}</font></b>'
-                                    
+
                                     # Combine with better spacing and styling
                                     combined_line = f'{question_number} {formatted_question} — {answer_formatted}'
-                                    
+
                                     # Alternate row styling for better readability
                                     current_style = qa_style if question_count % 2 == 0 else qa_style_alt
-                                    
+
                                     story.append(Paragraph(combined_line, current_style))
                                     story.append(Spacer(1, 6))
-                                    
+
                                     question_count += 1
-                                                        
+
                     except Exception as e:
                         debug_print(f"Error processing question at row {row_idx}: {e}")
                         continue
+
                 
                 # Footer information
                 story.append(Spacer(1, 30))
@@ -1097,7 +1114,26 @@ def main():
         debug_print(f"Found Excel file: {excel_path}")
         
         try:
-            success = generate_pdfs_from_excel(safe_tool_id, excel_path)
+            wb = openpyxl.load_workbook(excel_path, data_only=True)
+            maturity_key = "advanced"  # Default
+            
+            # Try to find MDII version from the Excel file to determine maturity
+            for sheet in wb.worksheets:
+                for row_idx in range(1, 20):
+                    for col_idx in range(1, 15):
+                        cell_value = sheet.cell(row_idx, col_idx).value
+                        if cell_value and isinstance(cell_value, str):
+                            if "early stage" in str(cell_value).lower():
+                                maturity_key = "early"
+                                break
+                            elif "advanced stage" in str(cell_value).lower():
+                                maturity_key = "advanced"
+                                break
+            
+            wb.close()
+            debug_print(f"Detected maturity level: {maturity_key}")
+            
+            success = generate_pdfs_from_excel(safe_tool_id, excel_path, maturity_key)  # ADD maturity_key parameter
             if success:
                 print(f"Domain-specific PDFs generated successfully for tool ID: {tool_id}")
             else:
@@ -1174,7 +1210,7 @@ def main():
         
         debug_print("Automatically generating domain-specific PDFs...")
         try:
-            success = generate_pdfs_from_excel(safe_tool_id, output_path)
+            success = generate_pdfs_from_excel(safe_tool_id, output_path, maturity_key)
             if success:
                 debug_print("Domain-specific PDFs generated successfully!")
                 print("Domain-specific PDFs generated successfully!")
