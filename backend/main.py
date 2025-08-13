@@ -32,6 +32,18 @@ USERTYPE2_FORMS = {
     "early": "au52CRd6ATzV7S36WcAdDu"
 }
 
+# UserTypeIII survey forms for different maturity levels
+USERTYPE3_FORMS = {
+    "advanced": "aFfhFi5vpsierwc3b5SNvc",
+    "early": "aCAhpbKYdsMbnGcWo4yR42"
+}
+
+# UserTypeIV survey forms for different maturity levels
+USERTYPE4_FORMS = {
+    "advanced": "aU5LwrZps9u7Yt7obeShjv", 
+    "early": "aKhnEosysRHsrUKxanCSKc"
+}
+
 # Second tool ID field for survey forms
 SURVEY_TOOL_ID_FIELD = "Q_13110000"
 
@@ -661,6 +673,285 @@ def fill_usertype2_sheet(excel_path, tool_id, maturity_key):
         debug_print(f"Full traceback: {traceback.format_exc()}")
         return False
 
+def fill_usertype3_sheet(excel_path, tool_id, maturity_key):
+    debug_print(f"=== FILLING USERTYPE3 SHEET ===")
+    debug_print(f"Excel path: {excel_path}")
+    debug_print(f"Tool ID: {tool_id}")
+    debug_print(f"Maturity key: {maturity_key}")
+    
+    form_id = USERTYPE3_FORMS.get(maturity_key)
+    if not form_id:
+        debug_print(f"No UserTypeIII form ID found for maturity level: {maturity_key}")
+        return False
+    
+    debug_print(f"Using form ID: {form_id}")
+    
+    try:
+        usertype3_data = fetch_kobo_data(form_id)
+        debug_print(f"Fetched {len(usertype3_data)} records from UserTypeIII form")
+        
+        matching_records = []
+        possible_fields = [
+            "group_toolid/Q_13110000",
+            "group_requester/Q_13110000",
+            "Q_13110000",
+            "group_requester/Q_1311000"
+        ]
+        
+        for record in usertype3_data:
+            record_tool_id = ""
+            found_in_field = None
+            
+            for field in possible_fields:
+                if field in record and record[field]:
+                    record_tool_id = str(record[field]).strip()
+                    found_in_field = field
+                    break
+            
+            debug_print(f"UserTypeIII record ID: '{record_tool_id}' (from field: {found_in_field})")
+            if record_tool_id.lower().strip() == str(tool_id).lower().strip():
+                matching_records.append(record)
+        
+        debug_print(f"Found {len(matching_records)} matching UserTypeIII records")
+        
+        if not matching_records:
+            debug_print("No matching UserTypeIII records found")
+            return False
+        
+        wb = openpyxl.load_workbook(excel_path, keep_vba=True)
+        
+        usertype3_sheet = None
+        possible_sheet_names = ["UserTypeIII_Answers", "UserType3_Answers", "UserType_III_Answers"]
+        
+        for sheet_name in possible_sheet_names:
+            if sheet_name in wb.sheetnames:
+                usertype3_sheet = wb[sheet_name]
+                debug_print(f"Found UserTypeIII sheet: {sheet_name}")
+                break
+        
+        if not usertype3_sheet:
+            debug_print("UserTypeIII_Answers sheet not found")
+            debug_print(f"Available sheets: {wb.sheetnames}")
+            wb.close()
+            return False
+        
+        debug_print("=== ANALYZING USERTYPE3 SHEET STRUCTURE ===")
+        
+        # Find question codes in row 2
+        question_codes_map = {}  # {question_code: column_index}
+        
+        # For UserType3, scan across columns in row 2 to find question codes
+        max_col = usertype3_sheet.max_column or 200
+        debug_print(f"Scanning columns 1 to {max_col} in row 2 for question codes")
+        
+        for col_idx in range(1, max_col + 1):
+            cell_value = usertype3_sheet.cell(2, col_idx).value  # Row 2
+            if cell_value:
+                cell_str = str(cell_value).strip()
+                debug_print(f"Row 2, Column {col_idx} ({chr(64 + col_idx)}): '{cell_str}'")
+                
+                # Check for question codes
+                if maturity_key == "early":
+                    # Early stage: codes like E31431000, E31411000, etc.
+                    if cell_str.startswith('E') and len(cell_str) == 9 and cell_str[1:].isdigit():
+                        question_code = cell_str[1:]  # Remove 'E' prefix
+                        question_codes_map[question_code] = col_idx
+                        debug_print(f"Found early stage question code: {cell_str} -> Q_{question_code} at column {col_idx}")
+                
+                elif maturity_key == "advanced":
+                    # Advanced stage: codes like 31421000, 31422000, etc.
+                    if len(cell_str) == 8 and cell_str.isdigit():
+                        question_code = cell_str
+                        question_codes_map[question_code] = col_idx
+                        debug_print(f"Found advanced stage question code: {cell_str} -> Q_{question_code} at column {col_idx}")
+        
+        debug_print(f"Total question codes found: {len(question_codes_map)}")
+        debug_print(f"Question codes mapping: {question_codes_map}")
+        
+        if not question_codes_map:
+            debug_print("No question codes found in UserType3 sheet row 2")
+            wb.close()
+            return False
+        
+        # Clear existing answers in row 4 onwards for all question columns
+        debug_print("Clearing existing UserType3 answers...")
+        for question_code, col_idx in question_codes_map.items():
+            for row_idx in range(4, 20):  # Clear multiple rows
+                usertype3_sheet.cell(row_idx, col_idx).value = ""
+        
+        answers_filled = 0
+        
+        # Process each question code found in the sheet
+        for question_code, col_idx in question_codes_map.items():
+            question_id = f"Q_{question_code}"
+            debug_print(f"Processing UserTypeIII question {question_id} at column {col_idx}")
+            
+            # Get answer from UserType3 survey data
+            answer = get_usertype3_answer(question_id, matching_records)
+            
+            if answer and answer.strip():
+                # Put answer in row 4
+                answer_cell = usertype3_sheet.cell(4, col_idx)
+                answer_cell.value = answer
+                debug_print(f"Set UserTypeIII answer at column {col_idx} (row 4): {answer}")
+                answers_filled += 1
+            else:
+                debug_print(f"No answer found for {question_id}")
+        
+        debug_print(f"UserTypeIII filling complete - {answers_filled} answers filled")
+        
+        wb.save(excel_path)
+        wb.close()
+        
+        debug_print("UserTypeIII sheet updated successfully")
+        return True
+        
+    except Exception as e:
+        debug_print(f"Error filling UserTypeIII sheet: {e}")
+        import traceback
+        debug_print(f"Full traceback: {traceback.format_exc()}")
+        return False
+
+def fill_usertype4_sheet(excel_path, tool_id, maturity_key):
+    debug_print(f"=== FILLING USERTYPE4 SHEET ===")
+    debug_print(f"Excel path: {excel_path}")
+    debug_print(f"Tool ID: {tool_id}")
+    debug_print(f"Maturity key: {maturity_key}")
+    
+    form_id = USERTYPE4_FORMS.get(maturity_key)
+    if not form_id:
+        debug_print(f"No UserTypeIV form ID found for maturity level: {maturity_key}")
+        return False
+    
+    debug_print(f"Using form ID: {form_id}")
+    
+    try:
+        usertype4_data = fetch_kobo_data(form_id)
+        debug_print(f"Fetched {len(usertype4_data)} records from UserTypeIV form")
+        
+        matching_records = []
+        possible_fields = [
+            "group_toolid/Q_13110000",
+            "group_requester/Q_13110000", 
+            "Q_13110000",
+            "group_requester/Q_1311000",
+            "group_individualinfo/Q_13110000"  # Special field for UserType4
+        ]
+        
+        for record in usertype4_data:
+            record_tool_id = ""
+            found_in_field = None
+            
+            for field in possible_fields:
+                if field in record and record[field]:
+                    record_tool_id = str(record[field]).strip()
+                    found_in_field = field
+                    break
+            
+            debug_print(f"UserTypeIV record ID: '{record_tool_id}' (from field: {found_in_field})")
+            if record_tool_id.lower().strip() == str(tool_id).lower().strip():
+                matching_records.append(record)
+        
+        debug_print(f"Found {len(matching_records)} matching UserTypeIV records")
+        
+        if not matching_records:
+            debug_print("No matching UserTypeIV records found")
+            return False
+        
+        wb = openpyxl.load_workbook(excel_path, keep_vba=True)
+        
+        usertype4_sheet = None
+        possible_sheet_names = ["UserTypeIV_Answers", "UserType4_Answers", "UserType_IV_Answers"]
+        
+        for sheet_name in possible_sheet_names:
+            if sheet_name in wb.sheetnames:
+                usertype4_sheet = wb[sheet_name]
+                debug_print(f"Found UserTypeIV sheet: {sheet_name}")
+                break
+        
+        if not usertype4_sheet:
+            debug_print("UserTypeIV_Answers sheet not found")
+            debug_print(f"Available sheets: {wb.sheetnames}")
+            wb.close()
+            return False
+        
+        debug_print("=== ANALYZING USERTYPE4 SHEET STRUCTURE ===")
+        
+        # Find question codes in row 2
+        question_codes_map = {}  # {question_code: column_index}
+        
+        # For UserType4, scan across columns in row 2 to find question codes
+        max_col = usertype4_sheet.max_column or 200
+        debug_print(f"Scanning columns 1 to {max_col} in row 2 for question codes")
+        
+        for col_idx in range(1, max_col + 1):
+            cell_value = usertype4_sheet.cell(2, col_idx).value  # Row 2
+            if cell_value:
+                cell_str = str(cell_value).strip()
+                debug_print(f"Row 2, Column {col_idx} ({chr(64 + col_idx)}): '{cell_str}'")
+                
+                # Check for question codes
+                if maturity_key == "early":
+                    # Early stage: codes like E41411000, E41412000, etc.
+                    if cell_str.startswith('E') and len(cell_str) == 9 and cell_str[1:].isdigit():
+                        question_code = cell_str[1:]  # Remove 'E' prefix
+                        question_codes_map[question_code] = col_idx
+                        debug_print(f"Found early stage question code: {cell_str} -> Q_{question_code} at column {col_idx}")
+                
+                elif maturity_key == "advanced":
+                    # Advanced stage: codes like 41411000, 41412000, etc.
+                    if len(cell_str) == 8 and cell_str.isdigit():
+                        question_code = cell_str
+                        question_codes_map[question_code] = col_idx
+                        debug_print(f"Found advanced stage question code: {cell_str} -> Q_{question_code} at column {col_idx}")
+        
+        debug_print(f"Total question codes found: {len(question_codes_map)}")
+        debug_print(f"Question codes mapping: {question_codes_map}")
+        
+        if not question_codes_map:
+            debug_print("No question codes found in UserType4 sheet row 2")
+            wb.close()
+            return False
+        
+        # Clear existing answers in row 4 onwards for all question columns
+        debug_print("Clearing existing UserType4 answers...")
+        for question_code, col_idx in question_codes_map.items():
+            for row_idx in range(4, 20):  # Clear multiple rows
+                usertype4_sheet.cell(row_idx, col_idx).value = ""
+        
+        answers_filled = 0
+        
+        # Process each question code found in the sheet
+        for question_code, col_idx in question_codes_map.items():
+            question_id = f"Q_{question_code}"
+            debug_print(f"Processing UserTypeIV question {question_id} at column {col_idx}")
+            
+            # Get answer from UserType4 survey data
+            answer = get_usertype4_answer(question_id, matching_records)
+            
+            if answer and answer.strip():
+                # Put answer in row 4
+                answer_cell = usertype4_sheet.cell(4, col_idx)
+                answer_cell.value = answer
+                debug_print(f"Set UserTypeIV answer at column {col_idx} (row 4): {answer}")
+                answers_filled += 1
+            else:
+                debug_print(f"No answer found for {question_id}")
+        
+        debug_print(f"UserTypeIV filling complete - {answers_filled} answers filled")
+        
+        wb.save(excel_path)
+        wb.close()
+        
+        debug_print("UserTypeIV sheet updated successfully")
+        return True
+        
+    except Exception as e:
+        debug_print(f"Error filling UserTypeIV sheet: {e}")
+        import traceback
+        debug_print(f"Full traceback: {traceback.format_exc()}")
+        return False
+    
 def get_usertype2_answer(question_id, usertype2_records):
     """Get answer for a UserTypeII question from the records"""
     debug_print(f"Looking for UserTypeII answer to question: {question_id}")
@@ -673,6 +964,40 @@ def get_usertype2_answer(question_id, usertype2_records):
         answer = find_usertype2_answer_in_record(question_id, record)
         if answer:
             debug_print(f"Found UserTypeII answer for {question_id}: {answer}")
+            return answer
+    
+    debug_print(f"No answer found for {question_id}")
+    return "No answer provided"
+
+def get_usertype3_answer(question_id, usertype3_records):
+    """Get answer for a UserTypeIII question from the records"""
+    debug_print(f"Looking for UserTypeIII answer to question: {question_id}")
+    
+    if not usertype3_records:
+        debug_print(f"No UserTypeIII records available for question {question_id}")
+        return "No answer provided"
+    
+    for record in usertype3_records:
+        answer = find_usertype3_answer_in_record(question_id, record)
+        if answer:
+            debug_print(f"Found UserTypeIII answer for {question_id}: {answer}")
+            return answer
+    
+    debug_print(f"No answer found for {question_id}")
+    return "No answer provided"
+
+def get_usertype4_answer(question_id, usertype4_records):
+    """Get answer for a UserTypeIV question from the records"""
+    debug_print(f"Looking for UserTypeIV answer to question: {question_id}")
+    
+    if not usertype4_records:
+        debug_print(f"No UserTypeIV records available for question {question_id}")
+        return "No answer provided"
+    
+    for record in usertype4_records:
+        answer = find_usertype4_answer_in_record(question_id, record)
+        if answer:
+            debug_print(f"Found UserTypeIV answer for {question_id}: {answer}")
             return answer
     
     debug_print(f"No answer found for {question_id}")
@@ -709,6 +1034,78 @@ def find_usertype2_answer_in_record(question_id, record):
     debug_print(f"No answer found for {question_id} in any path")
     return None
 
+def find_usertype3_answer_in_record(question_id, record):
+    """Find answer for UserTypeIII question ID in a single record"""
+    debug_print(f"Searching for {question_id} in UserTypeIII record...")
+    
+    # Based on the sample data, UserType3 questions are in specific groups
+    possible_paths = [
+        question_id,
+        f"group_beneficialimpact/{question_id}",
+        f"group_risks/{question_id}",
+        f"group_accessibility/{question_id}",
+        f"group_supportiveecosystem/{question_id}",
+        f"group_ethicalinnovation/{question_id}",
+        f"group_cocreationgovernance/{question_id}",
+        f"group_usertype3/{question_id}",
+        f"group_evaluation/{question_id}",
+        f"group_requester/{question_id}",
+        f"group_toolid/{question_id}",
+        f"group_individualinfo/{question_id}",
+        f"group_dra_access/{question_id}",
+        f"group_dra_usage/{question_id}",
+        f"group_dra_skills/{question_id}",
+        f"group_dra_environment/{question_id}"
+    ]
+    
+    for path in possible_paths:
+        if path in record:
+            value = record[path]
+            if value is not None and str(value).strip():
+                processed_answer = process_usertype3_answer(question_id, value)
+                if processed_answer:
+                    debug_print(f"Found UserTypeIII answer for {question_id} at path {path}: {processed_answer}")
+                    return processed_answer
+    
+    debug_print(f"No answer found for {question_id} in any path")
+    return None
+
+def find_usertype4_answer_in_record(question_id, record):
+    """Find answer for UserTypeIV question ID in a single record"""
+    debug_print(f"Searching for {question_id} in UserTypeIV record...")
+    
+    # Based on the sample data, UserType4 questions are in specific groups
+    possible_paths = [
+        question_id,
+        f"group_beneficialimpact/{question_id}",
+        f"group_risks/{question_id}",
+        f"group_accessibility/{question_id}",
+        f"group_supportiveecosystem/{question_id}",
+        f"group_ethicalinnovation/{question_id}",
+        f"group_cocreationgovernance/{question_id}",
+        f"group_usertype4/{question_id}",
+        f"group_evaluation/{question_id}",
+        f"group_requester/{question_id}",
+        f"group_toolid/{question_id}",
+        f"group_individualinfo/{question_id}",
+        f"group_dra_access/{question_id}",
+        f"group_dra_usage/{question_id}",
+        f"group_dra_skills/{question_id}",
+        f"group_dra_environment/{question_id}"
+    ]
+    
+    for path in possible_paths:
+        if path in record:
+            value = record[path]
+            if value is not None and str(value).strip():
+                processed_answer = process_usertype4_answer(question_id, value)
+                if processed_answer:
+                    debug_print(f"Found UserTypeIV answer for {question_id} at path {path}: {processed_answer}")
+                    return processed_answer
+    
+    debug_print(f"No answer found for {question_id} in any path")
+    return None
+
 def process_usertype2_answer(question_id, value):
     """Process the UserTypeII answer - these are typically numeric ratings"""
     if value is None:
@@ -739,6 +1136,62 @@ def process_usertype2_answer(question_id, value):
     question_code = question_id.replace("Q_", "")
     
     # Check if it's a yes/no question (you may need to adjust these based on UserTypeII question types)
+    if value_str.lower() in ['yes', 'y', '1', 'true']:
+        return "Yes"
+    elif value_str.lower() in ['no', 'n', '0', 'false']:
+        return "No"
+    
+    # For multi-select, clean up the formatting
+    if '_' in value_str:
+        items = value_str.replace('_', ' ').split()
+        return ", ".join(items)
+    
+    return value_str
+
+def process_usertype3_answer(question_id, value):
+    """Process the UserTypeIII answer based on question type"""
+    if value is None:
+        return None
+    
+    value_str = str(value).strip()
+    if not value_str:
+        return None
+    
+    if value_str.lower() in ['n/a', 'na', 'not applicable']:
+        return "The Innovator answered that this Question was not Applicable to their Context"
+    
+    # For UserTypeIII, we can use similar processing logic as the main survey
+    question_code = question_id.replace("Q_", "")
+    
+    # Check if it's a yes/no question
+    if value_str.lower() in ['yes', 'y', '1', 'true']:
+        return "Yes"
+    elif value_str.lower() in ['no', 'n', '0', 'false']:
+        return "No"
+    
+    # For multi-select, clean up the formatting
+    if '_' in value_str:
+        items = value_str.replace('_', ' ').split()
+        return ", ".join(items)
+    
+    return value_str
+
+def process_usertype4_answer(question_id, value):
+    """Process the UserTypeIV answer based on question type"""
+    if value is None:
+        return None
+    
+    value_str = str(value).strip()
+    if not value_str:
+        return None
+    
+    if value_str.lower() in ['n/a', 'na', 'not applicable']:
+        return "The Innovator answered that this Question was not Applicable to their Context"
+    
+    # For UserTypeIV, we can use similar processing logic as the main survey
+    question_code = question_id.replace("Q_", "")
+    
+    # Check if it's a yes/no question
     if value_str.lower() in ['yes', 'y', '1', 'true']:
         return "Yes"
     elif value_str.lower() in ['no', 'n', '0', 'false']:
@@ -1560,11 +2013,9 @@ def main():
                 print(f"Warning: PDF generation failed: {e}")
                 print("Excel file was created successfully")
         else:
-            debug_print("=== FULL MODE: Filling UserTypeII sheet + generating all PDFs ===")
+            debug_print("=== FULL MODE: Filling UserTypeII + UserTypeIII + UserTypeIV sheets + generating all PDFs ===")
             
-            # ADD DEBUG CALL HERE
-            debug_usertype2_data(tool_id, maturity_key)
-            
+            # Fill UserTypeII sheet
             debug_print("Filling UserTypeII_Answers sheet...")
             try:
                 usertype2_success = fill_usertype2_sheet(output_path, tool_id, maturity_key)
@@ -1577,6 +2028,34 @@ def main():
             except Exception as e:
                 debug_print(f"UserTypeII sheet filling failed: {e}")
                 print(f"Warning: UserTypeII sheet filling failed: {e}")
+            
+            # Fill UserTypeIII sheet
+            debug_print("Filling UserTypeIII_Answers sheet...")
+            try:
+                usertype3_success = fill_usertype3_sheet(output_path, tool_id, maturity_key)
+                if usertype3_success:
+                    debug_print("UserTypeIII sheet filled successfully!")
+                    print("UserTypeIII sheet filled successfully!")
+                else:
+                    debug_print("UserTypeIII sheet filling failed or no data found")
+                    print("Warning: UserTypeIII sheet filling failed or no data found")
+            except Exception as e:
+                debug_print(f"UserTypeIII sheet filling failed: {e}")
+                print(f"Warning: UserTypeIII sheet filling failed: {e}")
+            
+            # Fill UserTypeIV sheet  
+            debug_print("Filling UserTypeIV_Answers sheet...")
+            try:
+                usertype4_success = fill_usertype4_sheet(output_path, tool_id, maturity_key)
+                if usertype4_success:
+                    debug_print("UserTypeIV sheet filled successfully!")
+                    print("UserTypeIV sheet filled successfully!")
+                else:
+                    debug_print("UserTypeIV sheet filling failed or no data found")
+                    print("Warning: UserTypeIV sheet filling failed or no data found")
+            except Exception as e:
+                debug_print(f"UserTypeIV sheet filling failed: {e}")
+                print(f"Warning: UserTypeIV sheet filling failed: {e}")
                     
             debug_print("Automatically generating all PDFs...")
             try:
