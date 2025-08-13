@@ -26,6 +26,11 @@ SURVEY_FORMS = {
     "project_leader": "afiUqEoYaGMS8RaygTPuAR", 
     "technical_manager": "aqxEbPgQTMQQqe42ZFW2cc"
 }
+# UserTypeII survey forms for different maturity levels
+USERTYPE2_FORMS = {
+    "advanced": "ap6dUEDwX7KUsKLFZUD7kb",
+    "early": "au52CRd6ATzV7S36WcAdDu"
+}
 
 # Second tool ID field for survey forms
 SURVEY_TOOL_ID_FIELD = "Q_13110000"
@@ -512,6 +517,240 @@ def copy_and_fill_template(template_path, output_path, tool_name, tool_id, matur
         debug_print(f"Full traceback: {traceback.format_exc()}")
         raise Exception(f"Excel processing failed: {e}")
 
+
+def fill_usertype2_sheet(excel_path, tool_id, maturity_key):
+    debug_print(f"=== FILLING USERTYPE2 SHEET ===")
+    debug_print(f"Excel path: {excel_path}")
+    debug_print(f"Tool ID: {tool_id}")
+    debug_print(f"Maturity key: {maturity_key}")
+    
+    form_id = USERTYPE2_FORMS.get(maturity_key)
+    if not form_id:
+        debug_print(f"No UserTypeII form ID found for maturity level: {maturity_key}")
+        return False
+    
+    debug_print(f"Using form ID: {form_id}")
+    
+    try:
+        usertype2_data = fetch_kobo_data(form_id)
+        debug_print(f"Fetched {len(usertype2_data)} records from UserTypeII form")
+        
+        matching_records = []
+        possible_fields = [
+            "group_toolid/Q_13110000",
+            "group_requester/Q_13110000",
+            "Q_13110000",
+            "group_requester/Q_1311000"
+        ]
+        
+        for record in usertype2_data:
+            record_tool_id = ""
+            found_in_field = None
+            
+            for field in possible_fields:
+                if field in record and record[field]:
+                    record_tool_id = str(record[field]).strip()
+                    found_in_field = field
+                    break
+            
+            debug_print(f"UserTypeII record ID: '{record_tool_id}' (from field: {found_in_field})")
+            if record_tool_id.lower().strip() == str(tool_id).lower().strip():
+                matching_records.append(record)
+        
+        debug_print(f"Found {len(matching_records)} matching UserTypeII records")
+        
+        if not matching_records:
+            debug_print("No matching UserTypeII records found")
+            return False
+        
+        wb = openpyxl.load_workbook(excel_path, keep_vba=True)
+        
+        usertype2_sheet = None
+        possible_sheet_names = ["UserTypeII_Answers", "UserType2_Answers", "UserType_II_Answers"]
+        
+        for sheet_name in possible_sheet_names:
+            if sheet_name in wb.sheetnames:
+                usertype2_sheet = wb[sheet_name]
+                debug_print(f"Found UserTypeII sheet: {sheet_name}")
+                break
+        
+        if not usertype2_sheet:
+            debug_print("UserTypeII_Answers sheet not found")
+            debug_print(f"Available sheets: {wb.sheetnames}")
+            wb.close()
+            return False
+        
+        # UserType2 has different column layout than main survey
+        # The question codes are in a horizontal layout in row 2
+        # Answers go in row 4 onwards
+        
+        debug_print("=== ANALYZING USERTYPE2 SHEET STRUCTURE ===")
+        
+        # Find question codes in row 2
+        question_codes_map = {}  # {question_code: column_index}
+        
+        # For UserType2, scan across columns in row 2 to find question codes
+        max_col = usertype2_sheet.max_column or 200
+        debug_print(f"Scanning columns 1 to {max_col} in row 2 for question codes")
+        
+        for col_idx in range(1, max_col + 1):
+            cell_value = usertype2_sheet.cell(2, col_idx).value  # Row 2
+            if cell_value:
+                cell_str = str(cell_value).strip()
+                debug_print(f"Row 2, Column {col_idx} ({chr(64 + col_idx)}): '{cell_str}'")
+                
+                # Check for question codes
+                if maturity_key == "early":
+                    # Early stage: codes like E21423000, E21422000, etc.
+                    if cell_str.startswith('E') and len(cell_str) == 9 and cell_str[1:].isdigit():
+                        question_code = cell_str[1:]  # Remove 'E' prefix
+                        question_codes_map[question_code] = col_idx
+                        debug_print(f"Found early stage question code: {cell_str} -> Q_{question_code} at column {col_idx}")
+                
+                elif maturity_key == "advanced":
+                    # Advanced stage: codes like 21424000, 21423000, etc.
+                    if len(cell_str) == 8 and cell_str.isdigit():
+                        question_code = cell_str
+                        question_codes_map[question_code] = col_idx
+                        debug_print(f"Found advanced stage question code: {cell_str} -> Q_{question_code} at column {col_idx}")
+        
+        debug_print(f"Total question codes found: {len(question_codes_map)}")
+        debug_print(f"Question codes mapping: {question_codes_map}")
+        
+        if not question_codes_map:
+            debug_print("No question codes found in UserType2 sheet row 2")
+            wb.close()
+            return False
+        
+        # Clear existing answers in row 4 onwards for all question columns
+        debug_print("Clearing existing UserType2 answers...")
+        for question_code, col_idx in question_codes_map.items():
+            for row_idx in range(4, 20):  # Clear multiple rows
+                usertype2_sheet.cell(row_idx, col_idx).value = ""
+        
+        answers_filled = 0
+        
+        # Process each question code found in the sheet
+        for question_code, col_idx in question_codes_map.items():
+            question_id = f"Q_{question_code}"
+            debug_print(f"Processing UserTypeII question {question_id} at column {col_idx}")
+            
+            # Get answer from UserType2 survey data
+            answer = get_usertype2_answer(question_id, matching_records)
+            
+            if answer and answer.strip():
+                # Put answer in row 4
+                answer_cell = usertype2_sheet.cell(4, col_idx)
+                answer_cell.value = answer
+                debug_print(f"Set UserTypeII answer at column {col_idx} (row 4): {answer}")
+                answers_filled += 1
+            else:
+                debug_print(f"No answer found for {question_id}")
+        
+        debug_print(f"UserTypeII filling complete - {answers_filled} answers filled")
+        
+        wb.save(excel_path)
+        wb.close()
+        
+        debug_print("UserTypeII sheet updated successfully")
+        return True
+        
+    except Exception as e:
+        debug_print(f"Error filling UserTypeII sheet: {e}")
+        import traceback
+        debug_print(f"Full traceback: {traceback.format_exc()}")
+        return False
+
+def get_usertype2_answer(question_id, usertype2_records):
+    """Get answer for a UserTypeII question from the records"""
+    debug_print(f"Looking for UserTypeII answer to question: {question_id}")
+    
+    if not usertype2_records:
+        debug_print(f"No UserTypeII records available for question {question_id}")
+        return "No answer provided"
+    
+    for record in usertype2_records:
+        answer = find_usertype2_answer_in_record(question_id, record)
+        if answer:
+            debug_print(f"Found UserTypeII answer for {question_id}: {answer}")
+            return answer
+    
+    debug_print(f"No answer found for {question_id}")
+    return "No answer provided"
+
+def find_usertype2_answer_in_record(question_id, record):
+    """Find answer for UserTypeII question ID in a single record"""
+    debug_print(f"Searching for {question_id} in UserTypeII record...")
+    
+    # Based on the sample data, UserType2 questions are in specific groups
+    possible_paths = [
+        question_id,
+        f"group_beneficialimpact/{question_id}",
+        f"group_risks/{question_id}",
+        f"group_accessibility/{question_id}",
+        f"group_supportiveecosystem/{question_id}",
+        f"group_ethicalinnovation/{question_id}",
+        f"group_cocreationgovernance/{question_id}",
+        f"group_usertype2/{question_id}",
+        f"group_evaluation/{question_id}",
+        f"group_requester/{question_id}",
+        f"group_toolid/{question_id}"
+    ]
+    
+    for path in possible_paths:
+        if path in record:
+            value = record[path]
+            if value is not None and str(value).strip():
+                processed_answer = process_usertype2_answer(question_id, value)
+                if processed_answer:
+                    debug_print(f"Found UserTypeII answer for {question_id} at path {path}: {processed_answer}")
+                    return processed_answer
+    
+    debug_print(f"No answer found for {question_id} in any path")
+    return None
+
+def process_usertype2_answer(question_id, value):
+    """Process the UserTypeII answer - these are typically numeric ratings"""
+    if value is None:
+        return None
+    
+    value_str = str(value).strip()
+    if not value_str:
+        return None
+    
+    # UserType2 answers are typically numeric ratings (0-5)
+    # Return them as-is since they're already in the correct format
+    debug_print(f"Processing UserType2 answer: '{value_str}'")
+    return value_str
+
+def process_usertype2_answer(question_id, value):
+    """Process the UserTypeII answer based on question type"""
+    if value is None:
+        return None
+    
+    value_str = str(value).strip()
+    if not value_str:
+        return None
+    
+    if value_str.lower() in ['n/a', 'na', 'not applicable']:
+        return "The Innovator answered that this Question was not Applicable to their Context"
+    
+    # For UserTypeII, we can use similar processing logic as the main survey
+    question_code = question_id.replace("Q_", "")
+    
+    # Check if it's a yes/no question (you may need to adjust these based on UserTypeII question types)
+    if value_str.lower() in ['yes', 'y', '1', 'true']:
+        return "Yes"
+    elif value_str.lower() in ['no', 'n', '0', 'false']:
+        return "No"
+    
+    # For multi-select, clean up the formatting
+    if '_' in value_str:
+        items = value_str.replace('_', ' ').split()
+        return ", ".join(items)
+    
+    return value_str
+
 # ==== IMPROVED PDF GENERATION FUNCTION ====
 
 def clean_html_text(html_text):
@@ -576,7 +815,7 @@ def analyze_domain_responses(ws_answers, maturity_key):
             if isinstance(cell_value, str) and cell_value.strip().upper() == flag_value:
                 # Found an X mark, record this row
                 answered_questions.append(row_idx)
-                debug_print(f"  Found X mark at row {row_idx}")
+                # debug_print(f"  Found X mark at row {row_idx}")
         
         if answered_questions:
             domain_responses[domain_name] = {
@@ -1077,26 +1316,122 @@ def generate_standard_pdf(tool_code, excel_path, wb, ws_answers):
     debug_print(f"Created standard PDF: {pdf_path}")
     return True
 
-# ==== MAIN FUNCTION ====
+# Add this enhanced debug function to your main.py
 
+def debug_usertype2_data(tool_id, maturity_key):
+    """Debug function to check UserType2 data availability"""
+    debug_print(f"=== DEBUGGING USERTYPE2 DATA AVAILABILITY ===")
+    debug_print(f"Tool ID: {tool_id}")
+    debug_print(f"Maturity key: {maturity_key}")
+    debug_print(f"Available UserType2 forms: {USERTYPE2_FORMS}")
+    
+    form_id = USERTYPE2_FORMS.get(maturity_key)
+    if not form_id:
+        debug_print(f"❌ No form ID found for maturity '{maturity_key}'")
+        return
+    
+    debug_print(f"Using form ID: {form_id}")
+    
+    try:
+        # Fetch all data from UserType2 form
+        debug_print("Fetching all UserType2 data...")
+        usertype2_data = fetch_kobo_data(form_id)
+        debug_print(f"Total UserType2 records found: {len(usertype2_data)}")
+        
+        if len(usertype2_data) == 0:
+            debug_print("❌ NO UserType2 data found in this form at all!")
+            debug_print("This means no UserType2 evaluations have been submitted yet.")
+            return
+        
+        # Show first few records structure
+        debug_print("=== SAMPLE UserType2 RECORD STRUCTURE ===")
+        if usertype2_data:
+            sample_record = usertype2_data[0]
+            debug_print("Sample record keys (first 20):")
+            keys = list(sample_record.keys())[:20]
+            for i, key in enumerate(keys):
+                debug_print(f"  {i+1}. {key}")
+            
+            if len(keys) > 20:
+                debug_print(f"  ... and {len(sample_record.keys()) - 20} more keys")
+        
+        # Check tool IDs in all records
+        debug_print("=== CHECKING TOOL IDs IN USERTYPE2 RECORDS ===")
+        found_tool_ids = set()
+        possible_fields = [
+            "group_requester/Q_13110000",
+            "Q_13110000", 
+            "group_requester/Q_1311000",
+            "tool_id",
+            "ID"
+        ]
+        
+        for i, record in enumerate(usertype2_data[:10]):  # Check first 10 records
+            record_tool_id = ""
+            found_in_field = None
+            
+            for field in possible_fields:
+                if field in record and record[field]:
+                    record_tool_id = str(record[field]).strip()
+                    found_in_field = field
+                    break
+            
+            debug_print(f"Record {i+1}: Tool ID = '{record_tool_id}' (from field: {found_in_field})")
+            if record_tool_id:
+                found_tool_ids.add(record_tool_id)
+        
+        debug_print(f"=== SUMMARY ===")
+        debug_print(f"Looking for tool ID: '{tool_id}'")
+        debug_print(f"Found tool IDs in UserType2 data: {sorted(found_tool_ids)}")
+        
+        if str(tool_id) in found_tool_ids:
+            debug_print(f"✅ SUCCESS: Tool ID '{tool_id}' found in UserType2 data!")
+        else:
+            debug_print(f"❌ PROBLEM: Tool ID '{tool_id}' NOT found in UserType2 data")
+            debug_print("Possible reasons:")
+            debug_print("1. No UserType2 evaluation submitted for this tool yet")
+            debug_print("2. Tool ID was entered differently in UserType2 form")
+            debug_print("3. Different field name used for tool ID")
+        
+    except Exception as e:
+        debug_print(f"❌ Error debugging UserType2 data: {e}")
+
+# ==== MAIN FUNCTION ====
 def main():
     if len(sys.argv) < 2:
-        debug_print("Usage: python main.py <TOOL_ID> [--pdf-only]")
+        debug_print("Usage: python main.py <TOOL_ID> [--pdf-only|--innovator-only]")
         print("Error: Missing tool ID argument")
         sys.exit(1)
 
     tool_id = sys.argv[1]
-    pdf_only = len(sys.argv) > 2 and sys.argv[2] == "--pdf-only"
+    
+    # Parse mode arguments
+    pdf_only = False
+    innovator_only = False
+    
+    debug_print(f"Command line arguments: {sys.argv}")
+    
+    if len(sys.argv) > 2:
+        mode = sys.argv[2]
+        debug_print(f"Mode argument received: '{mode}'")
+        if mode == "--pdf-only":
+            pdf_only = True
+        elif mode == "--innovator-only":
+            innovator_only = True
+    else:
+        debug_print("No mode argument - running in FULL mode")
     
     debug_print(f"Processing Tool ID: {tool_id}")
     debug_print(f"PDF only mode: {pdf_only}")
+    debug_print(f"Innovator only mode: {innovator_only}")
+    debug_print(f"FULL mode (UserType2 + All PDFs): {not pdf_only and not innovator_only}")
     debug_print(f"Script directory: {SCRIPT_DIR}")
     debug_print(f"Output directory: {OUTPUT_DIR}")
 
     safe_tool_id = tool_id.replace("/", "_").replace("\\", "_").replace(":", "_")
     
     if pdf_only:
-        debug_print("Running in PDF-only mode...")
+        debug_print("=== RUNNING IN PDF-ONLY MODE ===")
         
         excel_path = OUTPUT_DIR / safe_tool_id / "Innovator" / f"{safe_tool_id}_MDII_Toolkit.xlsm"
         
@@ -1133,7 +1468,7 @@ def main():
             wb.close()
             debug_print(f"Detected maturity level: {maturity_key}")
             
-            success = generate_pdfs_from_excel(safe_tool_id, excel_path, maturity_key)  # ADD maturity_key parameter
+            success = generate_pdfs_from_excel(safe_tool_id, excel_path, maturity_key)
             if success:
                 print(f"Domain-specific PDFs generated successfully for tool ID: {tool_id}")
             else:
@@ -1146,7 +1481,7 @@ def main():
         
         return
 
-    debug_print("Running in full processing mode...")
+    debug_print("=== RUNNING IN PROCESSING MODE ===")
     
     missing_templates = []
     for key, path in TEMPLATES.items():
@@ -1208,19 +1543,54 @@ def main():
         debug_print(f"SUCCESS! Excel file created at: {output_path}")
         print(f"Excel file created: {str(output_path)}")
         
-        debug_print("Automatically generating domain-specific PDFs...")
-        try:
-            success = generate_pdfs_from_excel(safe_tool_id, output_path, maturity_key)
-            if success:
-                debug_print("Domain-specific PDFs generated successfully!")
-                print("Domain-specific PDFs generated successfully!")
-            else:
-                debug_print("PDF generation failed, but Excel file was created successfully")
-                print("Warning: PDF generation failed, but Excel file was created successfully")
-        except Exception as e:
-            debug_print(f"PDF generation failed: {e}")
-            print(f"Warning: PDF generation failed: {e}")
-            print("Excel file was created successfully")
+        # Handle different modes
+        if innovator_only:
+            debug_print("=== INNOVATOR-ONLY MODE: Skipping UserTypeII sheet ===")
+            debug_print("Generating domain PDFs only...")
+            try:
+                success = generate_pdfs_from_excel(safe_tool_id, output_path, maturity_key)
+                if success:
+                    debug_print("Domain-specific PDFs generated successfully!")
+                    print("Domain-specific PDFs generated successfully!")
+                else:
+                    debug_print("PDF generation failed, but Excel file was created successfully")
+                    print("Warning: PDF generation failed, but Excel file was created successfully")
+            except Exception as e:
+                debug_print(f"PDF generation failed: {e}")
+                print(f"Warning: PDF generation failed: {e}")
+                print("Excel file was created successfully")
+        else:
+            debug_print("=== FULL MODE: Filling UserTypeII sheet + generating all PDFs ===")
+            
+            # ADD DEBUG CALL HERE
+            debug_usertype2_data(tool_id, maturity_key)
+            
+            debug_print("Filling UserTypeII_Answers sheet...")
+            try:
+                usertype2_success = fill_usertype2_sheet(output_path, tool_id, maturity_key)
+                if usertype2_success:
+                    debug_print("UserTypeII sheet filled successfully!")
+                    print("UserTypeII sheet filled successfully!")
+                else:
+                    debug_print("UserTypeII sheet filling failed or no data found")
+                    print("Warning: UserTypeII sheet filling failed or no data found")
+            except Exception as e:
+                debug_print(f"UserTypeII sheet filling failed: {e}")
+                print(f"Warning: UserTypeII sheet filling failed: {e}")
+                    
+            debug_print("Automatically generating all PDFs...")
+            try:
+                success = generate_pdfs_from_excel(safe_tool_id, output_path, maturity_key)
+                if success:
+                    debug_print("All PDFs generated successfully!")
+                    print("All PDFs generated successfully!")
+                else:
+                    debug_print("PDF generation failed, but Excel file was created successfully")
+                    print("Warning: PDF generation failed, but Excel file was created successfully")
+            except Exception as e:
+                debug_print(f"PDF generation failed: {e}")
+                print(f"Warning: PDF generation failed: {e}")
+                print("Excel file was created successfully")
         
     except Exception as e:
         debug_print(f"Error creating toolkit: {e}")
