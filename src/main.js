@@ -18,7 +18,24 @@ function createWindow() {
     win.loadFile('public/index.html');
     win.webContents.openDevTools(); // Keep this for debugging
 
+    // In your main.js, add logging to see which function is called:
+
+    ipcMain.handle('generateInnovatorExcel', async (event, toolId) => {
+        console.log('*** STEP 1: generateInnovatorExcel called ***');
+        return executePythonScript(toolId, '--innovator-only');
+    });
+
+    ipcMain.handle('generateFullExcel', async (event, toolId) => {
+        console.log('*** STEP 2: generateFullExcel called ***');
+        return executePythonScript(toolId); // Full mode (default)
+    });
+
+    // Keep the old function for backward compatibility
     ipcMain.handle('generateExcel', async (event, toolId) => {
+        return executePythonScript(toolId);
+    });
+
+    function executePythonScript(toolId, mode = null) {
         return new Promise((resolve, reject) => {
             const scriptPath = path.join(__dirname, '..', 'backend', 'main.py');
             
@@ -31,6 +48,13 @@ function createWindow() {
 
             console.log('Executing Python script:', scriptPath);
             console.log('Tool ID:', toolId);
+            console.log('Mode:', mode || 'full');
+
+            // Prepare arguments
+            const args = [scriptPath, toolId];
+            if (mode) {
+                args.push(mode);
+            }
 
             // Try different Python commands in order of preference
             const pythonCommands = ['python', 'python3', 'py'];
@@ -45,10 +69,10 @@ function createWindow() {
                 const pythonCmd = pythonCommands[currentCommandIndex];
                 console.log(`Trying Python command: ${pythonCmd}`);
 
-                const child = spawn(pythonCmd, [scriptPath, toolId], {
+                const child = spawn(pythonCmd, args, {
                     cwd: path.join(__dirname, '..', 'backend'),
                     env: { ...process.env },
-                    shell: true // This helps on Windows
+                    shell: true
                 });
 
                 let stdout = '';
@@ -81,12 +105,9 @@ function createWindow() {
                         const lastLine = lines[lines.length - 1];
                         
                         // Look for the success message with file path
-                        if (lastLine.includes('Success! File created at:') && lines.length > 1) {
-                            const filePath = lines[lines.length - 1];
-                            resolve(filePath.trim());
-                        } else if (stdout.includes('Success!')) {
-                            // Try to extract file path from output
-                            const pathMatch = stdout.match(/([A-Z]:\\[^\\/:*?"<>|]+\\[^\\/:*?"<>|]*\.xlsm)/i);
+                        if (lastLine.includes('Excel file created:') || lastLine.includes('Success!')) {
+                            const pathMatch = stdout.match(/([A-Z]:\\[^\\/:*?"<>|]+\\[^\\/:*?"<>|]*\.xlsm)/i) || 
+                                            stdout.match(/(\/[^\\/:*?"<>|]+\/[^\\/:*?"<>|]*\.xlsm)/i);
                             if (pathMatch) {
                                 resolve(pathMatch[1]);
                             } else {
@@ -105,7 +126,7 @@ function createWindow() {
 
             tryNextPythonCommand();
         });
-    });
+    }
 
     ipcMain.handle('openFile', async (event, filePath) => {
         const { shell } = require('electron');

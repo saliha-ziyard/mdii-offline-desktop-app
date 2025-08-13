@@ -55,9 +55,16 @@ const UserTypeCompilationPage = ({
                     </button>
 
                     {status && (
-                        <p className={`status-message ${status.includes("Error") ? "error" : "success"}`}>
+                        <div className={`status-message ${status.includes("Error") ? "error" : "success"}`}>
                             {status}
-                        </p>
+                            {status.includes("UserTypeII") && (
+                                <div className="sub-status">
+                                    ✓ Innovator Answers sheet filled<br/>
+                                    ✓ UserTypeII Answers sheet filled<br/>
+                                    ✓ PDF reports generated
+                                </div>
+                            )}
+                        </div>
                     )}
 
                     {filePath && (

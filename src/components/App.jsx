@@ -20,6 +20,63 @@ const App = () => {
         }
     }, []);
 
+    // Step 1: Generate Innovator Excel + Domain PDFs only
+    const handleGenerateInnovatorExcel = async () => {
+        if (!toolId) {
+            setStatus("Please enter a Tool ID");
+            return;
+        }
+
+        if (!window.electronAPI?.generateInnovatorExcel) {
+            setStatus("Error: Electron API not available");
+            return;
+        }
+
+        setIsLoading(true);
+        setStatus("Generating Innovator Excel file and domain PDFs...");
+        
+        try {
+            const result = await window.electronAPI.generateInnovatorExcel(toolId);
+            setStatus("Innovator Excel file and domain PDFs generated successfully!");
+            setFilePath(result);
+            setShowSuccessMessage(true);
+        } catch (error) {
+            console.error("Excel generation error:", error);
+            setStatus(`Error: ${error}`);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Step 2: Generate Full Excel (Innovator + UserType2) + All PDFs
+    const handleGenerateFullExcel = async () => {
+        if (!toolId) {
+            setStatus("Please enter a Tool ID");
+            return;
+        }
+
+        if (!window.electronAPI?.generateFullExcel) {
+            setStatus("Error: Electron API not available");
+            return;
+        }
+
+        setIsLoading(true);
+        setStatus("Generating complete Excel file with all sheets and PDFs...");
+        
+        try {
+            const result = await window.electronAPI.generateFullExcel(toolId);
+            setStatus("Complete Excel file and all PDFs generated successfully!");
+            setFilePath(result);
+            setShowSuccessMessage(true);
+        } catch (error) {
+            console.error("Excel generation error:", error);
+            setStatus(`Error: ${error}`);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Legacy function for backward compatibility
     const handleGenerateExcel = async () => {
         if (!toolId) {
             setStatus("Please enter a Tool ID");
@@ -63,7 +120,7 @@ const App = () => {
                 <CompilationPage
                     toolId={toolId}
                     setToolId={setToolId}
-                    handleGenerateExcel={handleGenerateExcel}
+                    handleGenerateExcel={handleGenerateInnovatorExcel} 
                     status={status}
                     filePath={filePath}
                     handleOpenFile={handleOpenFile}
@@ -75,7 +132,7 @@ const App = () => {
                 <UserTypeCompilationPage
                     toolId={toolId}
                     setToolId={setToolId}
-                    handleGenerateExcel={handleGenerateExcel}
+                    handleGenerateExcel={handleGenerateFullExcel} 
                     status={status}
                     filePath={filePath}
                     handleOpenFile={handleOpenFile}
