@@ -1,4 +1,5 @@
 import React from "react";
+import Header from "./Header";
 import { BsBoxSeam } from "react-icons/bs";
 import { GoBook } from "react-icons/go";
 import { IoSettingsOutline } from "react-icons/io5";
@@ -12,6 +13,8 @@ import { FaArrowRightLong } from "react-icons/fa6";
 
 const MainDashboard = ({ setCurrentPage }) => {
   return (
+    <>
+    <Header />
     <div className="dashboard-container">
       <div className="main-dashboard">
         <div className="heading-main">
@@ -289,6 +292,7 @@ const MainDashboard = ({ setCurrentPage }) => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
