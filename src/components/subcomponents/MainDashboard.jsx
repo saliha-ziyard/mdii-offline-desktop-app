@@ -187,13 +187,14 @@ const MainDashboard = ({ setCurrentPage }) => {
               </button>
 
               <button
-                className="quick-access-btn start-evaluation"
-                onClick={() => setCurrentPage("compilation")}
-              >
+                className="quick-access-btn start-evaluation"              >
                 <span className="btn-icon">
                   <GrNotes />
                 </span>
-                <div className="btn-content">
+                <div 
+                  className="btn-content" 
+                  onClick={() => window.open("https://ee.kobotoolbox.org/x/BQdcE4hj", "_blank")}
+                >
                   <span className="btn-title">Start Evaluation</span>
                   <span className="btn-subtitle">
                     Submit an Evaluation Request
@@ -220,7 +221,9 @@ const MainDashboard = ({ setCurrentPage }) => {
                 </span>
               </button>
 
-              <button className="quick-access-btn get-pdfs">
+              <button className="quick-access-btn get-pdfs"
+                onClick={() => setCurrentPage("compilation")}
+              >
                 <span className="btn-icon">
                   <GrNotes />
                 </span>
