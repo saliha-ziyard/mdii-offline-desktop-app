@@ -116,7 +116,6 @@ const App = () => {
 
   return (
     <>
-      <Header />
       {currentPage === "home" ? (
         <MainDashboard setCurrentPage={setCurrentPage} />
       ) : currentPage === "howItWorks" ? (
