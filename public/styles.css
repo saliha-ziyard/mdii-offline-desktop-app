@@ -510,14 +510,14 @@ hr {
 
 .hiw-content .section .section-header p {
   font-size: 14px;
-  color: var(--font-grey);
+  color: #000;
   margin: 0;
 }
 
 .hiw-content .section > p {
   padding: 20px;
   margin: 0;
-  color: var(--font-grey);
+  color: #000;
   font-size: 16px;
 }
 
@@ -545,7 +545,7 @@ hr {
 
 .hiw-content .feature span {
   font-size: 14px;
-  color: var(--font-grey);
+  color: #000;
 }
 
 .hiw-content .section .steps {
@@ -639,398 +639,352 @@ hr {
 
 
 
-/* Navigation */
-.navigation {
-  padding: 20px 40px;
-  background-color: #f8f9fa;
+.innovator-container {
+  min-height: 100vh;
+  background: #fff;
+  position: relative;
 }
 
-.back-button {
-  display: flex;
-  align-items: center;
-  background: none;
+.innovator-back-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.05);
   border: none;
-  font-size: 16px;
-  color: #374151;
-  cursor: pointer;
-  padding: 8px 0;
-  transition: color 0.2s;
-}
-
-.back-button:hover {
-  color: #8b5cf6;
-}
-
-.back-arrow {
-  margin-right: 8px;
-}
-
-.page-title {
-  font-size: 32px;
-  font-weight: 700;
-  color: #1f2937;
-  margin: 20px 0 0 0;
-}
-
-/* Home Page Styles */
-.main-content {
+  border-radius: 8px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 200px);
-  padding: 40px 20px;
-}
-
-.logo-container {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 24px;
-}
-
-.logo {
-  max-width: 120px; /* Adjust based on your logo size */
-  height: auto;
-  transition: transform 0.2s;
-}
-
-.logo:hover {
-  transform: scale(1.05);
-}
-
-.welcome-title {
-  font-size: 48px;
-  font-weight: 700;
-  color: #1f2937;
-  text-align: center;
-  margin-bottom: 24px;
-  line-height: 1.1;
-}
-
-.welcome-description {
-  font-size: 18px;
-  color: #6b7280;
-  text-align: center;
-  max-width: 600px;
-  margin-bottom: 48px;
-  line-height: 1.6;
-}
-
-.accent-line {
-  width: 80px;
-  height: 4px;
-  background-color: #10b981;
-  margin-bottom: 48px;
-  border-radius: 2px;
-}
-
-.button-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 24px;
-  max-width: 1000px;
-  width: 100%;
-}
-
-/* Action Cards */
-.action-card {
-  border-radius: 16px;
-  padding: 32px 24px;
-  text-align: center;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background 0.2s;
+  z-index: 10;
 }
 
-.action-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+.innovator-back-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
 }
 
-.purple-card {
-  background-color: #8b5cf6;
+.innovator-back-btn svg {
+  font-size: 18px;
+  color: var(--font-grey);
 }
 
-.green-card {
-  background-color: #10b981;
+.innovator-content {
+  max-width: 1200px;
+  margin: auto;
+  margin-top: 40px;
+  padding: 32px;
 }
 
-.cyan-card {
-  background-color: #06b6d4;
-}
-
-.orange-card {
-  background-color: #f59e0b;
-}
-
-.card-icon {
+.innovator-content h1 {
   font-size: 32px;
-  margin-bottom: 16px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 8px;
+  text-align: center;
 }
 
-.card-title {
-  color: white;
+.innovator-subtitle {
+  font-size: 16px;
+  color: var(--font-grey);
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.innovator-section {
+  background: #fff;
+  border: 1px solid var(--border-colour);
+  border-radius: var(--border-radius);
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.innovator-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  border-bottom: 1px solid var(--border-colour);
+}
+
+.innovator-section-header svg {
+  font-size: 20px;
+  color: var(--tertiary-color);
+}
+
+.innovator-section-header h2 {
   font-size: 20px;
   font-weight: 600;
-  margin-bottom: 8px;
-  margin: 0 0 8px 0;
+  color: #000;
+  margin: 0 0 4px 0;
 }
 
-.card-description {
-  color: rgba(255, 255, 255, 0.8);
+.innovator-section-header p {
   font-size: 14px;
+  color: #000;
   margin: 0;
 }
 
-/* Compilation Page Styles */
-.compilation-content {
-  padding: 40px;
-  display: flex;
-  justify-content: center;
+.innovator-form-content, .innovator-success-content {
+  padding: 20px;
 }
 
-.compilation-form {
-  background-color: #fff;
-  border-radius: 16px;
-  padding: 40px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-width: 1000px;
+.innovator-input-group {
+  margin-bottom: 20px;
+}
+
+.innovator-input-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 8px;
+}
+
+.innovator-tool-input, .innovator-tool-input-display {
   width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-colour);
+  border-radius: var(--border-radius);
+  font-size: 15px;
+  color: #000;
+  background: var(--bg-grey);
 }
 
-.form-header {
+.innovator-tool-input:focus {
+  outline: none;
+  border-color: var(--tertiary-color);
+}
+
+.innovator-tool-input-display {
+  background: var(--light-tertiary-color);
+  border-color: var(--tertiary-color);
+}
+
+.innovator-tip {
   display: flex;
   align-items: center;
-  margin-bottom: 32px;
+  gap: 6px;
+  font-size: 12px;
+  color: #666;
+  margin-top: 8px;
 }
 
-.form-icon {
-  font-size: 24px;
-  margin-right: 12px;
-  color: #8b5cf6;
+.innovator-tip svg {
+  font-size: 12px;
+  color: var(--tertiary-color);
 }
 
-.form-title {
-  font-size: 24px;
-  font-weight: 600;
-  color: #1f2937;
-  margin: 0;
-}
-
-/* Form Elements */
-.input-group {
-  margin-bottom: 24px;
-}
-
-.input-label {
-  display: block;
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #374151;
-}
-
-.tool-input {
+.innovator-generate-button {
   width: 100%;
-  padding: 12px 16px;
-  font-size: 16px;
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
-  outline: none;
-  transition: border-color 0.2s;
-  box-sizing: border-box;
-}
-
-.tool-input:focus {
-  border-color: #8b5cf6;
-}
-
-/* Buttons */
-.generate-button {
-  width: 100%;
-  padding: 16px 24px;
-  font-size: 16px;
-  font-weight: 600;
-  background-color: #8b5cf6;
-  color: white;
+  padding: 12px;
+  background: var(--tertiary-color);
+  color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
-  margin-bottom: 24px;
+  transition: background 0.2s;
 }
 
-.generate-button:hover:not(.disabled) {
-  background-color: #7c3aed;
+.innovator-generate-button:hover {
+  background: #0a8f5e;
 }
 
-.generate-button.disabled {
-  background-color: #d1d5db;
+.innovator-generate-button.disabled {
+  background: #ccc;
   cursor: not-allowed;
 }
 
-.open-file-button {
+.innovator-loading-bar-container {
   width: 100%;
-  padding: 16px 24px;
+  height: 6px;
+  background: var(--bg-grey);
+  border-radius: var(--border-radius);
+  margin-top: 12px;
+  overflow: hidden;
+}
+
+.innovator-loading-bar {
+  height: 100%;
+  background: var(--tertiary-color);
+  transition: width 0.3s ease-in-out;
+}
+
+.innovator-status-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  margin-top: 16px;
+  border-radius: var(--border-radius);
+  font-size: 14px;
+}
+
+.innovator-status-message.success {
+  background: var(--light-tertiary-color);
+  border: 1px solid var(--tertiary-color);
+}
+
+.innovator-status-message.error {
+  background: #fee2e2;
+  border: 1px solid #ef4444;
+}
+
+.innovator-status-icon {
+  display: none;
   font-size: 16px;
-  font-weight: 600;
-  background-color: #10b981;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s;
 }
 
-.open-file-button:hover {
-  background-color: #059669;
+.innovator-status-message.success .innovator-success-icon {
+  display: block;
+  color: var(--tertiary-color);
 }
 
-/* Status Messages */
-.status-message {
-  font-weight: 500;
-  text-align: center;
-  margin: 16px 0;
-}
-
-.status-message.error {
+.innovator-status-message.error .innovator-error-icon {
+  display: block;
   color: #ef4444;
 }
 
-.status-message.success {
-  color: #10b981;
+.innovator-file-actions {
+  margin-top: 20px;
 }
 
-/* File Actions */
-.file-actions {
-  margin-top: 24px;
-}
-
-.file-path {
-  font-size: 12px;
-  color: #6b7280;
-  margin-top: 8px;
-  text-align: center;
-}
-/* Additional styles for success message view - Add these to your existing CSS */
-
-/* Tool Input Display (readonly state) */
-.tool-input-display {
-  width: 100%;
-  padding: 12px 16px;
-  font-size: 16px;
-  background-color: #f3f4f6;
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
-  color: #374151;
-  box-sizing: border-box;
-}
-
-/* Compilation Details Section */
-.compilation-details {
-  background-color: #f3f4f6;
-  padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 24px;
-}
-
-.details-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 12px;
-}
-
-.details-description {
-  font-size: 14px;
-  color: #6b7280;
-  margin-bottom: 16px;
-  line-height: 1.5;
-}
-
-.file-info {
-  font-size: 14px;
-  color: #6b7280;
-}
-
-.file-info p {
-  margin-bottom: 4px;
-}
-
-/* Next Steps Box */
-.next-steps-box {
-  background-color: #fffbeb;
-  border-left: 4px solid #f59e0b;
-  padding: 20px;
-  border-radius: 0 8px 8px 0;
-}
-
-.next-steps-header {
+.innovator-open-file-button {
   display: flex;
-  align-items: flex-start;
-}
-
-.next-steps-icon {
-  font-size: 20px;
-  color: #d97706;
-  margin-right: 12px;
-  flex-shrink: 0;
-}
-
-.next-steps-content {
-  flex: 1;
-}
-
-.next-steps-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 12px;
-}
-
-.next-steps-description {
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: var(--light-tertiary-color);
+  border: 1px solid var(--tertiary-color);
+  border-radius: var(--border-radius);
   font-size: 14px;
-  color: #6b7280;
+  color: #000;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.innovator-open-file-button:hover {
+  background: var(--tertiary-color);
+  color: #fff;
+}
+
+.innovator-open-file-button svg {
+  font-size: 16px;
+}
+
+.innovator-file-path {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--font-grey);
+  margin-top: 12px;
+}
+
+.innovator-file-path svg {
+  font-size: 14px;
+  color: var(--tertiary-color);
+}
+
+.innovator-success-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 16px;
-  line-height: 1.5;
 }
 
-/* Email Template */
-.email-template {
-  background-color: #fff;
-  border: 1px solid #e5e7eb;
+.innovator-success-header svg {
+  font-size: 20px;
+  color: var(--tertiary-color);
+}
+
+.innovator-success-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+  margin: 0;
+}
+
+.innovator-compilation-details {
   padding: 16px;
-  border-radius: 6px;
+  background: var(--light-secondary-colour);
+  border: 1px solid var(--secondary-colour);
+  border-radius: var(--border-radius);
+  margin-bottom: 20px;
 }
 
-.email-subject {
-  font-size: 14px;
-  font-weight: 500;
-  color: #374151;
+.innovator-compilation-details p {
+  margin: 0 0 12px 0;
+  font-size: 15px;
+  color: var(--font-grey);
+}
+
+.innovator-file-info {
+  font-size: 13px;
+  color: var(--font-grey);
+}
+
+.innovator-file-info p {
+  margin: 4px 0;
+}
+
+.innovator-next-steps {
+  padding: 16px;
+  background: var(--bg-grey);
+  border: 1px solid var(--border-colour);
+  border-radius: var(--border-radius);
+}
+
+.innovator-step-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 12px;
 }
 
-.email-body {
+.innovator-step-header svg {
+  font-size: 16px;
+  color: var(--tertiary-color);
+}
+
+.innovator-step-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+  margin: 0;
+}
+
+.innovator-next-steps p {
+  font-size: 15px;
+  color: var(--font-grey);
+  margin: 0 0 12px 0;
+}
+
+.innovator-email-template {
+  padding: 12px;
+  background: #fff;
+  border: 1px solid var(--border-colour);
+  border-radius: var(--border-radius);
+}
+
+.innovator-email-subject {
   font-size: 14px;
-  color: #6b7280;
+  color: #000;
+  margin: 0 0 8px 0;
 }
 
-.email-body p {
-  margin-bottom: 8px;
-  line-height: 1.5;
+.innovator-email-body {
+  font-size: 13px;
+  color: var(--font-grey);
 }
 
-.email-body p:last-child {
-  margin-bottom: 0;
+.innovator-email-body p {
+  margin: 4px 0;
 }
-
-/* Success View Modifications */
-.success-view .generate-button {
-  display: none; /* Hide the generate button in success view */
-}
-
-
 /* Footer */
 .footer {
   text-align: center;
