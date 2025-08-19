@@ -26,6 +26,21 @@ const App = () => {
     }
   }, []);
 
+  // Reset state when changing pages
+  const resetState = () => {
+    setStatus("");
+    setFilePath("");
+    setShowSuccessMessage(false);
+    setIsLoading(false);
+    setToolId(""); // Reset toolId so each page starts fresh
+  };
+
+  // Handle page changes with state reset
+  const handlePageChange = (page) => {
+    resetState();
+    setCurrentPage(page);
+  };
+
   // Step 1: Generate Innovator Excel + Domain PDFs only
   const handleGenerateInnovatorExcel = async () => {
     if (!toolId) {
@@ -119,11 +134,11 @@ const App = () => {
   return (
     <>
       {currentPage === "home" ? (
-        <MainDashboard setCurrentPage={setCurrentPage} />
+        <MainDashboard setCurrentPage={handlePageChange} />
       ) : currentPage === "howItWorks" ? (
-        <HowItWorksGuide setCurrentPage={setCurrentPage} />
+        <HowItWorksGuide setCurrentPage={handlePageChange} />
       ) : currentPage === "assignExperts" ? (
-        <AssignExpertsPage setCurrentPage={setCurrentPage} />
+        <AssignExpertsPage setCurrentPage={handlePageChange} />
       ) : currentPage === "compilation" ? (
         <CompilationPage
           toolId={toolId}
@@ -133,7 +148,7 @@ const App = () => {
           filePath={filePath}
           handleOpenFile={handleOpenFile}
           isLoading={isLoading}
-          setCurrentPage={setCurrentPage}
+          setCurrentPage={handlePageChange}
           showSuccessMessage={showSuccessMessage}
         />
       ) : currentPage === "userTypeCompilation" ? (
@@ -145,7 +160,7 @@ const App = () => {
           filePath={filePath}
           handleOpenFile={handleOpenFile}
           isLoading={isLoading}
-          setCurrentPage={setCurrentPage}
+          setCurrentPage={handlePageChange}
           showSuccessMessage={showSuccessMessage}
         />
       ) : null}

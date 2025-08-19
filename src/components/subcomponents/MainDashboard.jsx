@@ -11,7 +11,7 @@ import { BsExclamationCircle } from "react-icons/bs";
 import { IoMdLink } from "react-icons/io";
 import { FaArrowRightLong } from "react-icons/fa6";
 
-const MainDashboard = ({ setCurrentPage }) => {
+const MainDashboard = ({ setCurrentPage: handlePageChange }) => {
   return (
     <>
     <Header />
@@ -172,7 +172,7 @@ const MainDashboard = ({ setCurrentPage }) => {
             <div className="quick-access-buttons">
               <button
                 className="quick-access-btn"
-                onClick={() => setCurrentPage("howItWorks")}
+                onClick={() => handlePageChange("howItWorks")}
               >
                 <span className="btn-icon">
                   <GoBook />
@@ -187,14 +187,13 @@ const MainDashboard = ({ setCurrentPage }) => {
               </button>
 
               <button
-                className="quick-access-btn start-evaluation"              >
+                className="quick-access-btn start-evaluation"
+                onClick={() => window.open("https://ee.kobotoolbox.org/x/BQdcE4hj", "_blank")}
+              >
                 <span className="btn-icon">
                   <GrNotes />
                 </span>
-                <div 
-                  className="btn-content" 
-                  onClick={() => window.open("https://ee.kobotoolbox.org/x/BQdcE4hj", "_blank")}
-                >
+                <div className="btn-content">
                   <span className="btn-title">Start Evaluation</span>
                   <span className="btn-subtitle">
                     Submit an Evaluation Request
@@ -207,14 +206,12 @@ const MainDashboard = ({ setCurrentPage }) => {
 
               <button
                 className="quick-access-btn assign-experts"
-                onClick={() => setCurrentPage("assignExperts")}
+                onClick={() => handlePageChange("assignExperts")}
               >
                 <span className="btn-icon">
                   <HiOutlineUserGroup />
                 </span>
-                <div className="btn-content"
-                  onClick={() => setCurrentPage("userTypeCompilation")}
-                >
+                <div className="btn-content">
                   <span className="btn-title">Assign Experts</span>
                   <span className="btn-subtitle">Choose domain experts</span>
                 </div>
@@ -223,8 +220,9 @@ const MainDashboard = ({ setCurrentPage }) => {
                 </span>
               </button>
 
-              <button className="quick-access-btn get-pdfs"
-                onClick={() => setCurrentPage("compilation")}
+              <button 
+                className="quick-access-btn get-pdfs"
+                onClick={() => handlePageChange("compilation")}
               >
                 <span className="btn-icon">
                   <GrNotes />
@@ -255,13 +253,14 @@ const MainDashboard = ({ setCurrentPage }) => {
                 </span>
               </button>
 
-              <button className="quick-access-btn mdii-report">
+              <button 
+                className="quick-access-btn mdii-report"
+                onClick={() => handlePageChange("userTypeCompilation")}
+              >
                 <span className="btn-icon">
                   <VscGraph />
                 </span>
-                <div className="btn-content"
-                  onClick={() => setCurrentPage("userTypeCompilation")}
-                >
+                <div className="btn-content">
                   <span className="btn-title">Get MDII Report</span>
                   <span className="btn-subtitle">
                     View scores and recommendations
