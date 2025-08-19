@@ -1335,8 +1335,7 @@ def generate_pdfs_from_excel(tool_code, excel_path, maturity_key):
         return False
     
     safe_tool_id = tool_code.replace("/", "_").replace("\\", "_").replace(":", "_")
-    output_root = OUTPUT_DIR / safe_tool_id / "PDF_Reports"
-    pdf_dir = output_root / "PDF"
+    pdf_dir = OUTPUT_DIR / safe_tool_id / "PDF" 
     pdf_dir.mkdir(parents=True, exist_ok=True)
     
     try:
@@ -1746,8 +1745,7 @@ def generate_standard_pdf(tool_code, excel_path, wb, ws_answers):
     debug_print("Generating standard fallback PDF")
     
     safe_tool_id = tool_code.replace("/", "_").replace("\\", "_").replace(":", "_")
-    output_root = OUTPUT_DIR / safe_tool_id / "PDF_Reports"
-    pdf_dir = output_root / "PDF"
+    pdf_dir = OUTPUT_DIR / safe_tool_id / "PDF"  # Simplified to OUTPUT_DIR/tool_id/PDF
     pdf_dir.mkdir(parents=True, exist_ok=True)
     
     styles = getSampleStyleSheet()
@@ -1886,8 +1884,8 @@ def main():
     if pdf_only:
         debug_print("=== RUNNING IN PDF-ONLY MODE ===")
         
-        excel_path = OUTPUT_DIR / safe_tool_id / "Innovator" / f"{safe_tool_id}_MDII_Toolkit.xlsm"
-        
+        excel_path = OUTPUT_DIR / safe_tool_id / f"{safe_tool_id}_MDII_Toolkit.xlsm"
+
         if not excel_path.exists():
             excel_path = Path.home() / "Documents" / f"output_{safe_tool_id}.xlsm"
         
@@ -1986,7 +1984,7 @@ def main():
     template_path = TEMPLATES[maturity_key]
     tool_name = record.get(TOOL_NAME_FIELD, "Unknown Tool")
     
-    tool_folder = OUTPUT_DIR / safe_tool_id / "Innovator"
+    tool_folder = OUTPUT_DIR / safe_tool_id  
     tool_folder.mkdir(parents=True, exist_ok=True)
 
     output_path = tool_folder / f"{safe_tool_id}_MDII_Toolkit.xlsm"
