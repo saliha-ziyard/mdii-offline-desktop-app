@@ -1,147 +1,190 @@
-import React from "react";
-import Header from "./Header";
+import React, { useState, useEffect } from "react";
+import { GoArrowLeft, GoBook } from "react-icons/go";
+import { BsCheckCircle, BsExclamationTriangle } from "react-icons/bs";
+import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 
 const UserTypeCompilationPage = ({
-    toolId,
-    setToolId,
-    handleGenerateExcel,
-    status,
-    filePath,
-    handleOpenFile,
-    isLoading,
-    setCurrentPage,
-    showSuccessMessage = false // Add this prop
-}) => (
-    <div className="app-container">
-        <Header />
+  toolId,
+  setToolId,
+  handleGenerateExcel,
+  status,
+  filePath,
+  handleOpenFile,
+  isLoading,
+  setCurrentPage,
+  showSuccessMessage = false
+}) => {
+  const [progress, setProgress] = useState(0);
 
-        <div className="navigation">
-            <button onClick={() => setCurrentPage("home")} className="back-button">
-                <span className="back-arrow">←</span>
-                Back to Home
-            </button>
-            <h1 className="page-title">After all Evaluations</h1>
-        </div>
+    useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, []);
 
-        <div className="compilation-content">
-            {!showSuccessMessage ? (
-                // Original form
-                <div className="compilation-form">
-                    <div className="form-header">
-                        <div className="form-icon">📄</div>
-                        <h2 className="form-title">Generate Final Reports</h2>
-                    </div>
+  useEffect(() => {
+    let interval;
+    if (isLoading) {
+      setProgress(5); // Start at 5%
+      interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 95) {
+            return prev; // Stop at 95% to avoid reaching 100% prematurely
+          }
+          return prev + Math.random() * 10; // Increment by random small steps
+        });
+      }, 300);
+    } else {
+      setProgress(0); // Reset progress when not loading
+    }
+    return () => clearInterval(interval);
+  }, [isLoading]);
 
-                    <div className="input-group">
-                        <label className="input-label" htmlFor="tool-input">
-                            Tool Code for Compilation
-                        </label>
-                        <input
-                            id="tool-input"
-                            type="text"
-                            value={toolId}
-                            onChange={(e) => setToolId(e.target.value)}
-                            placeholder="Enter tool code"
-                            className="tool-input"
-                        />
-                    </div>
+  return (
+    <div className="innovator-container">
+      <button onClick={() => setCurrentPage("home")} className="back-btn">
+        <GoArrowLeft />
+      </button>
 
-                    <button
-                        onClick={handleGenerateExcel}
-                        disabled={isLoading}
-                        className={`generate-button ${isLoading ? "disabled" : ""}`}
-                    >
-                        {isLoading ? "Generating..." : "Generate Compilation"}
-                    </button>
+      <div className="innovator-content">
+        <h1>After All Evaluations</h1>
+        <p className="innovator-subtitle">Generate final reports with all evaluation data</p>
 
-                    {status && (
-                        <div className={`status-message ${status.includes("Error") ? "error" : "success"}`}>
-                            {status}
-                            {status.includes("UserTypeII") && (
-                                <div className="sub-status">
-                                    ✓ Innovator Answers sheet filled<br/>
-                                    ✓ UserTypeII Answers sheet filled<br/>
-                                    ✓ PDF reports generated
-                                </div>
-                            )}
-                        </div>
-                    )}
+        <section className="innovator-section">
+          <div className="innovator-section-header">
+            <HiOutlineClipboardDocumentList />
+            <div>
+              <h2>Generate Final Reports</h2>
+              <p>Enter your tool code to generate comprehensive Excel reports</p>
+            </div>
+          </div>
 
-                    {filePath && (
-                        <div className="file-actions">
-                            <button onClick={handleOpenFile} className="open-file-button">
-                                Open Generated File
-                            </button>
-                            <p className="file-path">File saved to: {filePath}</p>
-                        </div>
-                    )}
+          {!showSuccessMessage ? (
+            <div className="innovator-form-content">
+              <div className="innovator-input-group">
+                <label htmlFor="tool-input" className="innovator-input-label">
+                  Tool Code
+                </label>
+                <input
+                  id="tool-input"
+                  type="text"
+                  value={toolId}
+                  onChange={(e) => setToolId(e.target.value)}
+                  placeholder="Enter tool code (e.g., MDII-WCL-030625)"
+                  className="innovator-tool-input"
+                />
+                <div className="innovator-tip">
+                  <BsCheckCircle />
+                  <span>Codes are case-sensitive and typically start with "MDII"</span>
                 </div>
-            ) : (
-                // Success message
-                <div className="compilation-form">
-                    <div className="form-header">
-                        <div className="form-icon">📄</div>
-                        <h2 className="form-title">Generate Innovator Compilation</h2>
-                    </div>
+              </div>
 
-                    <div className="input-group">
-                        <label className="input-label">
-                            Tool Code for Compilation
-                        </label>
-                        <div className="tool-input-display">
-                            {toolId || "MDII-WCL-030625"}
-                        </div>
-                    </div>
+              <button
+                onClick={handleGenerateExcel}
+                disabled={isLoading}
+                className={`innovator-generate-button ${isLoading ? "disabled" : ""}`}
+              >
+                {isLoading ? "Generating..." : "Generate Compilation"}
+              </button>
 
-                    <div className="compilation-details">
-                        <h3 className="details-title">Compilation Details</h3>
-                        <p className="details-description">
-                            The Excel file has been generated with the latest data from Kobo Toolbox.
+              {isLoading && (
+                <div className="innovator-loading-bar-container">
+                  <div
+                    className="innovator-loading-bar"
+                    style={{ width: `${progress}%` }}
+                  ></div>
+                </div>
+              )}
+
+              {status && (
+                <div className={`innovator-status-message ${status.includes("Error") ? "error" : "success"}`}>
+                  <BsExclamationTriangle className="innovator-status-icon innovator-error-icon" />
+                  <BsCheckCircle className="innovator-status-icon innovator-success-icon" />
+                  <span>{status}</span>
+                  {status.includes("UserTypeII") && (
+                    <div className="innovator-sub-status">
+                      <span>✓ Innovator Answers sheet filled</span>
+                      <span>✓ UserTypeII Answers sheet filled</span>
+                      <span>✓ PDF reports generated</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {filePath && (
+                <div className="innovator-file-actions">
+                  <button onClick={handleOpenFile} className="innovator-open-file-button">
+                    <HiOutlineClipboardDocumentList />
+                    Open Generated File
+                  </button>
+                  <p className="innovator-file-path">
+                    <GoBook />
+                    File saved to: {filePath}
+                  </p>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="innovator-success-content">
+              <div className="innovator-success-header">
+                <BsCheckCircle />
+                <h3>Compilation Successfully Generated</h3>
+              </div>
+              <div className="innovator-compilation-details">
+                <p className="details-description">
+                  The Excel file has been generated with the latest data from Kobo Toolbox.
+                </p>
+                <div className="innovator-file-info">
+                  <p>
+                    <strong>File:</strong> output_{toolId || "MDII-WCL-030625"}.xlsx
+                  </p>
+                  <p>
+                    <strong>Generated:</strong> {new Date().toLocaleString()}
+                  </p>
+                </div>
+              </div>
+
+              {filePath && (
+                <div className="innovator-file-actions">
+                  <button onClick={handleOpenFile} className="innovator-open-file-button">
+                    <HiOutlineClipboardDocumentList />
+                    Open Generated File
+                  </button>
+                  <p className="innovator-file-path">
+                    <GoBook />
+                    File saved to: {filePath}
+                  </p>
+                </div>
+              )}
+
+              <div className="innovator-next-steps">
+                <div className="innovator-next-steps-header">
+                  <HiOutlineClipboardDocumentList className="next-steps-icon" />
+                  <div className="innovator-next-steps-content">
+                    <h3 className="next-steps-title">Next Steps</h3>
+                    <p className="next-steps-description">
+                      The final compilations have been generated. Now, send this email to your Domain-Experts:
+                    </p>
+                    <div className="innovator-email-template">
+                      <p className="innovator-email-subject">
+                        <strong>Subject:</strong> MDII Evaluation - Complete Your Expert Assessment
+                      </p>
+                      <div className="innovator-email-body">
+                        <p>Dear Expert,</p>
+                        <p>
+                          Please complete your expert assessment using the attached compilation file. 
+                          Once completed, return the file to the coordinator.
                         </p>
-                        <div className="file-info">
-                            <p><strong>File:</strong> output_{toolId || "MDII-WCL-030625"}.xlsx</p>
-                            <p><strong>Generated:</strong> {new Date().toLocaleString()}</p>
-                        </div>
+                        <p>Thank you for your participation.</p>
+                      </div>
                     </div>
-
-                    {filePath && (
-                        <div className="file-actions">
-                            <button onClick={handleOpenFile} className="open-file-button">
-                                Open Generated File
-                            </button>
-                            <p className="file-path">File saved to: {filePath}</p>
-                        </div>
-                    )}
-
-                    <div className="next-steps-box">
-                        <div className="next-steps-header">
-                            <div className="next-steps-icon">📋</div>
-                            <div className="next-steps-content">
-                                <h3 className="next-steps-title">Next Steps</h3>
-                                <p className="next-steps-description">
-                                    The Innovator Compilations have been generated. Now, send this email to your Domain-Experts:
-                                </p>
-                                
-                                <div className="email-template">
-                                    <p className="email-subject">
-                                        <strong>Subject:</strong> MDII Evaluation - Complete Your Expert Assessment
-                                    </p>
-                                    <div className="email-body">
-                                        <p>Dear Expert,</p>
-                                        <p>
-                                            Please complete your expert assessment using the attached compilation file. 
-                                            Once completed, return the file to the coordinator.
-                                        </p>
-                                        <p>Thank you for your participation.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                  </div>
                 </div>
-            )}
-        </div>
+              </div>
+            </div>
+          )}
+        </section>
+      </div>
     </div>
-);
+  );
+};
 
 export default UserTypeCompilationPage;
