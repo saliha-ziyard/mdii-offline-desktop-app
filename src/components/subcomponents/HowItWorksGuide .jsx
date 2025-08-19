@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { GoBook, GoArrowLeft } from "react-icons/go";
 import { BsLightbulb, BsGear, BsExclamationTriangle } from "react-icons/bs";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { RiNumber1, RiNumber2, RiNumber3 } from "react-icons/ri";
 
 const HowItWorksGuide = ({ setCurrentPage = () => {} }) => {
+  useEffect(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, []);
+
   return (
     <div className="hiw-container">
       <button onClick={() => setCurrentPage("home")} className="back-btn">
