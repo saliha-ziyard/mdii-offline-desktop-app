@@ -13,6 +13,10 @@ const AssignExpertsPage = ({ setCurrentPage, toolId: propToolId, setToolId: prop
   const toolId = propToolId !== undefined ? propToolId : localToolId;
   const setToolId = propSetToolId || setLocalToolId;
 
+  useEffect(() => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
   // Helper function to safely set status
   const updateStatus = (message) => {
     if (propSetStatus && typeof propSetStatus === 'function') {

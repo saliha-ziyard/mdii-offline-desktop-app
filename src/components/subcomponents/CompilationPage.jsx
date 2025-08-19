@@ -16,6 +16,10 @@ const CompilationPage = ({
 }) => {
   const [progress, setProgress] = useState(0);
 
+    useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, []);
+    
   useEffect(() => {
     let interval;
     if (isLoading) {
@@ -36,7 +40,7 @@ const CompilationPage = ({
 
   return (
     <div className="innovator-container">
-      <button onClick={() => setCurrentPage("home")} className="innovator-back-btn">
+      <button onClick={() => setCurrentPage("home")} className="back-btn">
         <GoArrowLeft />
       </button>
 
