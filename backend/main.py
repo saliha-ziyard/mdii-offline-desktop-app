@@ -1588,7 +1588,6 @@ def generate_pdfs_from_excel(tool_code, excel_path, maturity_key):
                 <b><font color='#2b6cb0' size='12'>MDII Version:</font></b> <font color='#1a202c'>{mdii_version}</font><br/>
                 <b><font color='#2b6cb0' size='12'>Domain Expert:</font></b> <font color='#1a202c'>{domain_name}</font><br/>
                 <b><font color='#2b6cb0' size='12'>Report Generated:</font></b> <font color='#1a202c'>{time.strftime('%B %d, %Y at %H:%M')}</font><br/>
-                <b><font color='#2b6cb0' size='12'>Total Questions Answered:</font></b> <font color='#1a202c'>{len(domain_info['answered_rows'])}</font>
                 """
                 story.append(Paragraph(header_info, header_style))
                 story.append(Spacer(1, 25))
