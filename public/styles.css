@@ -645,31 +645,6 @@ hr {
   position: relative;
 }
 
-.innovator-back-btn {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  width: 40px;
-  height: 40px;
-  background: rgba(0, 0, 0, 0.05);
-  border: none;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.2s;
-  z-index: 10;
-}
-
-.innovator-back-btn:hover {
-  background: rgba(0, 0, 0, 0.1);
-}
-
-.innovator-back-btn svg {
-  font-size: 18px;
-  color: var(--font-grey);
-}
 
 .innovator-content {
   max-width: 1200px;
