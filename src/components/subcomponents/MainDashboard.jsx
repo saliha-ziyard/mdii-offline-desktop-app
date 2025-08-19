@@ -238,7 +238,9 @@ const MainDashboard = ({ setCurrentPage: handlePageChange }) => {
                 </span>
               </button>
 
-              <button className="quick-access-btn data-collection">
+              <button className="quick-access-btn data-collection"
+              onClick={() => handlePageChange("dataCollection")}
+              >
                 <span className="btn-icon">
                   <IoMdLink />
                 </span>

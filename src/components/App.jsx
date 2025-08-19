@@ -8,6 +8,8 @@ import Footer from "./subcomponents/Footer";
 import Header from "./subcomponents/Header";
 import assignExperts from "./subcomponents/AssignExpertsPage"
 import AssignExpertsPage from "./subcomponents/AssignExpertsPage";
+import DataCollectionPage from "./subcomponents/DataCollectionPage";
+
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState("home");
@@ -139,6 +141,8 @@ const App = () => {
         <HowItWorksGuide setCurrentPage={handlePageChange} />
       ) : currentPage === "assignExperts" ? (
         <AssignExpertsPage setCurrentPage={handlePageChange} />
+      ) : currentPage === "dataCollection" ? (
+        <DataCollectionPage setCurrentPage={handlePageChange} />
       ) : currentPage === "compilation" ? (
         <CompilationPage
           toolId={toolId}
