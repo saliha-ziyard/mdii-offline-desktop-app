@@ -26,17 +26,58 @@ const AssignExpertsPage = ({ setCurrentPage, toolId: propToolId, setToolId: prop
     }
   };
 
-  const handleAssignExperts = () => {
-    if (!toolId || toolId.trim() === "") {
-      updateStatus("Please enter a Tool ID");
+ const handleAssignExperts = async () => {
+  if (!toolId || toolId.trim() === "") {
+    updateStatus("Please enter a Tool ID");
+    return;
+  }
+
+  if (isLoading) {
+    return; // Prevent multiple clicks
+  }
+
+  setIsLoading(true);
+  updateStatus("Checking Tool ID...");
+
+  // Check if tool ID exists first
+  try {
+    const API_TOKEN = "fc37a9329918014ef595b183adcef745a4beb217";
+    const BASE_URL = "https://kf.kobotoolbox.org/api/v2";
+    const MAIN_FORM_ID = "aJn2DsjpAeJjrB6VazHjtz";
+
+    const submissionsResponse = await fetch(`${BASE_URL}/assets/${MAIN_FORM_ID}/data/`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Token ${API_TOKEN}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      mode: 'cors',
+    });
+
+    if (!submissionsResponse.ok) {
+      throw new Error('Failed to verify Tool ID');
+    }
+
+    const submissionsData = await submissionsResponse.json();
+    
+    if (!submissionsData.results || !Array.isArray(submissionsData.results)) {
+      throw new Error('No submissions found');
+    }
+
+    // Look for the tool ID in submissions
+    const matchingSubmission = submissionsData.results.find(submission => {
+      return submission['ID'] === toolId.trim() || 
+             (typeof submission['ID'] === 'string' && submission['ID'].toLowerCase() === toolId.trim().toLowerCase());
+    });
+
+    if (!matchingSubmission) {
+      setIsLoading(false);
+      updateStatus("Error: Tool ID not found. Please verify your Tool ID is correct and has been submitted.");
       return;
     }
 
-    if (isLoading) {
-      return; // Prevent multiple clicks
-    }
-
-    setIsLoading(true);
+    // Tool ID exists, proceed to open the form
     updateStatus("Opening expert assignment form...");
 
     // Construct the form URL
@@ -56,7 +97,13 @@ const AssignExpertsPage = ({ setCurrentPage, toolId: propToolId, setToolId: prop
         updateStatus("Form opened (popup may have been blocked)");
       }
     }, 1000);
-  };
+
+  } catch (error) {
+    console.error('Error checking tool ID:', error);
+    setIsLoading(false);
+    updateStatus("Error: Unable to verify Tool ID. Please try again or contact support.");
+  }
+};
 
   // Remove the alternative function since we only need one
   // const handleAssignExpertsAlternative = () => { ... }

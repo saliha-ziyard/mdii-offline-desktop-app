@@ -95,10 +95,23 @@ const UserTypeCompilationPage = ({
               )}
 
               {status && (
-                <div className={`innovator-status-message ${status.includes("Error") ? "error" : "success"}`}>
-                  <BsExclamationTriangle className="innovator-status-icon innovator-error-icon" />
-                  <BsCheckCircle className="innovator-status-icon innovator-success-icon" />
-                  <span>{status}</span>
+                <div className={`innovator-status-message ${
+                  status.includes("Error") || 
+                  status.includes("not found") || 
+                  status.includes("Tool ID") && status.includes("not found") ? "error" : "success"
+                }`}>
+                  {status.includes("Error") || 
+                  status.includes("not found") || 
+                  (status.includes("Tool ID") && status.includes("not found")) ? (
+                    <BsExclamationTriangle className="innovator-status-icon innovator-error-icon" />
+                  ) : (
+                    <BsCheckCircle className="innovator-status-icon innovator-success-icon" />
+                  )}
+                  <span>
+                    {status.includes("Tool ID") && status.includes("not found") 
+                      ? "Error: Tool ID not found. Please verify your Tool ID is correct and has been submitted." 
+                      : status}
+                  </span>
                   {status.includes("UserTypeII") && (
                     <div className="innovator-sub-status">
                       <span>✓ Innovator Answers sheet filled</span>
