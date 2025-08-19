@@ -19,7 +19,7 @@ const CompilationPage = ({
     useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     }, []);
-    
+
   useEffect(() => {
     let interval;
     if (isLoading) {
@@ -46,7 +46,7 @@ const CompilationPage = ({
 
       <div className="innovator-content">
         <h1>Generate Innovator Compilation</h1>
-        <p className="innovator-subtitle">Create standardized Excel reports from your survey data</p>
+        <p className="innovator-subtitle">Create standardized Excel (all innovator questions) and PDF reports from your survey data for each domain expert</p>
 
         <section className="innovator-section">
           <div className="innovator-section-header">
