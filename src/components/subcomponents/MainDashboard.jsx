@@ -207,12 +207,14 @@ const MainDashboard = ({ setCurrentPage }) => {
 
               <button
                 className="quick-access-btn assign-experts"
-                onClick={() => setCurrentPage("userTypeCompilation")}
+                onClick={() => setCurrentPage("assignExperts")}
               >
                 <span className="btn-icon">
                   <HiOutlineUserGroup />
                 </span>
-                <div className="btn-content">
+                <div className="btn-content"
+                  onClick={() => setCurrentPage("userTypeCompilation")}
+                >
                   <span className="btn-title">Assign Experts</span>
                   <span className="btn-subtitle">Choose domain experts</span>
                 </div>
@@ -257,7 +259,9 @@ const MainDashboard = ({ setCurrentPage }) => {
                 <span className="btn-icon">
                   <VscGraph />
                 </span>
-                <div className="btn-content">
+                <div className="btn-content"
+                  onClick={() => setCurrentPage("userTypeCompilation")}
+                >
                   <span className="btn-title">Get MDII Report</span>
                   <span className="btn-subtitle">
                     View scores and recommendations

@@ -6,6 +6,8 @@ import UserTypeCompilationPage from "./subcomponents/UserTypeCompilationPage";
 import MainDashboard from "./subcomponents/MainDashboard";
 import Footer from "./subcomponents/Footer";
 import Header from "./subcomponents/Header";
+import assignExperts from "./subcomponents/AssignExpertsPage"
+import AssignExpertsPage from "./subcomponents/AssignExpertsPage";
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState("home");
@@ -120,6 +122,8 @@ const App = () => {
         <MainDashboard setCurrentPage={setCurrentPage} />
       ) : currentPage === "howItWorks" ? (
         <HowItWorksGuide setCurrentPage={setCurrentPage} />
+      ) : currentPage === "assignExperts" ? (
+        <AssignExpertsPage setCurrentPage={setCurrentPage} />
       ) : currentPage === "compilation" ? (
         <CompilationPage
           toolId={toolId}
