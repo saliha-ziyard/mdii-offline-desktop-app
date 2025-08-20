@@ -128,17 +128,33 @@ function createWindow() {
         });
     }
 
-    ipcMain.handle('openFile', async (event, filePath) => {
-        const { shell } = require('electron');
-        console.log('Opening file:', filePath);
-        
-        // Check if file exists
-        if (!fs.existsSync(filePath)) {
-            throw new Error(`File not found: ${filePath}`);
-        }
-        
-        return shell.openPath(filePath);
-    });
+ipcMain.handle('openFile', async (event, filePath) => {
+    const { shell } = require('electron');
+    const path = require('path');
+    console.log('Received filePath:', filePath);
+    
+    // Extract just the file path if it contains extra text
+    let actualFilePath = filePath;
+    
+    // Check if the filePath contains "Excel file created:" prefix
+    if (filePath.includes('Excel file created:')) {
+        actualFilePath = filePath.replace('Excel file created:', '').trim();
+    }
+    
+    console.log('Cleaned filePath:', actualFilePath);
+    
+    // Extract the directory from the file path
+    const folderPath = path.dirname(actualFilePath);
+    console.log('Opening folder:', folderPath);
+    
+    // Check if folder exists
+    if (!fs.existsSync(folderPath)) {
+        throw new Error(`Folder not found: ${folderPath}`);
+    }
+    
+    // Open the folder instead of the file
+    return shell.openPath(folderPath);
+});
 }
 
 app.whenReady().then(createWindow);
