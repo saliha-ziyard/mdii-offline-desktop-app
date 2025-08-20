@@ -126,12 +126,12 @@ const UserTypeCompilationPage = ({
                 <div className="innovator-file-actions">
                   <button onClick={handleOpenFile} className="innovator-open-file-button">
                     <HiOutlineClipboardDocumentList />
-                    Open Generated File
+                    Open Generated Folder
                   </button>
-                  <p className="innovator-file-path">
+                  {/* <p className="innovator-file-path">
                     <GoBook />
                     File saved to: {filePath}
-                  </p>
+                  </p> */}
                 </div>
               )}
             </div>
@@ -159,18 +159,18 @@ const UserTypeCompilationPage = ({
                 <div className="innovator-file-actions">
                   <button onClick={handleOpenFile} className="innovator-open-file-button">
                     <HiOutlineClipboardDocumentList />
-                    Open Generated File
+                    Open Generated Folder
                   </button>
-                  <p className="innovator-file-path">
+                  {/* <p className="innovator-file-path">
                     <GoBook />
                     File saved to: {filePath}
-                  </p>
+                  </p> */}
                 </div>
               )}
 
               <div className="innovator-next-steps">
                 <div className="innovator-next-steps-header">
-                  <HiOutlineClipboardDocumentList className="next-steps-icon" />
+                  {/* <HiOutlineClipboardDocumentList className="next-steps-icon" /> */}
                   <div className="innovator-next-steps-content">
                     <h3 className="next-steps-title">Next Steps</h3>
                     <p className="next-steps-description">

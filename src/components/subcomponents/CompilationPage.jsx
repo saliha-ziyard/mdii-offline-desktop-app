@@ -119,7 +119,7 @@ const CompilationPage = ({
                 <div className="innovator-file-actions">
                   <button onClick={handleOpenFile} className="innovator-open-file-button">
                     <HiOutlineClipboardDocumentList />
-                    Open Generated File
+                    Open Generated folder
                   </button>
                   <p className="innovator-file-path">
                     <GoBook />
@@ -152,18 +152,18 @@ const CompilationPage = ({
                 <div className="innovator-file-actions">
                   <button onClick={handleOpenFile} className="innovator-open-file-button">
                     <HiOutlineClipboardDocumentList />
-                    Open Generated File
+                    Open Generated Folder
                   </button>
-                  <p className="innovator-file-path">
+                  {/* <p className="innovator-file-path">
                     <GoBook />
                     File saved to: {filePath}
-                  </p>
+                  </p> */}
                 </div>
               )}
 
               <div className="innovator-next-steps">
                 <div className="innovator-step-header">
-                  <GoBook />
+                  {/* <GoBook /> */}
                   <h3>Next Steps</h3>
                 </div>
                 <p>
