@@ -37,15 +37,34 @@ body {
 /* Header ================================================*/
 .header {
   background-color: #fff;
-  padding: 32px;
+  /* gap: 32px; */
   display: flex;
-  max-width: 1200px;
+  max-width: 1080px;
+  padding: 32px;
+  padding-left: 0;
+  padding-right: 0;
   margin: 0 auto;
+  justify-content: space-between;
+
+
 }
 .header-title {
   font-size: 18px;
   font-weight: 600;
 }
+.header-logos {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo {
+  height: 40px; 
+  width: auto;
+  object-fit: contain;
+}
+
+
 hr {
   border: none;
   height: 1px;
@@ -57,21 +76,26 @@ hr {
 .dashboard-container {
   background-color: #fff;
   min-height: calc(100vh - 140px);
+  
 }
 
 .main-dashboard {
   display: flex;
   flex-direction: column;
-  max-width: 1200px;
+  max-width: 1080px;
   margin: 0 auto;
-  gap: 32px;
+  /* gap: 32px; */
   padding: 32px;
+  padding-left: 0;
+  padding-right: 0;
+  
 }
 
 .content-area {
   display: flex;
   flex-direction: row;
   flex: 2;
+  justify-content: space-between;
 }
 .content-area .sub-content {
   max-width: 700px;
@@ -116,6 +140,8 @@ hr {
   margin-bottom: 20px;
   border: 1px solid var(--border-colour);
   border-radius: var(--border-radius);
+  max-width: 1080px;
+  margin-top: 32px;
 }
 
 .section-header-main {
@@ -203,6 +229,9 @@ hr {
 .journey-section {
   border: 1px solid var(--border-colour);
   border-radius: var(--border-radius);
+  max-width: 1080px;
+  margin-bottom: 32px;
+
 }
 
 .journey-steps {
@@ -267,6 +296,8 @@ hr {
   border: 1px solid var(--border-colour);
   border-radius: var(--border-radius);
   height: fit-content;
+  margin-top: 32px;
+
 }
 
 .sidebar-header {
@@ -379,6 +410,7 @@ hr {
   border: 1px solid var(--border-colour);
   padding: 20px 0px;
   max-width: 1080px;
+
 }
 
 .troubleshoot-title {
