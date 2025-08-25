@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import HomePage from "./subcomponents/HomePage";
-import CompilationPage from "./subcomponents/CompilationPage";
-import HowItWorksGuide from "./subcomponents/HowItWorksGuide ";
-import UserTypeCompilationPage from "./subcomponents/UserTypeCompilationPage";
+import CompilationPage from "./subcomponents/Dashboard/QuickAccessBarComponents/CompilationPage";
+import HowItWorksGuide from "./subcomponents/Dashboard/QuickAccessBarComponents/HowItWorksGuide ";
+import UserTypeCompilationPage from "./subcomponents/Dashboard/QuickAccessBarComponents/UserTypeCompilationPage";
 import MainDashboard from "./subcomponents/MainDashboard";
 import Footer from "./subcomponents/Footer";
 import Header from "./subcomponents/Header";
-import assignExperts from "./subcomponents/AssignExpertsPage"
-import AssignExpertsPage from "./subcomponents/AssignExpertsPage";
-import DataCollectionPage from "./subcomponents/DataCollectionPage";
+import assignExperts from "./subcomponents/Dashboard/QuickAccessBarComponents/AssignExpertsPage"
+import AssignExpertsPage from "./subcomponents/Dashboard/QuickAccessBarComponents/AssignExpertsPage";
+import DataCollectionPage from "./subcomponents/Dashboard/QuickAccessBarComponents/DataCollectionPage";
 
 
 const App = () => {
