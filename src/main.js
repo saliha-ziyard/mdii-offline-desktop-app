@@ -22,12 +22,12 @@ function createWindow() {
 
     ipcMain.handle('generateInnovatorExcel', async (event, toolId) => {
         console.log('*** STEP 1: generateInnovatorExcel called ***');
-        return executePythonScript(toolId, '--innovator-only');
+        return executePythonScript(toolId, '--innovator-only'); // For compilation page
     });
 
     ipcMain.handle('generateFullExcel', async (event, toolId) => {
         console.log('*** STEP 2: generateFullExcel called ***');
-        return executePythonScript(toolId); // Full mode (default)
+        return executePythonScript(toolId, '--usertype'); // For usertype compilation page
     });
 
     // Keep the old function for backward compatibility

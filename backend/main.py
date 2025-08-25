@@ -1316,7 +1316,7 @@ def get_html_questions_mapping(ws_html):
     debug_print(f"Created HTML mapping for {len(html_mapping)} questions")
     return html_mapping
 
-def generate_pdfs_from_excel(tool_code, excel_path, maturity_key):
+def generate_pdfs_from_excel(tool_code, excel_path, maturity_key, compilation_type="domain-experts"):
     """Generate domain-specific PDFs based on X marks analysis with enhanced styling and proper heading structure"""
     try:
         from reportlab.lib.pagesizes import A4
@@ -1335,7 +1335,23 @@ def generate_pdfs_from_excel(tool_code, excel_path, maturity_key):
         return False
     
     safe_tool_id = tool_code.replace("/", "_").replace("\\", "_").replace(":", "_")
-    pdf_dir = OUTPUT_DIR / safe_tool_id / "PDF" 
+    # Create PDF output directory within the same folder as the Excel file
+    if compilation_type == "usertype":
+        folder_name = f"{tool_code}-compilation-usertype"
+    else:
+        folder_name = f"{tool_code}-compilation-domain-experts"
+
+    # Ensure PDF directory uses the same unique folder as the Excel file
+    def get_unique_folder_path(base_path, folder_name):
+        folder_path = base_path / folder_name
+        counter = 1
+        while folder_path.exists():
+            folder_path = base_path / f"{folder_name} ({counter})"
+            counter += 1
+        return folder_path
+
+    # Use the same folder as the Excel file for PDFs
+    pdf_dir = Path(excel_path).parent / "PDF"
     pdf_dir.mkdir(parents=True, exist_ok=True)
     
     try:
@@ -1849,7 +1865,7 @@ def debug_usertype2_data(tool_id, maturity_key):
 # ==== MAIN FUNCTION ====
 def main():
     if len(sys.argv) < 2:
-        debug_print("Usage: python main.py <TOOL_ID> [--pdf-only|--innovator-only]")
+        debug_print("Usage: python main.py <TOOL_ID> [--pdf-only|--innovator-only|--domain-experts|--usertype]")
         print("Error: Missing tool ID argument")
         sys.exit(1)
 
@@ -1858,6 +1874,8 @@ def main():
     # Parse mode arguments
     pdf_only = False
     innovator_only = False
+    domain_experts_mode = False
+    usertype_mode = False
     
     debug_print(f"Command line arguments: {sys.argv}")
     
@@ -1868,8 +1886,14 @@ def main():
             pdf_only = True
         elif mode == "--innovator-only":
             innovator_only = True
+        elif mode == "--domain-experts":
+            domain_experts_mode = True
+        elif mode == "--usertype":
+            usertype_mode = True
     else:
         debug_print("No mode argument - running in FULL mode")
+        # Default to domain experts mode for backward compatibility
+        domain_experts_mode = True
     
     debug_print(f"Processing Tool ID: {tool_id}")
     debug_print(f"PDF only mode: {pdf_only}")
@@ -1878,8 +1902,8 @@ def main():
     debug_print(f"Script directory: {SCRIPT_DIR}")
     debug_print(f"Output directory: {OUTPUT_DIR}")
 
-    safe_tool_id = tool_id.replace("/", "_").replace("\\", "_").replace(":", "_")
-    
+    safe_tool_id = tool_id.replace("/", "_").replace("\\", "_").replace(":", "_")    
+
     if pdf_only:
         debug_print("=== RUNNING IN PDF-ONLY MODE ===")
         
@@ -1983,7 +2007,22 @@ def main():
     template_path = TEMPLATES[maturity_key]
     tool_name = record.get(TOOL_NAME_FIELD, "Unknown Tool")
     
-    tool_folder = OUTPUT_DIR / safe_tool_id  
+    # Create different folder names based on compilation type
+    if usertype_mode:
+        folder_base_name = f"{safe_tool_id}-compilation-usertype"
+    else:  # domain_experts_mode or innovator_only
+        folder_base_name = f"{safe_tool_id}-compilation-domain-experts"
+
+    # Function to generate unique folder name with suffix
+    def get_unique_folder_path(base_path, folder_name):
+        folder_path = base_path / folder_name
+        counter = 1
+        while folder_path.exists():
+            folder_path = base_path / f"{folder_name} ({counter})"
+            counter += 1
+        return folder_path
+
+    tool_folder = get_unique_folder_path(OUTPUT_DIR, folder_base_name)
     tool_folder.mkdir(parents=True, exist_ok=True)
 
     output_path = tool_folder / f"{safe_tool_id}_MDII_Toolkit.xlsm"
@@ -2010,7 +2049,7 @@ def main():
                 print(f"Warning: PDF generation failed: {e}")
                 print("Excel file was created successfully")
         else:
-            debug_print("=== FULL MODE: Filling UserTypeII + UserTypeIII + UserTypeIV sheets + generating all PDFs ===")
+            debug_print("=== FULL MODE: Filling UserTypeII + UserTypeIII + UserTypeIV sheets + generating PDFs (if not usertype) ===")
             
             # Fill UserTypeII sheet
             debug_print("Filling UserTypeII_Answers sheet...")
@@ -2053,20 +2092,25 @@ def main():
             except Exception as e:
                 debug_print(f"UserTypeIV sheet filling failed: {e}")
                 print(f"Warning: UserTypeIV sheet filling failed: {e}")
-                    
-            debug_print("Automatically generating all PDFs...")
-            try:
-                success = generate_pdfs_from_excel(safe_tool_id, output_path, maturity_key)
-                if success:
-                    debug_print("All PDFs generated successfully!")
-                    print("All PDFs generated successfully!")
-                else:
-                    debug_print("PDF generation failed, but Excel file was created successfully")
-                    print("Warning: PDF generation failed, but Excel file was created successfully")
-            except Exception as e:
-                debug_print(f"PDF generation failed: {e}")
-                print(f"Warning: PDF generation failed: {e}")
-                print("Excel file was created successfully")
+            
+            # Generate PDFs only for non-usertype mode
+            if not usertype_mode:
+                debug_print("Automatically generating all PDFs...")
+                try:
+                    success = generate_pdfs_from_excel(safe_tool_id, output_path, maturity_key)
+                    if success:
+                        debug_print("All PDFs generated successfully!")
+                        print("All PDFs generated successfully!")
+                    else:
+                        debug_print("PDF generation failed, but Excel file was created successfully")
+                        print("Warning: PDF generation failed, but Excel file was created successfully")
+                except Exception as e:
+                    debug_print(f"PDF generation failed: {e}")
+                    print(f"Warning: PDF generation failed: {e}")
+                    print("Excel file was created successfully")
+            else:
+                debug_print("Skipping PDF generation for usertype mode")
+                print("Excel file created successfully, PDFs skipped for usertype compilation")
         
     except Exception as e:
         debug_print(f"Error creating toolkit: {e}")
