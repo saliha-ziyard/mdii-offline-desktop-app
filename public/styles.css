@@ -491,10 +491,12 @@ hr {
 }
 
 .hiw-content {
-  max-width: 1200px;
+  max-width: 1080px;
   margin: auto;
   margin-top: 40px;
   padding: 32px;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .hiw-content h1 {
@@ -679,10 +681,12 @@ hr {
 
 
 .innovator-content {
-  max-width: 1200px;
+  max-width: 1080px;
   margin: auto;
   margin-top: 40px;
   padding: 32px;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .innovator-content h1 {
