@@ -958,7 +958,7 @@ def get_usertype2_answer(question_id, usertype2_records):
     
     if not usertype2_records:
         debug_print(f"No UserTypeII records available for question {question_id}")
-        return "No answer provided"
+        return ""
     
     for record in usertype2_records:
         answer = find_usertype2_answer_in_record(question_id, record)
@@ -967,7 +967,7 @@ def get_usertype2_answer(question_id, usertype2_records):
             return answer
     
     debug_print(f"No answer found for {question_id}")
-    return "No answer provided"
+    return ""
 
 def get_usertype3_answer(question_id, usertype3_records):
     """Get answer for a UserTypeIII question from the records"""
@@ -975,7 +975,7 @@ def get_usertype3_answer(question_id, usertype3_records):
     
     if not usertype3_records:
         debug_print(f"No UserTypeIII records available for question {question_id}")
-        return "No answer provided"
+        return ""
     
     for record in usertype3_records:
         answer = find_usertype3_answer_in_record(question_id, record)
@@ -984,7 +984,7 @@ def get_usertype3_answer(question_id, usertype3_records):
             return answer
     
     debug_print(f"No answer found for {question_id}")
-    return "No answer provided"
+    return ""
 
 def get_usertype4_answer(question_id, usertype4_records):
     """Get answer for a UserTypeIV question from the records"""
@@ -992,7 +992,7 @@ def get_usertype4_answer(question_id, usertype4_records):
     
     if not usertype4_records:
         debug_print(f"No UserTypeIV records available for question {question_id}")
-        return "No answer provided"
+        return ""
     
     for record in usertype4_records:
         answer = find_usertype4_answer_in_record(question_id, record)
@@ -1001,7 +1001,7 @@ def get_usertype4_answer(question_id, usertype4_records):
             return answer
     
     debug_print(f"No answer found for {question_id}")
-    return "No answer provided"
+    return ""
 
 def find_usertype2_answer_in_record(question_id, record):
     """Find answer for UserTypeII question ID in a single record"""
