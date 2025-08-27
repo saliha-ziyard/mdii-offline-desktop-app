@@ -89,7 +89,7 @@ const UserTestingPage = ({
           <div className="innovator-section-header">
             <HiOutlineUserGroup />
             <div>
-              <h2>Tool Maturity Check</h2>
+              <h2>Generating the links for Direct and Indirect beneficiaries</h2>
               <p>Enter your Tool ID to check maturity and access appropriate forms</p>
             </div>
           </div>
@@ -108,7 +108,7 @@ const UserTestingPage = ({
               className={`innovator-generate-button ${isCheckingMaturity ? "disabled" : ""}`}
               type="button"
             >
-              {isCheckingMaturity ? "Checking Maturity..." : "Check Tool Maturity"}
+              {isCheckingMaturity ? "Generating Links..." : "Generate Links"}
             </button>
 
             <LoadingProgress isLoading={isCheckingMaturity} progress={progress} />
