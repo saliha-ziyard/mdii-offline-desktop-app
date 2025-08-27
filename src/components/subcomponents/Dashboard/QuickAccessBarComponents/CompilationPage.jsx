@@ -69,7 +69,7 @@ const CompilationPage = ({
           ) : (
             <SuccessContent
               title="Compilation Successfully Generated"
-              description="Your Excel file has been generated with the latest data from Kobo Toolbox."
+              description="Your Excel file has been generated."
               toolId={toolId}
               filePath={filePath}
               onOpenFile={handleOpenFile}
