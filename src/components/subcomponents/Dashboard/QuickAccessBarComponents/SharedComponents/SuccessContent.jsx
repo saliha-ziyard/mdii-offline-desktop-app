@@ -25,7 +25,7 @@ const SuccessContent = ({
         <p className="details-description">{description}</p>
         <div className="innovator-file-info">
           <p>
-            <strong>File:</strong> output_{toolId || "MDII-WCL-030625"}.xlsx
+            <strong>File:</strong> {toolId}
           </p>
           <p>
             <strong>Generated:</strong> {new Date().toLocaleString()}

@@ -87,7 +87,7 @@ const UserTypeCompilationPage = ({
               emailTemplate={emailTemplate}
               showNextSteps={true}
               nextStepsTitle="Next Steps"
-              nextStepsDescription="The final compilations have been generated. Now, send this email to your Domain-Experts:"
+              nextStepsDescription="The final compilations have been generated. Now, send this email to your Domain-Experts with the attached PDF document:"
             />
           )}
         </section>
