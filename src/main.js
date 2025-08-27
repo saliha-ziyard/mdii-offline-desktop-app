@@ -27,7 +27,7 @@ function createWindow() {
 
     ipcMain.handle('generateFullExcel', async (event, toolId) => {
         console.log('*** STEP 2: generateFullExcel called ***');
-        return executePythonScript(toolId, '--usertype'); // For usertype compilation page
+        return executePythonScript(toolId); // Full mode (default)
     });
 
     // Keep the old function for backward compatibility
