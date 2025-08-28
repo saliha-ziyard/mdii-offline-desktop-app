@@ -42,23 +42,23 @@ const SuccessContent = ({
         </div>
       )}
 
-      {/* {showNextSteps && nextStepsDescription && ( */}
+      {showNextSteps && nextStepsDescription && (
         <div className="innovator-next-steps">
           <div className="innovator-next-steps-header">
             <div className="innovator-next-steps-content">
               <h3 className="next-steps-title">{nextStepsTitle}</h3>
               <p className="next-steps-description">{nextStepsDescription}</p>
               
-              {/* {emailTemplate && ( */}
+              {emailTemplate && (
                 <EmailTemplate 
                   subject={emailTemplate.subject}
                   body={emailTemplate.body}
                 />
-              {/* )} */}
+              )}
             </div>
           </div>
         </div>
-      {/* )} */}
+      )}
     </div>
   );
 };

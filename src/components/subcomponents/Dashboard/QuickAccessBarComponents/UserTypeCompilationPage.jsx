@@ -41,8 +41,8 @@ const UserTypeCompilationPage = ({
 
       <div className="innovator-content">
         <PageHeader 
-          title="After All Evaluations"
-          subtitle="Generate final reports with all evaluation data"
+          title="Generate Final Excel Document with all evaluations"
+          subtitle="Create a standardized Excel file with responses from Innovators, Domain Experts, Direct Users, and Downstream Beneficiaries"
         />
 
         <section className="innovator-section">

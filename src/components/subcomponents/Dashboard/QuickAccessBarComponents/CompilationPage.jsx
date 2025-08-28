@@ -33,7 +33,7 @@ const CompilationPage = ({
       <div className="innovator-content">
         <PageHeader
           title="Generate Innovator Compilation"
-          subtitle="Create standardized Excel (all innovator questions) and PDF reports from your survey data for each domain expert"
+          subtitle="Create a standardized Excel file with responses from Innovators and final reports with all evaluation data specific for each domain expert"
         />
 
         <section className="innovator-section">
@@ -45,7 +45,7 @@ const CompilationPage = ({
             </div>
           </div>
 
-          {/* {!showSuccessMessage ? ( */}
+          {!showSuccessMessage ? (
             <GenerationForm
               toolId={toolId}
               setToolId={setToolId}
@@ -59,7 +59,7 @@ const CompilationPage = ({
               loadingText="Generating..."
               tip="Codes are case-sensitive and typically start with MDII"
             />
-          {/* ) : ( */}
+          ) : (
             <SuccessContent
               title="Compilation Successfully Generated"
               description="Your Excel file has been generated."
@@ -71,7 +71,7 @@ const CompilationPage = ({
               nextStepsTitle="Next Steps"
               nextStepsDescription="Share the generated compilation with your Domain-Experts via email."
             />
-          {/* )} */}
+          )}
         </section>
       </div>
     </div>
