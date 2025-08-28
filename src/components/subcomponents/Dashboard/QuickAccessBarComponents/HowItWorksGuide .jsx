@@ -3,6 +3,7 @@ import { GoBook, GoArrowLeft } from "react-icons/go";
 import { BsLightbulb, BsGear, BsExclamationTriangle } from "react-icons/bs";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { RiNumber1, RiNumber2, RiNumber3 } from "react-icons/ri";
+import { BsCopy } from "react-icons/bs";
 
 const UserManual = ({ setCurrentPage = () => {} }) => {
   const [expandedSection, setExpandedSection] = useState(null);
@@ -386,13 +387,31 @@ const UserManual = ({ setCurrentPage = () => {} }) => {
             <div className="support-card">
               <h3>Technical Support</h3>
               <p>For technical issues or system-related questions</p>
-              <div className="contact-info">mdii@cgiar.org</div>
+              <div className="contact-info">
+                mdii@cgiar.org
+                <button
+                  className="copy-btn"
+                  title="Copy email"
+                  onClick={() => navigator.clipboard.writeText("mdii@cgiar.org")}
+                >
+                  <BsCopy />
+                </button>
+              </div>
             </div>
 
             <div className="support-card">
               <h3>Methodology Questions</h3>
               <p>For evaluation methodology and process guidance</p>
-              <div className="contact-info">mdii@mdii.org</div>
+              <div className="contact-info">
+                mdii@mdii.org
+                <button
+                  className="copy-btn"
+                  title="Copy email"
+                  onClick={() => navigator.clipboard.writeText("mdii@mdii.org")}
+                >
+                  <BsCopy />
+                </button>
+              </div>
             </div>
           </div>
         </div>
