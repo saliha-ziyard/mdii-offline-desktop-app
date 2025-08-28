@@ -23,14 +23,14 @@ const UserTypeCompilationPage = ({
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  const emailTemplate = {
-    subject: "MDII Evaluation - Complete Your Expert Assessment",
-    body: [
-      "Dear Expert,",
-      "Please complete your expert assessment using the attached compilation file. Once completed, return the file to the coordinator.",
-      "Thank you for your participation."
-    ]
-  };
+  // const emailTemplate = {
+  //   subject: "MDII Evaluation - Complete Your Expert Assessment",
+  //   body: [
+  //     "Dear Expert,",
+  //     "Please complete your expert assessment using the attached compilation file. Once completed, return the file to the coordinator.",
+  //     "Thank you for your participation."
+  //   ]
+  // };
 
   // Handle status with sub-items for UserTypeII
   const statusWithSubItems = status && status.includes("UserTypeII") ? {
@@ -84,7 +84,7 @@ const UserTypeCompilationPage = ({
               toolId={toolId}
               filePath={filePath}
               onOpenFile={handleOpenFile}
-              emailTemplate={emailTemplate}
+              // emailTemplate={emailTemplate}
               showNextSteps={true}
               nextStepsTitle="Next Steps"
               nextStepsDescription="The final compilations have been generated. Now, send this email to your Domain-Experts with the attached PDF document:"
