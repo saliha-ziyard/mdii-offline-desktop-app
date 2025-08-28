@@ -614,8 +614,8 @@ def fill_usertype2_sheet(excel_path, tool_id, maturity_key):
                 # Check for question codes
                 if maturity_key == "early":
                     # Early stage: codes like E21423000, E21422000, etc.
-                    if cell_str.startswith('E') and len(cell_str) == 9 and cell_str[1:].isdigit():
-                        question_code = cell_str[1:]  # Remove 'E' prefix
+                    if len(cell_str) == 8 and cell_str.isdigit():
+                        question_code = cell_str
                         question_codes_map[question_code] = col_idx
                         debug_print(f"Found early stage question code: {cell_str} -> Q_{question_code} at column {col_idx}")
                 
@@ -753,8 +753,8 @@ def fill_usertype3_sheet(excel_path, tool_id, maturity_key):
                 # Check for question codes
                 if maturity_key == "early":
                     # Early stage: codes like E31431000, E31411000, etc.
-                    if cell_str.startswith('E') and len(cell_str) == 9 and cell_str[1:].isdigit():
-                        question_code = cell_str[1:]  # Remove 'E' prefix
+                    if len(cell_str) == 8 and cell_str.isdigit():
+                        question_code = cell_str
                         question_codes_map[question_code] = col_idx
                         debug_print(f"Found early stage question code: {cell_str} -> Q_{question_code} at column {col_idx}")
                 
@@ -893,8 +893,8 @@ def fill_usertype4_sheet(excel_path, tool_id, maturity_key):
                 # Check for question codes
                 if maturity_key == "early":
                     # Early stage: codes like E41411000, E41412000, etc.
-                    if cell_str.startswith('E') and len(cell_str) == 9 and cell_str[1:].isdigit():
-                        question_code = cell_str[1:]  # Remove 'E' prefix
+                    if len(cell_str) == 8 and cell_str.isdigit():
+                        question_code = cell_str
                         question_codes_map[question_code] = col_idx
                         debug_print(f"Found early stage question code: {cell_str} -> Q_{question_code} at column {col_idx}")
                 
