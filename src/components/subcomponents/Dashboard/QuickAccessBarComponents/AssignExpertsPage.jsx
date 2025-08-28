@@ -114,8 +114,8 @@ const AssignExpertsPage = ({
             <ToolIdInput
               value={toolId}
               onChange={handleInputChange}
-              placeholder="Enter tool ID (e.g., MDII-ILCYM-110825)"
-              tip="Tool ID must match the one used for your evaluation (e.g., MDII-ILCYM-110825)."
+              placeholder="Enter tool ID (e.g., MDII-ABCD-123456)"
+              tip="Tool ID must match the one used for your evaluation (e.g., MDII-ABCD-123456)."
             />
 
             <button

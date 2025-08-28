@@ -25,7 +25,7 @@ const GenerationForm = ({
       <ToolIdInput
         value={toolId}
         onChange={setToolId}
-        placeholder="Enter tool code (e.g., MDII-WCL-030625)"
+        placeholder="Enter tool code (e.g., MDII-ABCD-123456)"
         tip={tip}
         label={label}
         icon={BsGear}
