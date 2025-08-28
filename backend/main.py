@@ -318,11 +318,11 @@ def process_answer(question_id, value):
     
     question_code = question_id.replace("Q_", "")
     
-    if question_code in YES_NO_CODES:
-        if value_str.lower() in ['yes', 'y', '1', 'true']:
-            return "Yes"
-        elif value_str.lower() in ['no', 'n', '0', 'false']:
-            return "No"
+    # if question_code in YES_NO_CODES:
+    #     if value_str.lower() in ['yes', 'y', '1', 'true']:
+    #         return "Yes"
+    #     elif value_str.lower() in ['no', 'n', '0', 'false']:
+    #         return "No"
     
     if question_code in MULTI_SELECT_CODES:
         items = value_str.replace('_', ' ').split()
@@ -1136,10 +1136,10 @@ def process_usertype2_answer(question_id, value):
     question_code = question_id.replace("Q_", "")
     
     # Check if it's a yes/no question (you may need to adjust these based on UserTypeII question types)
-    if value_str.lower() in ['yes', 'y', '1', 'true']:
-        return "Yes"
-    elif value_str.lower() in ['no', 'n', '0', 'false']:
-        return "No"
+    # if value_str.lower() in ['yes', 'y', '1', 'true']:
+    #     return "Yes"
+    # elif value_str.lower() in ['no', 'n', '0', 'false']:
+    #     return "No"
     
     # For multi-select, clean up the formatting
     if '_' in value_str:
@@ -1164,10 +1164,10 @@ def process_usertype3_answer(question_id, value):
     question_code = question_id.replace("Q_", "")
     
     # Check if it's a yes/no question
-    if value_str.lower() in ['yes', 'y', '1', 'true']:
-        return "Yes"
-    elif value_str.lower() in ['no', 'n', '0', 'false']:
-        return "No"
+    # if value_str.lower() in ['yes', 'y', '1', 'true']:
+    #     return "Yes"
+    # elif value_str.lower() in ['no', 'n', '0', 'false']:
+    #     return "No"
     
     # For multi-select, clean up the formatting
     if '_' in value_str:
@@ -1192,10 +1192,10 @@ def process_usertype4_answer(question_id, value):
     question_code = question_id.replace("Q_", "")
     
     # Check if it's a yes/no question
-    if value_str.lower() in ['yes', 'y', '1', 'true']:
-        return "Yes"
-    elif value_str.lower() in ['no', 'n', '0', 'false']:
-        return "No"
+    # if value_str.lower() in ['yes', 'y', '1', 'true']:
+    #     return "Yes"
+    # elif value_str.lower() in ['no', 'n', '0', 'false']:
+    #     return "No"
     
     # For multi-select, clean up the formatting
     if '_' in value_str:
