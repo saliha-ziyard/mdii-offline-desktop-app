@@ -45,7 +45,7 @@ const EvaluationJourney = () => {
         <h2 className="section-title-main">Your Evaluation Journey</h2>
       </div>
       <p className="section-description-main">
-        These are the steps to evaluate your digital tool's inclusiveness
+        These are the steps to evaluate your digital tool's inclusiveness.
       </p>
 
       <div className="journey-steps">
