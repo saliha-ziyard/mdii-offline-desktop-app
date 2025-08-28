@@ -3,7 +3,7 @@ import { FaArrowRightLong } from "react-icons/fa6";
 
 const QuickAccessButton = ({ icon: Icon, title, subtitle, className = "", onClick }) => {
   return (
-    <button className={`quick-access-btn ${className}`} onClick={onClick}>
+    <button className={`quick-access-btn`} onClick={onClick}>
       <span className="btn-icon">
         <Icon />
       </span>
