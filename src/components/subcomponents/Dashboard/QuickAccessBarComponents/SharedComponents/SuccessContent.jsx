@@ -9,10 +9,10 @@ const SuccessContent = ({
   toolId,
   filePath,
   onOpenFile,
-  emailTemplate,
+  emailTemplate = null,
   showNextSteps = false,
   nextStepsTitle = "Next Steps",
-  nextStepsDescription
+  nextStepsDescription = null
 }) => {
   return (
     <div className="innovator-success-content">
@@ -42,20 +42,23 @@ const SuccessContent = ({
         </div>
       )}
 
-      {showNextSteps && (
+      {/* {showNextSteps && nextStepsDescription && ( */}
         <div className="innovator-next-steps">
           <div className="innovator-next-steps-header">
             <div className="innovator-next-steps-content">
               <h3 className="next-steps-title">{nextStepsTitle}</h3>
               <p className="next-steps-description">{nextStepsDescription}</p>
-              <EmailTemplate 
-                subject={emailTemplate.subject}
-                body={emailTemplate.body}
-              />
+              
+              {/* {emailTemplate && ( */}
+                <EmailTemplate 
+                  subject={emailTemplate.subject}
+                  body={emailTemplate.body}
+                />
+              {/* )} */}
             </div>
           </div>
         </div>
-      )}
+      {/* )} */}
     </div>
   );
 };

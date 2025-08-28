@@ -5,6 +5,7 @@ import PageHeader from "./SharedComponents/PageHeader";
 import GenerationForm from "./SharedComponents/GenerationForm";
 import SuccessContent from "./SharedComponents/SuccessContent";
 import { useLoadingProgress } from "./Hooks/useLoadingProgress";
+import mdiiEmailTemplate from "../../../../assets/emailTemplates/mdiiEmailTemplate";
 
 const CompilationPage = ({
   toolId,
@@ -20,17 +21,8 @@ const CompilationPage = ({
   const progress = useLoadingProgress(isLoading);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
-
-  const emailTemplate = {
-    subject: "MDII Evaluation - Complete Your Expert Assessment",
-    body: [
-      "Dear Expert,",
-      "Please complete your expert assessment using the attached compilation file. Once completed, return the file to the coordinator.",
-      "Thank you for your participation."
-    ]
-  };
 
   return (
     <div className="innovator-container">
@@ -39,7 +31,7 @@ const CompilationPage = ({
       </button>
 
       <div className="innovator-content">
-        <PageHeader 
+        <PageHeader
           title="Generate Innovator Compilation"
           subtitle="Create standardized Excel (all innovator questions) and PDF reports from your survey data for each domain expert"
         />
@@ -53,7 +45,7 @@ const CompilationPage = ({
             </div>
           </div>
 
-          {!showSuccessMessage ? (
+          {/* {!showSuccessMessage ? ( */}
             <GenerationForm
               toolId={toolId}
               setToolId={setToolId}
@@ -65,20 +57,21 @@ const CompilationPage = ({
               onOpenFile={handleOpenFile}
               buttonText="Generate Report"
               loadingText="Generating..."
-              tip="Codes are case-sensitive and typically start with MDII"/>
-          ) : (
+              tip="Codes are case-sensitive and typically start with MDII"
+            />
+          {/* ) : ( */}
             <SuccessContent
               title="Compilation Successfully Generated"
               description="Your Excel file has been generated."
               toolId={toolId}
               filePath={filePath}
               onOpenFile={handleOpenFile}
-              emailTemplate={emailTemplate}
+              emailTemplate={mdiiEmailTemplate}
               showNextSteps={true}
               nextStepsTitle="Next Steps"
               nextStepsDescription="Share the generated compilation with your Domain-Experts via email."
             />
-          )}
+          {/* )} */}
         </section>
       </div>
     </div>
