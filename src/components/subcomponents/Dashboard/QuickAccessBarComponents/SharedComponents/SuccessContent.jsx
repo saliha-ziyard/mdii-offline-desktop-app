@@ -10,10 +10,31 @@ const SuccessContent = ({
   filePath,
   onOpenFile,
   emailTemplate = null,
+  maturityStage = null,
   showNextSteps = false,
   nextStepsTitle = "Next Steps",
   nextStepsDescription = null
 }) => {
+  // Add this logic to generate the email body dynamically
+  const getEmailContent = () => {
+    if (!emailTemplate) return null;
+    
+    if (emailTemplate.generateBody && maturityStage) {
+      // Use the new dynamic generation function
+      return {
+        subject: emailTemplate.subject,
+        body: emailTemplate.generateBody(toolId, maturityStage)
+      };
+    } else if (emailTemplate.body) {
+      // Fallback to static body if no dynamic generation
+      return emailTemplate;
+    }
+    
+    return null;
+  };
+
+  const emailContent = getEmailContent();
+
   return (
     <div className="innovator-success-content">
       <div className="innovator-success-header">
@@ -49,10 +70,10 @@ const SuccessContent = ({
               <h3 className="next-steps-title">{nextStepsTitle}</h3>
               <p className="next-steps-description">{nextStepsDescription}</p>
               
-              {emailTemplate && (
+              {emailContent && (
                 <EmailTemplate 
-                  subject={emailTemplate.subject}
-                  body={emailTemplate.body}
+                  subject={emailContent.subject}
+                  body={emailContent.body}
                 />
               )}
             </div>

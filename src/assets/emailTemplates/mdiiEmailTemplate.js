@@ -1,15 +1,15 @@
 const mdiiEmailTemplate = {
   subject: "MDII Evaluation - Complete Your Expert Assessment",
-  body: [
+  generateBody: (toolId, maturityStage) => [
     "Dear colleague,",
     "",
-    "I’m coordinating the evaluation of a digital tool as part of the Multidimensional Digital Inclusiveness Index (MDII) process.",
+    "I'm coordinating the evaluation of a digital tool as part of the Multidimensional Digital Inclusiveness Index (MDII) process.",
     "",
-    "You’ve been nominated to support the evaluation of a digital tool currently under review based on your expertise in a relevant domain. Your insights will help assess how the tool performs not only in terms of technical functionality, but also in how it is designed, communicated, and used in real-world settings.",
+    "You've been nominated to support the evaluation of a digital tool currently under review based on your expertise in a relevant domain. Your insights will help assess how the tool performs not only in terms of technical functionality, but also in how it is designed, communicated, and used in real-world settings.",
     "",
     "Your contribution is essential. Without your input, this evaluation cannot be completed.",
     "",
-    "If this is your first time participating in an MDII evaluation, here’s some quick context:",
+    "If this is your first time participating in an MDII evaluation, here's some quick context:",
     "MDII is a CGIAR-led initiative that examines how digital tools in agriculture and water management serve a wide range of users, including smallholder farmers, women, youth, and others who are often underrepresented. The process is light-touch, practical, and focused on generating actionable insights that can support more inclusive and effective digital tools.",
     "",
     "As part of this process, we kindly request you to evaluate one of our digital tools currently under assessment.",
@@ -17,7 +17,10 @@ const mdiiEmailTemplate = {
     "",
     "You can access the evaluation form using the link below. The form includes simple instructions and should take approximately 30 minutes to complete:",
     "",
-    "Evaluation Form: [URL with tool appended]",
+    `Evaluation Form: ${maturityStage === 'advanced' 
+      ? `https://ee.kobotoolbox.org/x/gydeykAS?&d[group_intro/Q_13110000]=${toolId}`
+      : `https://ee.kobotoolbox.org/x/0qMgkWxk?&d[group_intro/Q_13110000]=${toolId}`
+    }`,
     "",
     "We kindly ask that you submit your evaluation in the next few days so we can proceed with our evaluation workflow.",
     "If you have any questions or need assistance, feel free to reach out at any time.",
