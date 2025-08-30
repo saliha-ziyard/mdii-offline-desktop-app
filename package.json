@@ -14,16 +14,28 @@
     "productName": "CGIAR MDII Inclusiveness Index",
     "files": [
       "src/main.js",
-      "preload.js",
+      "src/preload.js",
       "public/**/*",
       "backend/**/*",
       "templates/**/*"
     ],
+    "asarUnpack": [
+      "backend/**/*"
+    ],
     "extraResources": [
+      {
+        "from": "backend/python/",
+        "to": "python",
+        "filter": [
+          "**/*"
+        ]
+      },
       {
         "from": "kobo_output/",
         "to": "kobo_output",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "win": {
@@ -50,6 +62,8 @@
     "concurrently": "^8.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^5.5.0",
+    "requests": "^0.3.0",
     "wait-on": "^7.2.0"
   },
   "keywords": [],
