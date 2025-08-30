@@ -23,13 +23,13 @@ const QuickAccessSidebar = ({ handlePageChange }) => {
       className: "start-evaluation",
       onClick: () => window.open("https://ee.kobotoolbox.org/x/BQdcE4hj", "_blank")
     },
-    {
-      icon: HiOutlineUserGroup,
-      title: "Assign Experts",
-      subtitle: "Choose domain experts",
-      className: "assign-experts",
-      onClick: () => handlePageChange("assignExperts")
-    },
+    // {
+    //   icon: HiOutlineUserGroup,
+    //   title: "Assign Experts",
+    //   subtitle: "Choose domain experts",
+    //   className: "assign-experts",
+    //   onClick: () => handlePageChange("assignExperts")
+    // },
     {
       icon: GrNotes,
       title: "Get Expert PDFs",
