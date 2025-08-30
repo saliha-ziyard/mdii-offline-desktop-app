@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import HomePage from "./subcomponents/HomePage";
 import CompilationPage from "./subcomponents/Dashboard/QuickAccessBarComponents/CompilationPage";
 import HowItWorksGuide from "./subcomponents/Dashboard/QuickAccessBarComponents/HowItWorksGuide ";
 import UserTypeCompilationPage from "./subcomponents/Dashboard/QuickAccessBarComponents/UserTypeCompilationPage";
@@ -91,8 +90,7 @@ const App = () => {
 
 
       setIsLoading(true);
-    setStatus("Generating complete Excel file with all sheets and PDFs...");
-
+      setStatus("Generating comprehensive Excel report with all sheets and creating PDFs. This may take up to 2 minutes. Thank you for your patience...");
 
       try {
       const result = await window.electronAPI.generateFullExcel(toolId);
@@ -148,8 +146,8 @@ const App = () => {
         <MainDashboard setCurrentPage={handlePageChange} />
       ) : currentPage === "howItWorks" ? (
         <HowItWorksGuide setCurrentPage={handlePageChange} />
-      ) : currentPage === "assignExperts" ? (
-        <AssignExpertsPage setCurrentPage={handlePageChange} />
+      // ) : currentPage === "assignExperts" ? (
+      //   <AssignExpertsPage setCurrentPage={handlePageChange} />
       ) : currentPage === "dataCollection" ? (
         <DataCollectionPage setCurrentPage={handlePageChange} />
       ) : currentPage === "compilation" ? (
