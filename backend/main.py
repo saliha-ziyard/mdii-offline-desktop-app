@@ -124,6 +124,19 @@ TECHNOLOGY_TYPES = {
 }
 
 # ==== KOBO DATA PROCESSING FUNCTIONS ====
+def force_numeric_rating(value):
+    """Convert Kobo answers like '0','1','2','3','4','5' to int.
+       Leave everything else unchanged."""
+    if value is None:
+        return None
+    try:
+        val_str = str(value).strip()
+        if val_str in ["0", "1", "2", "3", "4", "5"]:
+            return int(val_str)
+        return value
+    except Exception:
+        return value
+
 
 def debug_print(*args, **kwargs):
     """Print debug info to stderr"""
@@ -550,6 +563,7 @@ def fill_usertype2_sheet(excel_path, tool_id, maturity_key):
         matching_records = []
         possible_fields = [
             "group_toolid/Q_13110000",
+            "group_intro/Q_13110000",
             "group_requester/Q_13110000",
             "Q_13110000",
             "group_requester/Q_1311000"
@@ -643,22 +657,34 @@ def fill_usertype2_sheet(excel_path, tool_id, maturity_key):
         answers_filled = 0
         
         # Process each question code found in the sheet
+        # Clear existing answers in row 4 onwards for all question columns
+        debug_print("Clearing existing UserType2 answers...")
         for question_code, col_idx in question_codes_map.items():
-            question_id = f"Q_{question_code}"
-            debug_print(f"Processing UserTypeII question {question_id} at column {col_idx}")
+            for row_idx in range(4, 4 + len(matching_records) + 5):  # Clear enough rows
+                usertype2_sheet.cell(row_idx, col_idx).value = ""
+
+        answers_filled = 0
+
+        # Process each submission (multiple rows)
+        for submission_idx, record in enumerate(matching_records):
+            current_row = 4 + submission_idx  # Row 4 for first submission, row 5 for second, etc.
+            debug_print(f"Processing UserType2 submission {submission_idx + 1} at row {current_row}")
             
-            # Get answer from UserType2 survey data
-            answer = get_usertype2_answer(question_id, matching_records)
-            
-            if answer and answer.strip():
-                # Put answer in row 4
-                answer_cell = usertype2_sheet.cell(4, col_idx)
-                answer_cell.value = answer
-                debug_print(f"Set UserTypeII answer at column {col_idx} (row 4): {answer}")
-                answers_filled += 1
-            else:
-                debug_print(f"No answer found for {question_id}")
-        
+            # Process each question code for this submission
+            for question_code, col_idx in question_codes_map.items():
+                question_id = f"Q_{question_code}"
+                
+                # Get answer from this specific record
+                answer = get_usertype2_answer_from_record(question_id, record)
+                
+                if answer is not None and str(answer).strip() != "":
+                    answer_cell = usertype2_sheet.cell(current_row, col_idx)
+                    answer_cell.value = force_numeric_rating(answer)
+
+                    debug_print(f"Set UserType2 answer at row {current_row}, column {col_idx}: {answer}")
+                    answers_filled += 1
+
+        debug_print(f"UserTypeII filling complete - {answers_filled} answers filled across {len(matching_records)} submissions")
         debug_print(f"UserTypeII filling complete - {answers_filled} answers filled")
         
         wb.save(excel_path)
@@ -672,6 +698,13 @@ def fill_usertype2_sheet(excel_path, tool_id, maturity_key):
         import traceback
         debug_print(f"Full traceback: {traceback.format_exc()}")
         return False
+
+def get_usertype2_answer_from_record(question_id, record):
+    """Get answer for a UserTypeII question from a single specific record"""
+    answer = find_usertype2_answer_in_record(question_id, record)
+    if answer:
+        return answer
+    return ""
 
 def fill_usertype3_sheet(excel_path, tool_id, maturity_key):
     debug_print(f"=== FILLING USERTYPE3 SHEET ===")
@@ -693,6 +726,7 @@ def fill_usertype3_sheet(excel_path, tool_id, maturity_key):
         matching_records = []
         possible_fields = [
             "group_toolid/Q_13110000",
+            "group_intro/Q_13110000",
             "group_requester/Q_13110000",
             "Q_13110000",
             "group_requester/Q_1311000"
@@ -782,21 +816,34 @@ def fill_usertype3_sheet(excel_path, tool_id, maturity_key):
         answers_filled = 0
         
         # Process each question code found in the sheet
+        # Clear existing answers in row 4 onwards for all question columns
+        debug_print("Clearing existing UserType3 answers...")
         for question_code, col_idx in question_codes_map.items():
-            question_id = f"Q_{question_code}"
-            debug_print(f"Processing UserTypeIII question {question_id} at column {col_idx}")
+            for row_idx in range(4, 4 + len(matching_records) + 5):  # Clear enough rows
+                usertype3_sheet.cell(row_idx, col_idx).value = ""
+
+        answers_filled = 0
+
+        # Process each submission (multiple rows)
+        for submission_idx, record in enumerate(matching_records):
+            current_row = 4 + submission_idx  # Row 4 for first submission, row 5 for second, etc.
+            debug_print(f"Processing UserType3 submission {submission_idx + 1} at row {current_row}")
             
-            # Get answer from UserType3 survey data
-            answer = get_usertype3_answer(question_id, matching_records)
-            
-            if answer and answer.strip():
-                # Put answer in row 4
-                answer_cell = usertype3_sheet.cell(4, col_idx)
-                answer_cell.value = answer
-                debug_print(f"Set UserTypeIII answer at column {col_idx} (row 4): {answer}")
-                answers_filled += 1
-            else:
-                debug_print(f"No answer found for {question_id}")
+            # Process each question code for this submission
+            for question_code, col_idx in question_codes_map.items():
+                question_id = f"Q_{question_code}"
+                
+                # Get answer from this specific record
+                answer = get_usertype3_answer_from_record(question_id, record)
+                
+                if answer is not None and str(answer).strip() != "":
+                    answer_cell = usertype3_sheet.cell(current_row, col_idx)
+                    answer_cell.value = force_numeric_rating(answer)
+
+                    debug_print(f"Set UserType3 answer at row {current_row}, column {col_idx}: {answer}")
+                    answers_filled += 1
+
+        debug_print(f"UserTypeIII filling complete - {answers_filled} answers filled across {len(matching_records)} submissions")
         
         debug_print(f"UserTypeIII filling complete - {answers_filled} answers filled")
         
@@ -832,6 +879,7 @@ def fill_usertype4_sheet(excel_path, tool_id, maturity_key):
         matching_records = []
         possible_fields = [
             "group_toolid/Q_13110000",
+            "group_intro/Q_13110000",
             "group_requester/Q_13110000", 
             "Q_13110000",
             "group_requester/Q_1311000",
@@ -916,27 +964,31 @@ def fill_usertype4_sheet(excel_path, tool_id, maturity_key):
         # Clear existing answers in row 4 onwards for all question columns
         debug_print("Clearing existing UserType4 answers...")
         for question_code, col_idx in question_codes_map.items():
-            for row_idx in range(4, 20):  # Clear multiple rows
+            for row_idx in range(4, 4 + len(matching_records) + 5):  # Clear enough rows
                 usertype4_sheet.cell(row_idx, col_idx).value = ""
-        
+
         answers_filled = 0
-        
-        # Process each question code found in the sheet
-        for question_code, col_idx in question_codes_map.items():
-            question_id = f"Q_{question_code}"
-            debug_print(f"Processing UserTypeIV question {question_id} at column {col_idx}")
+
+        # Process each submission (multiple rows)
+        for submission_idx, record in enumerate(matching_records):
+            current_row = 4 + submission_idx  # Row 4 for first submission, row 5 for second, etc.
+            debug_print(f"Processing UserType4 submission {submission_idx + 1} at row {current_row}")
             
-            # Get answer from UserType4 survey data
-            answer = get_usertype4_answer(question_id, matching_records)
-            
-            if answer and answer.strip():
-                # Put answer in row 4
-                answer_cell = usertype4_sheet.cell(4, col_idx)
-                answer_cell.value = answer
-                debug_print(f"Set UserTypeIV answer at column {col_idx} (row 4): {answer}")
-                answers_filled += 1
-            else:
-                debug_print(f"No answer found for {question_id}")
+            # Process each question code for this submission
+            for question_code, col_idx in question_codes_map.items():
+                question_id = f"Q_{question_code}"
+                
+                # Get answer from this specific record
+                answer = get_usertype4_answer_from_record(question_id, record)
+                
+                if answer is not None and str(answer).strip() != "":
+                    answer_cell = usertype4_sheet.cell(current_row, col_idx)
+                    answer_cell.value = force_numeric_rating(answer)
+
+                    debug_print(f"Set UserType4 answer at row {current_row}, column {col_idx}: {answer}")
+                    answers_filled += 1
+
+        debug_print(f"UserTypeIV filling complete - {answers_filled} answers filled across {len(matching_records)} submissions")
         
         debug_print(f"UserTypeIV filling complete - {answers_filled} answers filled")
         
@@ -951,7 +1003,21 @@ def fill_usertype4_sheet(excel_path, tool_id, maturity_key):
         import traceback
         debug_print(f"Full traceback: {traceback.format_exc()}")
         return False
-    
+
+def get_usertype3_answer_from_record(question_id, record):
+    """Get answer for a UserTypeIII question from a single specific record"""
+    answer = find_usertype3_answer_in_record(question_id, record)
+    if answer:
+        return answer
+    return ""
+
+def get_usertype4_answer_from_record(question_id, record):
+    """Get answer for a UserTypeIV question from a single specific record"""
+    answer = find_usertype4_answer_in_record(question_id, record)
+    if answer:
+        return answer
+    return ""
+
 def get_usertype2_answer(question_id, usertype2_records):
     """Get answer for a UserTypeII question from the records"""
     debug_print(f"Looking for UserTypeII answer to question: {question_id}")
@@ -1010,16 +1076,21 @@ def find_usertype2_answer_in_record(question_id, record):
     # Based on the sample data, UserType2 questions are in specific groups
     possible_paths = [
         question_id,
+        f"group_toolid/{question_id}",
+        f"group_intro/{question_id}",
         f"group_beneficialimpact/{question_id}",
         f"group_risks/{question_id}",
         f"group_accessibility/{question_id}",
+        f"group_usage/{question_id}",
         f"group_supportiveecosystem/{question_id}",
         f"group_ethicalinnovation/{question_id}",
         f"group_cocreationgovernance/{question_id}",
+
+        f"group_individualinfo/{question_id}",
+
         f"group_usertype2/{question_id}",
         f"group_evaluation/{question_id}",
         f"group_requester/{question_id}",
-        f"group_toolid/{question_id}"
     ]
     
     for path in possible_paths:
@@ -1041,21 +1112,25 @@ def find_usertype3_answer_in_record(question_id, record):
     # Based on the sample data, UserType3 questions are in specific groups
     possible_paths = [
         question_id,
+        f"group_toolid/{question_id}",
+        f"group_intro/{question_id}",
         f"group_beneficialimpact/{question_id}",
         f"group_risks/{question_id}",
         f"group_accessibility/{question_id}",
+        f"group_usage/{question_id}",
         f"group_supportiveecosystem/{question_id}",
         f"group_ethicalinnovation/{question_id}",
         f"group_cocreationgovernance/{question_id}",
-        f"group_usertype3/{question_id}",
-        f"group_evaluation/{question_id}",
-        f"group_requester/{question_id}",
-        f"group_toolid/{question_id}",
+
         f"group_individualinfo/{question_id}",
         f"group_dra_access/{question_id}",
         f"group_dra_usage/{question_id}",
         f"group_dra_skills/{question_id}",
-        f"group_dra_environment/{question_id}"
+        f"group_dra_environment/{question_id}",
+        f"group_usertype3/{question_id}",
+        f"group_evaluation/{question_id}",
+        f"group_requester/{question_id}",
+        
     ]
     
     for path in possible_paths:
@@ -1077,16 +1152,20 @@ def find_usertype4_answer_in_record(question_id, record):
     # Based on the sample data, UserType4 questions are in specific groups
     possible_paths = [
         question_id,
+        f"group_toolid/{question_id}",
+        f"group_intro/{question_id}",
         f"group_beneficialimpact/{question_id}",
         f"group_risks/{question_id}",
         f"group_accessibility/{question_id}",
+        f"group_usage/{question_id}",
         f"group_supportiveecosystem/{question_id}",
         f"group_ethicalinnovation/{question_id}",
         f"group_cocreationgovernance/{question_id}",
+
         f"group_usertype4/{question_id}",
         f"group_evaluation/{question_id}",
         f"group_requester/{question_id}",
-        f"group_toolid/{question_id}",
+        
         f"group_individualinfo/{question_id}",
         f"group_dra_access/{question_id}",
         f"group_dra_usage/{question_id}",
@@ -1131,15 +1210,6 @@ def process_usertype2_answer(question_id, value):
     
     if value_str.lower() in ['n/a', 'na', 'not applicable']:
         return "The Innovator answered that this Question was not Applicable to their Context"
-    
-    # For UserTypeII, we can use similar processing logic as the main survey
-    question_code = question_id.replace("Q_", "")
-    
-    # Check if it's a yes/no question (you may need to adjust these based on UserTypeII question types)
-    # if value_str.lower() in ['yes', 'y', '1', 'true']:
-    #     return "Yes"
-    # elif value_str.lower() in ['no', 'n', '0', 'false']:
-    #     return "No"
     
     # For multi-select, clean up the formatting
     if '_' in value_str:
@@ -1847,6 +1917,7 @@ def debug_usertype2_data(tool_id, maturity_key):
         
     except Exception as e:
         debug_print(f"❌ Error debugging UserType2 data: {e}")
+
 
 # ==== MAIN FUNCTION ====
 def main():
