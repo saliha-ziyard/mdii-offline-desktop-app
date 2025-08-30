@@ -147,30 +147,7 @@ const UserTestingForms = ({ toolMaturity, toolId, onOpenForm }) => {
               }}>
                 {form.url}
               </div>
-              
-              {/* Action Buttons */}
-              <div style={{ 
-                display: 'flex', 
-                gap: '8px' 
-              }}>
-                <button
-                  onClick={() => handleOpenForm(form.url)}
-                  className="innovator-generate-button"
-                  style={{ 
-                    flex: '1', 
-                    padding: '10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '6px'
-                  }}
-                  type="button"
-                >
-                  <BiLinkExternal size={16} />
-                  Open Form
-                </button>
-                
-                <button
+                              <button
                   onClick={() => handleCopyLink(form.id, form.url)}
                   style={{
                     padding: '10px 12px',
@@ -194,6 +171,29 @@ const UserTestingForms = ({ toolMaturity, toolId, onOpenForm }) => {
                     <BsCopy size={16} />
                   )}
                 </button>
+              {/* Action Buttons */}
+              <div style={{ 
+                display: 'flex', 
+                gap: '8px' 
+              }}>
+                {/* <button
+                  onClick={() => handleOpenForm(form.url)}
+                  className="innovator-generate-button"
+                  style={{ 
+                    flex: '1', 
+                    padding: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px'
+                  }}
+                  type="button"
+                >
+                  <BiLinkExternal size={16} />
+                  Open Form
+                </button> */}
+                
+
               </div>
             </div>
           ))}
