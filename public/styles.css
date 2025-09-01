@@ -245,6 +245,7 @@ body {
     display: flex;
     gap: 10px;
     margin-bottom: 10px;
+    
   }
   .journey-step {
     display: flex;
@@ -253,7 +254,7 @@ body {
     padding: 16px;
     border-radius: 12px;
     border: 1px solid var(--border-colour);
-    width: 260px;
+    width: 180px;
     min-height: 100px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06); /* soft shadow for depth */
     transition: transform 0.2s ease, box-shadow 0.2s ease;

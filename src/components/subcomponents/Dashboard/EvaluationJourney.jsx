@@ -14,23 +14,23 @@ const EvaluationJourney = () => {
       title: "Innovator Survey",
       description: "We'll send surveys and notify you when completed."
     },
+    // {
+    //   number: 3,
+    //   title: "Assign Experts",
+    //   description: "Choose domain experts to assess the tool's information."
+    // },
     {
       number: 3,
-      title: "Assign Experts",
-      description: "Choose domain experts to assess the tool's information."
-    },
-    {
-      number: 4,
       title: "Expert PDFs",
       description: "Generate domain-specific PDFs for expert review."
     },
     {
-      number: 5,
+      number: 4,
       title: "Data Collection",
       description: "Create your form link and gather data from users."
     },
     {
-      number: 6,
+      number: 5,
       title: "Get MDII Report",
       description: "Generate your score and recommendations."
     }
