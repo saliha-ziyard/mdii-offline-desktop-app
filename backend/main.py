@@ -9,6 +9,7 @@ import time
 import json
 from collections import defaultdict
 import re
+import xlwings as xw
 
 # ==== CONFIG ====
 API_TOKEN = "fc37a9329918014ef595b183adcef745a4beb217"
