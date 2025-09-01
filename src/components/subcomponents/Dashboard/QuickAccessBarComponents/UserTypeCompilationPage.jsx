@@ -64,7 +64,7 @@ const UserTypeCompilationPage = ({
               status={statusWithSubItems}
               filePath={filePath}
               onOpenFile={handleOpenFile}
-              buttonText="Generate Compilation"
+              buttonText="Generate Final Report"
               loadingText="Generating..."
               tip="Codes are case-sensitive and typically start with MDII"
             />
