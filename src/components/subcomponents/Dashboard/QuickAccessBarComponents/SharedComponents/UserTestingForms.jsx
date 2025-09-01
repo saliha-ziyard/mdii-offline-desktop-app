@@ -23,7 +23,7 @@ const UserTestingForms = ({ toolMaturity, toolId, onOpenForm }) => {
   // Generate complete form URLs with pre-filled tool ID
   const generateFormUrl = (formType) => {
     const baseUrl = FORM_URLS[toolMaturity][formType];
-    return `${baseUrl}?&d[group_individualinfo/Q_13110000]=${encodeURIComponent(toolId)}`;
+    return `${baseUrl}?&d[group_intro/Q_13110000]=${encodeURIComponent(toolId)}`;
   };
   
   const forms = [
