@@ -1411,6 +1411,31 @@ def generate_pdfs_from_excel(tool_code, excel_path, maturity_key):
 
     pdf_dir.mkdir(parents=True, exist_ok=True)
     
+    # Custom canvas class for page numbers
+    class NumberedCanvas(canvas.Canvas):
+        def __init__(self, *args, **kwargs):
+            canvas.Canvas.__init__(self, *args, **kwargs)
+            self._saved_page_states = []
+
+        def showPage(self):
+            self._saved_page_states.append(dict(self.__dict__))
+            self._startPage()
+
+        def save(self):
+            """add page info to each page (page x of y)"""
+            num_pages = len(self._saved_page_states)
+            for (page_num, state) in enumerate(self._saved_page_states):
+                self.__dict__.update(state)
+                self.draw_page_number(page_num + 1, num_pages)
+                canvas.Canvas.showPage(self)
+            canvas.Canvas.save(self)
+
+        def draw_page_number(self, page_num, total_pages):
+            """Draw page number at bottom right corner"""
+            self.setFont("Helvetica", 9)
+            self.setFillColor(HexColor('#6b7280'))
+            self.drawRightString(A4[0] - inch*0.6, inch*0.4, f"{page_num}")
+    
     try:
         wb = openpyxl.load_workbook(excel_path, data_only=True)        
         # Find the answers sheet (first sheet with X marks)
@@ -1464,10 +1489,10 @@ def generate_pdfs_from_excel(tool_code, excel_path, maturity_key):
         title_style = ParagraphStyle(
             'CustomTitle',
             parent=styles['Heading1'],
-            fontSize=24,
-            spaceAfter=30,
+            fontSize=22,
+            spaceAfter=15,
             spaceBefore=20,
-            textColor=HexColor('#1a365d'),
+            textColor=HexColor('#591fd5'),
             alignment=TA_CENTER,
             fontName='Helvetica-Bold'
         )
@@ -1476,30 +1501,34 @@ def generate_pdfs_from_excel(tool_code, excel_path, maturity_key):
         subtitle_style = ParagraphStyle(
             'CustomSubtitle',
             parent=styles['Normal'],
-            fontSize=14,
+            fontSize=16,
             spaceAfter=25,
-            spaceBefore=10,
-            textColor=HexColor('#2d3748'),
+            spaceBefore=5,
+            textColor=HexColor('#374151'),
             alignment=TA_CENTER,
-            fontName='Helvetica',
-            italic=True
+            fontName='Helvetica-Bold'
         )
         
         # Header information box style
         header_style = ParagraphStyle(
             'CustomHeader',
             parent=styles['Normal'],
-            fontSize=11,
+            fontSize=10,
             spaceAfter=20,
             spaceBefore=10,
-            backColor=HexColor('#f7fafc'),
-            leftIndent=15,
-            rightIndent=15,
-            borderColor=HexColor('#4299e1'),
-            borderWidth=2,
-            borderPadding=15,
             alignment=TA_LEFT,
-            fontName='Helvetica'
+            fontName='Helvetica',
+            bottomMargin = 5,
+        )
+        
+        # Thank you note style
+        thank_you_style = ParagraphStyle(
+            'ThankYouNote',
+            parent=styles['Normal'],
+            fontSize=10,
+            spaceBefore=15,
+            alignment=TA_JUSTIFY,
+            fontName='Helvetica',
         )
         
         # Section header style
@@ -1507,15 +1536,18 @@ def generate_pdfs_from_excel(tool_code, excel_path, maturity_key):
             'SectionHeader',
             parent=styles['Heading2'],
             fontSize=16,
-            spaceAfter=20,
-            spaceBefore=25,
+            spaceAfter=5,
             textColor=HexColor('#2b6cb0'),
             fontName='Helvetica-Bold',
-            borderColor=HexColor('#4299e1'),
-            borderWidth=1,
-            borderPadding=8,
-            backColor=HexColor('#ebf8ff'),
-            leftIndent=10
+        )
+        
+        # Section description style
+        section_desc_style = ParagraphStyle(
+            'SectionDescription',
+            parent=styles['Normal'],
+            fontSize=10,
+            alignment=TA_JUSTIFY,
+            fontName='Helvetica',
         )
         
         # Main heading style (Dimension)
@@ -1523,109 +1555,186 @@ def generate_pdfs_from_excel(tool_code, excel_path, maturity_key):
             'MainHeading',
             parent=styles['Heading2'],
             fontSize=14,
-            spaceAfter=8,
-            spaceBefore=20,
+            spaceAfter=0,
+            spaceBefore=10,
             textColor=HexColor('#1e3a8a'),
             fontName='Helvetica-Bold',
-            leftIndent=0,
-            borderColor=HexColor('#3b82f6'),
-            borderWidth=1,
-            borderPadding=6,
-            backColor=HexColor('#eff6ff')
         )
         
         # Sub-heading style (Sub-dimension)
         sub_heading_style = ParagraphStyle(
             'SubHeading',
             parent=styles['Heading3'],
-            fontSize=12,
-            spaceAfter=6,
-            spaceBefore=15,
-            textColor=HexColor('#1e40af'),
+            fontSize=13,
+            spaceAfter=0,
+            textColor=HexColor('#1e3a8a'),
             fontName='Helvetica-Bold',
-            leftIndent=15,
-            borderColor=HexColor('#60a5fa'),
-            borderWidth=0.5,
-            borderPadding=4,
-            backColor=HexColor('#f0f9ff')
         )
         
-        # Context heading style (Contextual Information - italic)
+        # Indicator heading style
+        indicator_style = ParagraphStyle(
+            'IndicatorHeading',
+            parent=styles['Heading4'],
+            fontSize=12,
+            spaceBefore=10,
+            textColor=HexColor('#000000'),
+            fontName='Helvetica-Bold',
+        )
+        
+        # Evaluator Affirmation style
+        evaluator_style = ParagraphStyle(
+            'EvaluatorAffirmation',
+            parent=styles['Heading4'],
+            fontSize=11,
+            textColor=HexColor('#1d4ed8'),
+            fontName='Helvetica-Bold',
+        )
+        
+        # Evaluator Affirmation Text style (for text right after Evaluator Affirmation)
+        evaluator_text_style = ParagraphStyle(
+            'EvaluatorText',
+            parent=styles['Normal'],
+            fontSize=10,
+            spaceAfter=2,
+            spaceBefore=0,
+            textColor=HexColor('#000000'),
+            fontName='Helvetica',
+            alignment=TA_JUSTIFY
+        )
+        
+        # Innovator Response style
+        innovator_style = ParagraphStyle(
+            'InnovatorResponse',
+            parent=styles['Heading4'],
+            fontSize=11,
+            fontName='Helvetica-Bold',
+        )
+        
+        # Context heading style
         context_heading_style = ParagraphStyle(
             'ContextHeading',
-            parent=styles['Heading3'],
+            parent=styles['Normal'],
             fontSize=11,
             spaceAfter=5,
             spaceBefore=12,
             textColor=HexColor('#374151'),
-            fontName='Helvetica-BoldOblique',
-            leftIndent=15,
-            italic=True
+            fontName='Helvetica-Bold',
         )
         
-        # Description style (for content under headings)
+        # Description style
         description_style = ParagraphStyle(
             'Description',
             parent=styles['Normal'],
             fontSize=10,
-            spaceAfter=10,
-            spaceBefore=3,
-            leftIndent=20,
-            rightIndent=15,
             alignment=TA_JUSTIFY,
             fontName='Helvetica',
             textColor=HexColor('#4b5563')
         )
         
-        # Enhanced question-answer style (single line)
+        # Question-answer style
         qa_style = ParagraphStyle(
             'QuestionAnswer',
             parent=styles['Normal'],
             fontSize=10,
-            spaceAfter=8,
-            spaceBefore=3,
-            leftIndent=25,
-            rightIndent=15,
+            spaceAfter=5,
+            spaceBefore=5,
             alignment=TA_JUSTIFY,
             fontName='Helvetica'
         )
         
-        # Alternating row colors for better readability
+        # Alternating row colors
         qa_style_alt = ParagraphStyle(
             'QuestionAnswerAlt',
             parent=qa_style,
-            backColor=HexColor('#f8f9fa'),
-            borderColor=HexColor('#e2e8f0'),
-            borderWidth=0.5,
             borderPadding=8
         )
         
-        def identify_content_type(question_text, answer_text):
-            """Identify the type of content based on text patterns"""
+        # Domain heading style (for "Domain-Specific Questions") - using Heading1
+        domain_heading_style = ParagraphStyle(
+            'DomainHeading',
+            parent=styles['Heading1'],
+            fontSize=18,
+            spaceAfter=15,
+            spaceBefore=20,
+            textColor=HexColor('#1e3a8a'),
+            fontName='Helvetica-Bold',
+        )
+        
+        # Domain subheading style (for numbered subheadings)
+        domain_subheading_style = ParagraphStyle(
+            'DomainSubheading',
+            parent=styles['Heading3'],
+            fontSize=14,
+            spaceAfter=8,
+            spaceBefore=12,
+            textColor=HexColor('#2b6cb0'),
+            fontName='Helvetica-Bold',
+        )
+        
+        # Additional Information heading style
+        additional_info_style = ParagraphStyle(
+            'AdditionalInfoHeading',
+            parent=styles['Heading2'],
+            fontSize=16,
+            spaceAfter=10,
+            spaceBefore=15,
+            textColor=HexColor('#1e3a8a'),
+            fontName='Helvetica-Bold',
+        )
+        
+        # Define domain-specific subheadings that need numbering
+        # Define domain-specific subheadings that need numbering
+        domain_subheadings = [
+            "Engagement in Problem Definition", "Loss of Agency", "Content and Design", "Equality and Empowerment", "Diversity and Representation",
+            "Community-led Solutions", "Infrastructure Readiness", "Integration with Existing Systems", "Resilience and Security",
+            "Data Privacy", "Ethical Standards Adherence", "Ethical Oversight", "Impact Assessment", "Algorithmic Fairness", "Data Representation Equity", 
+            "Fraudulent activities", "Inability to Access Collected Data", "Unauthorized Access", "Bias Monitoring and Adaptation",
+            "Long-term Viability", "Maintainability", "Scalability", "Problem-Solution Fit",
+            "Adaptive Capability", "Problem Identification Accuracy", "Local Contextual Understanding", 
+            "Affordability"
+        ]
+        
+        def identify_content_type(question_text, answer_text, previous_content_type=None):
+            """Enhanced content type identification with new rules"""
             if not question_text:
-                return "unknown"
+                return "question"
             
-            question_lower = question_text.lower().strip()
+            clean_text = question_text.strip()
+            clean_text_lower = clean_text.lower()
             
-            # Check if it's a main dimension heading
-            if question_lower.startswith("dimension:"):
-                return "main_heading"
+            # Rule 1: Text after Evaluator Affirmation is normal text
+            if previous_content_type == "evaluator_affirmation":
+                return "evaluator_affirmation_text"
             
-            # Check if it's a sub-dimension heading
-            if question_lower.startswith("sub-dimension:"):
-                return "sub_heading"
+            # Check for exact matches first
+            if clean_text == "Domain-Specific Questions":
+                return "domain_heading"
             
-            # Check if it's contextual information
-            if "contextual information" in question_lower:
-                return "context_heading"
+            if clean_text == "ADDITIONAL INFORMATION":
+                return "additional_info_heading"
             
-            # Check if it's a description (usually follows headings and has "No response provided")
-            if (question_lower.startswith("description:") and 
-                (not answer_text or answer_text.strip() == "" or "no response provided" in str(answer_text).lower())):
+            # Check for domain subheadings
+            for subheading in domain_subheadings:
+                if subheading.strip() in clean_text:
+                    return "domain_subheading"
+            
+            # Simple keyword-based identification
+            if "dimension:" in clean_text_lower and "sub-dimension" not in clean_text_lower:
+                return "dimension"
+            elif "sub-dimension" in clean_text_lower:
+                return "subdimension"
+            elif clean_text_lower.startswith("indicator:") or "indicator:" in clean_text_lower:
+                return "indicator"
+            elif clean_text_lower == "evaluator affirmation":
+                return "evaluator_affirmation"
+            elif clean_text_lower == "innovator response":
+                return "innovator_response"
+            elif "contextual information" in clean_text_lower:
+                return "contextual_information"
+            elif clean_text_lower.startswith("description"):
                 return "description"
-            
-            # Regular question with answer
-            return "question_answer"
+            else:
+                return "question"
         
         pdf_count = 0
         
@@ -1638,7 +1747,7 @@ def generate_pdfs_from_excel(tool_code, excel_path, maturity_key):
                 pdf_name = f"{safe_tool_id}_{domain_name.replace(' ', '_')}_MDII_Evaluation_Report.pdf"
                 pdf_path = pdf_dir / pdf_name
                 
-                # Create PDF document with better margins
+                # Create PDF document with custom canvas for page numbers
                 doc = SimpleDocTemplate(
                     str(pdf_path),
                     pagesize=A4,
@@ -1650,117 +1759,201 @@ def generate_pdfs_from_excel(tool_code, excel_path, maturity_key):
                 
                 story = []
                 
-                # Enhanced title page
-                story.append(Paragraph("MDII DOMAIN EVALUATION REPORT", title_style))
-                story.append(Paragraph("Digital Innovation Assessment", subtitle_style))
+                # Title page
+                story.append(Paragraph("Multidimensional Digital Inclusiveness Assessment", title_style))
+                story.append(Paragraph("Domain Evaluation Report", subtitle_style))
                 story.append(Spacer(1, 20))
                 
-                # Enhanced header information with better formatting
+                # Header information
                 header_info = f"""
-                <b><font color='#2b6cb0' size='12'>Digital Tool Code:</font></b> <font color='#1a202c'>{tool_code}</font><br/>
-                <b><font color='#2b6cb0' size='12'>MDII Version:</font></b> <font color='#1a202c'>{mdii_version}</font><br/>
-                <b><font color='#2b6cb0' size='12'>Domain Expert:</font></b> <font color='#1a202c'>{domain_name}</font><br/>
-                <b><font color='#2b6cb0' size='12'>Report Generated:</font></b> <font color='#1a202c'>{time.strftime('%B %d, %Y at %H:%M')}</font><br/>
+                <b><font color='#2b6cb0' size='10' >Digital Tool Code:</font></b> <font color='#1a202c'>{tool_code}</font><br/>
+                <b><font color='#2b6cb0' size='10'>MDII Version:</font></b> <font color='#1a202c'>{mdii_version}</font><br/>
+                <b><font color='#2b6cb0' size='10'>Domain Expert:</font></b> <font color='#1a202c'>{domain_name}</font><br/>
+                <b><font color='#2b6cb0' size='10'>Report Generated:</font></b> <font color='#1a202c'>{time.strftime('%B %d, %Y at %H:%M')}</font><br/>
                 """
                 story.append(Paragraph(header_info, header_style))
+                
+                # Thank you note
+                thank_you_text = """
+                <b>Thank you for your time</b><br/><br/>
+                You are receiving this form because you have been identified as a relevant expert for the evaluation of digital inclusiveness of this digital tool;<br/><br/>
+                Your answers will help the calculation of the Multidimensional Digital Inclusiveness Index (MDII). The MDII is a tool designed to scientifically evaluate and enhance the digital inclusiveness of agritools for marginalized groups, across seven dimensions: Beneficial Impact, Risks & Harms, Accessibility, Usage Effectiveness, Supportive Ecosystem, Ethical and Responsible Innovation, and Co-creation and Governance.<br/><br/>
+                This document is a compilation of the answers provided by the Innovator of the tool and divided in 2 sections: (I) General; (II) Domain-Specific. The affirmations for evaluation are in blue. Next to it, you'll find the information that was provided, as well as the innovators' answers. No changes were made on the answers — this means what you'll be reading is raw data.
+                """
+                story.append(Paragraph(thank_you_text, thank_you_style))
                 story.append(Spacer(1, 25))
                 
-                # Section header with enhanced styling
-                story.append(Paragraph(f"📋 Evaluation Questions & Responses - {domain_name}", section_header_style))
+                # Section header
+                story.append(Paragraph(f"Evaluation Questions & Responses - {domain_name}", section_header_style))
+                
+                # Section description
+                section_desc_text = "This section presents overall information regarding the tool. These answers will give you a general idea of the tool and will support your evaluation."
+                story.append(Paragraph(section_desc_text, section_desc_style))
                 story.append(Spacer(1, 15))
                 
                 question_count = 0
+                previous_content_type = None
+                domain_subheading_counter = 0
+                is_after_indicator = False
                 
                 # Process each answered question for this domain
                 for row_idx in domain_info['answered_rows'][3:]:
                     try:
-                        # Get question code from column H (code column) - UPDATED FOR MATURITY
+                        # Get question code from column
                         question_code = None
-                        code_col = 9 if maturity_key == "advanced" else 8  # Column I for advanced, H for early
+                        code_col = 9 if maturity_key == "advanced" else 8
 
                         code_value = ws_answers.cell(row_idx, code_col).value
                         if code_value and str(code_value).strip().isdigit():
                             if len(str(code_value).strip()) == 8:
                                 question_code = str(code_value).strip()
 
-                        # Get question text - UPDATED FOR MATURITY
+                        # Get question text
                         question_text = None
-                        question_col = 11 if maturity_key == "advanced" else 10  # Column K for advanced, J for early
+                        question_col = 11 if maturity_key == "advanced" else 10
                         text_value = ws_answers.cell(row_idx, question_col).value
                         if text_value and str(text_value).strip():
                             question_text = str(text_value).strip()
 
-                        # Get answer text - UPDATED FOR MATURITY
+                        # Get answer text
                         answer_text = None
-                        answer_col = 12 if maturity_key == "advanced" else 11  # Column L for advanced, K for early
+                        answer_col = 12 if maturity_key == "advanced" else 11
                         ans_value = ws_answers.cell(row_idx, answer_col).value
                         if ans_value and str(ans_value).strip():
                             answer_text = str(ans_value).strip()
 
-                        # Use HTML version if available and better
+                        # Use HTML version if available
                         if question_code and question_code in html_mapping:
                             html_text = html_mapping[question_code]
                             if len(html_text) > len(question_text or ""):
                                 question_text = html_text
 
-                        # Process content based on type (KEEP ALL EXISTING LOGIC)
-                        if question_text and len(question_text.strip()) > 10:
+                        # Process content
+                        if question_text and len(question_text.strip()) > 3:
                             clean_question = clean_html_text(question_text)
                             clean_question = re.sub(r'\[.*?\]', '', clean_question).strip()
 
                             if clean_question:
-                                # Identify content type
-                                content_type = identify_content_type(clean_question, answer_text)
+                                content_type = identify_content_type(clean_question, answer_text, previous_content_type)
+                                
+                                debug_print(f"Row {row_idx}: '{clean_question[:50]}...' -> {content_type}")
 
-                                if content_type == "main_heading":
-                                    # Main heading (Dimension)
-                                    heading_text = clean_question.replace("Dimension:", "").strip()
-                                    story.append(Paragraph(f"📊 {heading_text}", main_heading_style))
+                                if content_type == "dimension":
+                                    # Main dimension heading
+                                    heading_text = clean_question
+                                    if "dimension:" in heading_text.lower():
+                                        heading_text = heading_text.split(":", 1)[1].strip()
+                                    story.append(Paragraph(f"Dimension - {heading_text}", main_heading_style))
                                     story.append(Spacer(1, 10))
+                                    is_after_indicator = False
 
-                                elif content_type == "sub_heading":
-                                    # Sub-heading (Sub-dimension)
-                                    heading_text = clean_question.replace("Sub-dimension:", "").strip()
-                                    story.append(Paragraph(f"▶ {heading_text}", sub_heading_style))
+                                elif content_type == "subdimension":
+                                    # Sub-dimension heading
+                                    heading_text = clean_question
+                                    if "sub-dimension:" in heading_text.lower():
+                                        parts = heading_text.split(":", 1)
+                                        if len(parts) > 1:
+                                            heading_text = f"Sub-dimension: {parts[1].strip()}"
+                                    story.append(Paragraph(heading_text, sub_heading_style))
                                     story.append(Spacer(1, 8))
-
-                                elif content_type == "context_heading":
-                                    # Context heading (Contextual Information)
-                                    story.append(Paragraph(clean_question, context_heading_style))
+                                    is_after_indicator = False
+                                
+                                elif content_type == "indicator":
+                                    # Indicator heading
+                                    story.append(Paragraph(clean_question, indicator_style))
                                     story.append(Spacer(1, 6))
+                                    is_after_indicator = True
+                                
+                                elif content_type == "domain_heading":
+                                    # Domain-Specific Questions heading (using Heading1)
+                                    story.append(Paragraph("Domain-Specific Questions", domain_heading_style))
+                                    story.append(Spacer(1, 15))
+                                    domain_subheading_counter = 0
+                                    is_after_indicator = False
+                                
+                                elif content_type == "domain_subheading":
+                                    # Domain subheading with numbering (01, 02, 03...)
+                                    domain_subheading_counter += 1
+                                    # Remove existing numbers if present, then add new formatting
+                                    clean_heading = re.sub(r'^\d+\.\s*', '', clean_question.strip())
+                                    formatted_heading = f"{domain_subheading_counter:02d}. {clean_heading}"
+                                    story.append(Paragraph(formatted_heading, domain_subheading_style))
+                                    story.append(Spacer(1, 10))
+                                    is_after_indicator = False
+                                
+                                elif content_type == "additional_info_heading":
+                                    # Additional Information heading
+                                    story.append(Paragraph("ADDITIONAL INFORMATION", additional_info_style))
+                                    story.append(Spacer(1, 12))
+                                    is_after_indicator = False
+                                
+                                elif content_type == "evaluator_affirmation":
+                                    # Evaluator Affirmation
+                                    story.append(Paragraph("Evaluator Affirmation", evaluator_style))
+                                    story.append(Spacer(1, 6))
+                                    is_after_indicator = False
+                                
+                                elif content_type == "evaluator_affirmation_text":
+                                    # Text right after Evaluator Affirmation (treated as normal text)
+                                    story.append(Paragraph(clean_question, evaluator_text_style))
+                                    story.append(Spacer(1, 8))
+                                    is_after_indicator = False
+                                    
+                                elif content_type == "innovator_response":
+                                    # Innovator Response
+                                    story.append(Paragraph("Innovator Response", innovator_style))
+                                    story.append(Spacer(1, 6))
+                                    is_after_indicator = False
+
+                                elif content_type == "contextual_information":
+                                    # Contextual Information
+                                    story.append(Paragraph("Contextual Information:", context_heading_style))
+                                    story.append(Spacer(1, 6))
+                                    is_after_indicator = False
 
                                 elif content_type == "description":
-                                    # Description text (under headings)
-                                    description_text = clean_question.replace("Description:", "").strip()
+                                    # Description text
+                                    description_text = clean_question
+                                    if description_text.lower().startswith("description:"):
+                                        description_text = description_text[12:].strip()
                                     story.append(Paragraph(description_text, description_style))
                                     story.append(Spacer(1, 12))
+                                    is_after_indicator = False
 
                                 else:
-                                    # Regular question-answer pair (KEEP EXISTING ANSWER LOGIC)
-                                    # Clean and format answer
-                                    if answer_text and answer_text.strip() != "":
-                                        clean_answer = clean_html_text(answer_text)
-                                        if clean_answer and clean_answer != "--":
-                                            answer_formatted = f'<font color="#059669"><i>"{clean_answer}"</i></font>'
+                                    # Rule 2: Check if this is text after an indicator (gets "Description: " prefix)
+                                    if is_after_indicator and not answer_text:
+                                        # Text after indicator gets "Description: " prefix
+                                        prefixed_text = f"Description: {clean_question}"
+                                        story.append(Paragraph(prefixed_text, description_style))
+                                        story.append(Spacer(1, 8))
+                                        is_after_indicator = False
+                                    else:
+                                        # Regular question-answer pair
+                                        if answer_text and answer_text.strip() != "":
+                                            clean_answer = clean_html_text(answer_text)
+                                            if clean_answer and clean_answer != "--":
+                                                answer_formatted = f'<font color="#059669"><i>"{clean_answer}"</i></font>'
+                                            else:
+                                                answer_formatted = '<font color="#dc2626"><i>"No response provided"</i></font>'
                                         else:
                                             answer_formatted = '<font color="#dc2626"><i>"No response provided"</i></font>'
-                                    else:
-                                        answer_formatted = '<font color="#dc2626"><i>"No response provided"</i></font>'
 
-                                    # Enhanced formatting: Question number + Question + Answer
-                                    question_number = f'<b><font color="#1e40af" size="11">{question_count + 1}.</font></b>'
-                                    formatted_question = f'<b><font color="#374151">{clean_question}</font></b>'
+                                        # Format question and answer
+                                        question_number = f'<font>{question_count + 1} - </font>'
+                                        formatted_question = f'<font>{clean_question}</font>'
+                                        combined_line = f'{question_number} {formatted_question} — {answer_formatted}'
 
-                                    # Combine with better spacing and styling
-                                    combined_line = f'{question_number} {formatted_question} — {answer_formatted}'
+                                        # Use alternating styles
+                                        current_style = qa_style if question_count % 2 == 0 else qa_style_alt
 
-                                    # Alternate row styling for better readability
-                                    current_style = qa_style if question_count % 2 == 0 else qa_style_alt
+                                        story.append(Paragraph(combined_line, current_style))
+                                        story.append(Spacer(1, 6))
 
-                                    story.append(Paragraph(combined_line, current_style))
-                                    story.append(Spacer(1, 6))
+                                        question_count += 1
+                                        is_after_indicator = False
 
-                                    question_count += 1
+                                previous_content_type = content_type
 
                     except Exception as e:
                         debug_print(f"Error processing question at row {row_idx}: {e}")
@@ -1785,8 +1978,8 @@ def generate_pdfs_from_excel(tool_code, excel_path, maturity_key):
                 )
                 story.append(Paragraph(footer_info, footer_style))
                 
-                # Build PDF
-                doc.build(story)
+                # Build PDF with custom canvas for page numbers
+                doc.build(story, canvasmaker=NumberedCanvas)
                 debug_print(f"Generated PDF: {pdf_path}")
                 pdf_count += 1
                 
@@ -1802,6 +1995,7 @@ def generate_pdfs_from_excel(tool_code, excel_path, maturity_key):
         return False
     finally:
         wb.close()
+
 def generate_standard_pdf(tool_code, excel_path, wb, ws_answers):
     """Generate standard PDF if no domain responses found (fallback)"""
     try:
@@ -1817,7 +2011,7 @@ def generate_standard_pdf(tool_code, excel_path, wb, ws_answers):
     debug_print("Generating standard fallback PDF")
     
     safe_tool_id = tool_code.replace("/", "_").replace("\\", "_").replace(":", "_")
-    pdf_dir = OUTPUT_DIR / safe_tool_id / "PDF"  # Simplified to OUTPUT_DIR/tool_id/PDF
+    pdf_dir = OUTPUT_DIR / safe_tool_id / "PDF"
     pdf_dir.mkdir(parents=True, exist_ok=True)
     
     styles = getSampleStyleSheet()
@@ -1838,8 +2032,6 @@ def generate_standard_pdf(tool_code, excel_path, wb, ws_answers):
     doc.build(story)
     debug_print(f"Created standard PDF: {pdf_path}")
     return True
-
-# Add this enhanced debug function to your main.py
 
 def debug_usertype2_data(tool_id, maturity_key):
     """Debug function to check UserType2 data availability"""
