@@ -271,15 +271,43 @@ def find_answer_in_record(question_id, record):
     
     possible_paths = [
         question_id,
+        # f"group_requester/{question_id}",
+        # f"group_institutionalinfo/{question_id}",
+        # f"group_tooldetails/{question_id}",
+        # f"group_used_technologies/{question_id}",
+        # f"group_socialconsequences/{question_id}",
+        # f"group_toolusage/{question_id}",
+        # f"group_governance/{question_id}",
+        # f"group_goals/{question_id}",
+        # f"group_evalrequest/{question_id}",
+
+        # leadership
         f"group_requester/{question_id}",
-        f"group_institutionalinfo/{question_id}",
         f"group_tooldetails/{question_id}",
-        f"group_used_technologies/{question_id}",
+        f"group_toolapplication/{question_id}",
+        f"group_toolmetadata/{question_id}",
+        f"group_usedtechnologies/{question_id}",
+        f"group_wapordetails/{question_id}",
+        f"group_financialinfo/{question_id}",
+        f"group_enduserscategorization/{question_id}",
+        f"group_actionsforinclusion/{question_id}",
         f"group_socialconsequences/{question_id}",
         f"group_toolusage/{question_id}",
         f"group_governance/{question_id}",
+        
+        # technical
+        # "group_requester",
+        f"group_used_technologies/{question_id}",
+        # "group_socialconsequences",
+        # "group_toolusage",
+        # "group_governance",
+        
+        # pm
+        # "group_requester",
+        f"group_evalrequest/{question_id}",
+        f"group_institutionalinfo/{question_id}",
+        # "group_tooldetails",
         f"group_goals/{question_id}",
-        f"group_evalrequest/{question_id}"
     ]
     
     for path in possible_paths:
@@ -1079,19 +1107,27 @@ def find_usertype2_answer_in_record(question_id, record):
         question_id,
         f"group_toolid/{question_id}",
         f"group_intro/{question_id}",
+
+
+        # f"group_usertype2/{question_id}",
+        # f"group_evaluation/{question_id}",
+        # f"group_requester/{question_id}",
+
+        # ut2-exante
+        f"group_individualinfo/{question_id}",
+        # f"group_dra_access/{question_id}",
+        # f"group_dra_usage/{question_id}",
+        # f"group_dra_skills/{question_id}",
+        # f"group_dra_environment/{question_id}",
         f"group_beneficialimpact/{question_id}",
         f"group_risks/{question_id}",
         f"group_accessibility/{question_id}",
-        f"group_usage/{question_id}",
         f"group_supportiveecosystem/{question_id}",
         f"group_ethicalinnovation/{question_id}",
         f"group_cocreationgovernance/{question_id}",
 
-        f"group_individualinfo/{question_id}",
-
-        f"group_usertype2/{question_id}",
-        f"group_evaluation/{question_id}",
-        f"group_requester/{question_id}",
+        f"group_intro_001/{question_id}",
+        f"group_usage/{question_id}",
     ]
     
     for path in possible_paths:
@@ -1115,25 +1151,30 @@ def find_usertype3_answer_in_record(question_id, record):
         question_id,
         f"group_toolid/{question_id}",
         f"group_intro/{question_id}",
-        f"group_beneficialimpact/{question_id}",
-        f"group_risks/{question_id}",
-        f"group_accessibility/{question_id}",
-        f"group_usage/{question_id}",
-        f"group_supportiveecosystem/{question_id}",
-        f"group_ethicalinnovation/{question_id}",
-        f"group_cocreationgovernance/{question_id}",
 
+
+        # f"group_usertype2/{question_id}",
+        # f"group_evaluation/{question_id}",
+        # f"group_requester/{question_id}",
+
+        # ut2-exante
         f"group_individualinfo/{question_id}",
         f"group_dra_access/{question_id}",
         f"group_dra_usage/{question_id}",
         f"group_dra_skills/{question_id}",
         f"group_dra_environment/{question_id}",
-        f"group_usertype3/{question_id}",
-        f"group_evaluation/{question_id}",
-        f"group_requester/{question_id}",
-        
+        f"group_beneficialimpact/{question_id}",
+        f"group_risks/{question_id}",
+        f"group_accessibility/{question_id}",
+        f"group_supportiveecosystem/{question_id}",
+        f"group_ethicalinnovation/{question_id}",
+        f"group_cocreationgovernance/{question_id}",
+
+        f"group_intro_001/{question_id}",
+        f"group_usage/{question_id}",
+
     ]
-    
+   
     for path in possible_paths:
         if path in record:
             value = record[path]
@@ -1163,15 +1204,18 @@ def find_usertype4_answer_in_record(question_id, record):
         f"group_ethicalinnovation/{question_id}",
         f"group_cocreationgovernance/{question_id}",
 
-        f"group_usertype4/{question_id}",
-        f"group_evaluation/{question_id}",
-        f"group_requester/{question_id}",
+        # f"group_usertype4/{question_id}",
+        # f"group_evaluation/{question_id}",
+        # f"group_requester/{question_id}",
         
         f"group_individualinfo/{question_id}",
         f"group_dra_access/{question_id}",
         f"group_dra_usage/{question_id}",
         f"group_dra_skills/{question_id}",
         f"group_dra_environment/{question_id}"
+
+        f"Q_individualinfo/{question_id}",
+        f"group_individualinfo/{question_id}",
     ]
     
     for path in possible_paths:
