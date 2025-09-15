@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import CompilationPage from "./subcomponents/Dashboard/QuickAccessBarComponents/CompilationPage";
-import HowItWorksGuide from "./subcomponents/Dashboard/QuickAccessBarComponents/HowItWorksGuide ";
+import HowItWorksGuide from "./subcomponents/Dashboard/QuickAccessBarComponents/SharedComponents/Guide/HowItWorksGuide ";
 import UserTypeCompilationPage from "./subcomponents/Dashboard/QuickAccessBarComponents/UserTypeCompilationPage";
 import MainDashboard from "./subcomponents/MainDashboard";
 import Footer from "./subcomponents/Footer";
