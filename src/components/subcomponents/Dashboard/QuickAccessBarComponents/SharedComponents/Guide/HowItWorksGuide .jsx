@@ -24,11 +24,129 @@ import {
   HiOutlineChartBar,
   HiOutlineCog,
 } from "react-icons/hi2";
+import { GiLightBulb } from "react-icons/gi";
+import { GrDashboard } from "react-icons/gr";
 
+const steps = [
+  {
+    number: 1,
+    title: "Request Code",
+    duration: "2-3 minutes (internet required)",
+    content: (
+      <>
+        <p>
+          Start by submitting an evaluation request. You'll receive a unique Tool ID via email that links your tool to the correct maturity version and evaluation materials. You need to already have the names and email addresses of the innovators focal points.</p>
+        <h5>Key Roles:</h5>
+        <ul>
+          <li>
+            <strong>Project Leader</strong>: Overall strategic oversight of the tool or initiative. Ensures alignment with broader project goals.
+          </li>
+          <li>
+            <strong>Project Manager</strong>: Oversees day-to-day implementation. Provides operational details like rollout stages, timelines.
+          </li>
+          <li>
+            <strong>Technical Manager</strong>: Detailed knowledge of tool's architecture and data flows. Completes technical portions of the survey.
+          </li>
+        </ul>
+      </>
+    ),
+  },
+  {
+    number: 2,
+    title: "Innovator Survey",
+    duration: "immediate, 0 minutes",
+    content: (
+      <p>
+        Our system sends the innovators focal points an email to complete a structured survey. This provides essential background and operational context about the tool being assessed. No action is required here. You will be notified as soon as the answers start coming</p>
+    ),
+  },
+  {
+    number: 3,
+    title: "Assign Experts",
+    duration: "hours or days (depends on expert availability)",
+    content: (
+      <div>
+      <p>
+        Identify domain-specific evaluators that will evaluate the innovators answers.
+      </p>
+      <div>
+        <div className="grey-box"> 
+          <h5>Regular Version</h5>
+          <ul>
+            <li>Gender Equality and Social Inclusion (GESI)</li>
+            <li>Information and Communication Technology (ICT)</li>
+            <li>Data Science and Analytics (Data)</li>
+            <li>Economics and Market Analysis</li>
+            <li>Human-Centered Design</li>
+            <li>Country-Specific Expertise</li>
+          </ul>
+        </div>
+        <div className="blue-box">
+          <h5>Ex ante Version</h5>
+          <ul>
+          <li>Gender Equality and Social Inclusion (GESI)</li>
+          <li>Information and Communication Technology (ICT)</li>
+          <li>Data Science and Analytics (Data)</li>
+          <li>Economics and Market Analysis</li>
+          <li>Country-Specific Expertise</li>
+        </ul>
+        <p><strong>Note:</strong> Human-Centered Design not required.</p>
+
+        </div>
+      </div>
+    </div>
+    ),
+  },
+  {
+    number: 4,
+    title: "Generate Expert PDFs",
+    duration: "3-4 minutes (internet required)",
+    content: (
+      <p>
+      After collecting survey responses from the three focal points, select <strong>Get Experts PDF</strong> to generate structured document (compilation) that extracts and organizes relevant information from the focal points' responses. This will generate an excel file and store it on your computer alongside the compilations. Send these to the experts you identified in the previous step.      </p>
+    ),
+  },
+  {
+    number: 5,
+    title: "End User Data Collection",
+    duration: "days to weeks (no internet required)",
+    content: (
+      <div>
+      <p>
+      Generate unique survey links for End Users and Downstream Beneficiaries by going to <strong>Get Data Collection Link</strong>. You can send links via email, run workshops, or collect data in the field.      
+      </p>
+      <div className="blue-box">
+        <p><strong>Important Note:</strong>Our survey platform (Kobo Toolbox) allows offline collection using the KoboCollect App.</p>
+      </div>
+      </div>
+      
+    ),
+  },
+  {
+    number: 6,
+    title: "Get MDII Report",
+    duration: "4-5 minutes (internet required)",
+    content: (
+      <>
+        <p>
+        After receiving all evaluations from users, downstream beneficiaries (optional) and experts, go to <strong>Get MDII Report</strong>. Insert your tool ID and wait for magic to happen. The excel file generated in step 4 will be updated with the evaluation data.        </p>
+        <div className="blue-box">
+          <p>
+            <strong>Final Steps:</strong> Open the excel file and find your tool assessment in the MDII Score and MDII Recommendations tabs. Print each as PDFs – you've completed an MDII evaluation!
+          </p>
+        </div>
+      </>
+    ),
+  },
+];
 const HowItWorksGuide = ({ setCurrentPage = () => {} }) => {
   const [activeSection, setActiveSection] = useState("welcome");
   const [nestedExpanded, setNestedExpanded] = useState({});
+    const [openIndex, setOpenIndex] = useState(null);
 
+  const toggle = (i) => {
+    setOpenIndex(openIndex === i ? null : i);
+  };
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
@@ -293,6 +411,32 @@ const HowItWorksGuide = ({ setCurrentPage = () => {} }) => {
               >
                 Compilations
               </button>
+              <button
+                className={`tab-button ${
+                  nestedExpanded.componentTab === "workbook" ? "active" : ""
+                }`}
+                onClick={() =>
+                  setNestedExpanded((prev) => ({
+                    ...prev,
+                    componentTab: "workbook",
+                  }))
+                }
+              >
+                Workbook
+              </button>
+              <button
+                className={`tab-button ${
+                  nestedExpanded.componentTab === "outputs" ? "active" : ""
+                }`}
+                onClick={() =>
+                  setNestedExpanded((prev) => ({
+                    ...prev,
+                    componentTab: "outputs",
+                  }))
+                }
+              >
+                Outputs
+              </button>
             </div>
 
             <div className="tab-content">
@@ -301,13 +445,12 @@ const HowItWorksGuide = ({ setCurrentPage = () => {} }) => {
                 <div>
                   <h4>Tool Maturity</h4>
                   <p>
-                    MDII supports two evaluation tracks, depending on the
-                    development stage of the tool:
+                    MDII supports two evaluation tracks, depending on the development stage of the tool that is being assessed:
                   </p>
 
                   <div className="maturity-grid">
                     <div className="maturity-item regular">
-                      <h5>Regular Version</h5>
+                      <h4>Regular Version</h4>
                       <p>
                         <strong>
                           For tools that are already deployed, piloted, or
@@ -323,7 +466,7 @@ const HowItWorksGuide = ({ setCurrentPage = () => {} }) => {
                     </div>
 
                     <div className="maturity-item ex-ante">
-                      <h5>Ex-Ante Version</h5>
+                      <h4>Ex-Ante Version</h4>
                       <p>
                         <strong>
                           For tools in early stages: idea, research, or
@@ -338,51 +481,43 @@ const HowItWorksGuide = ({ setCurrentPage = () => {} }) => {
                           Helps teams embed inclusiveness early, before costly
                           redesigns are needed
                         </li>
+                        <li>Generates feedback based on intentions, assumptions, and plans</li>
+
                       </ul>
                     </div>
+                  </div>
+
+                  <div className="grey-box">
+                    <p>The desktop app is designed to <strong>automatically detect the tool's maturity level</strong> once it's loaded into the system and selects the appropriate version of the Index for scoring and reporting. You don't need to choose manually; the system adapts based on the tool profile already stored in our database.</p>
                   </div>
                 </div>
               )}
 
               {nestedExpanded.componentTab === "surveys" && (
-                <div>
+                <div className="surveys">
                   <h4>Surveys</h4>
                   <p>
-                    MDII utilizes targeted surveys to gather comprehensive data
-                    from different stakeholder groups.
+                    MDII utilizes targeted surveys to gather comprehensive data from different stakeholder groups. These surveys collect both qualitative and quantitative insights to assess how digital tools perform across inclusiveness criteria.
                   </p>
-
-                  <div className="survey-types">
-                    <div className="survey-type">
-                      <div className="survey-bullet"></div>
-                      <div>
-                        <strong>Innovators (Type 1)</strong>
-                        <p>Survey for tool developers and creators</p>
-                      </div>
-                    </div>
-                    <div className="survey-type">
-                      <div className="survey-bullet"></div>
-                      <div>
-                        <strong>Domain Experts (Type 2)</strong>
-                        <p>Survey for subject matter specialists</p>
-                      </div>
-                    </div>
-                    <div className="survey-type">
-                      <div className="survey-bullet"></div>
-                      <div>
-                        <strong>End Users (Type 3)</strong>
-                        <p>Survey for direct tool users</p>
-                      </div>
-                    </div>
-                    <div className="survey-type">
-                      <div className="survey-bullet"></div>
-                      <div>
-                        <strong>
-                          Downstream Beneficiaries (Type 4 — optional)
-                        </strong>
-                        <p>Survey for indirect beneficiaries of the tool</p>
-                      </div>
-                    </div>
+                  <div className="grey-box">
+                      <p><strong>Innovators (Type 1)</strong></p>
+                      <p>Survey for tool developers and creators</p>
+                  </div>
+                  <div className="grey-box">
+                      <strong>Domain Experts (Type 2)</strong>
+                      <p>Survey for subject matter specialists</p>
+                  </div>
+                  <div className="grey-box">
+                      <strong>End Users (Type 3)</strong>
+                      <p>Survey for direct tool users</p>
+                  </div>
+                  <div className="grey-box">
+                      <strong>Downstream Beneficiaries (Type 4 — optional)</strong>
+                      <p>Survey for indirect beneficiaries of the tool</p>
+                  </div>
+                  <div>
+                    <p>Each type receives a tailored set of questions aligned with MDII's dimensions. The surveys are designed to be lightweight and can be completed online (via KoboToolbox) or offline using printable versions.</p>
+                    <p>These surveys gather both qualitative and quantitative data to assess how the digital tool performs across inclusiveness criteria — such as accessibility, usability, relevance, and equity.</p>
                   </div>
                 </div>
               )}
@@ -391,8 +526,7 @@ const HowItWorksGuide = ({ setCurrentPage = () => {} }) => {
                 <div>
                   <h4>Compilations</h4>
                   <p>
-                    Once the innovator survey is completed, the system generates
-                    PDF compilations for each expert domain.
+                    Once the innovator survey is completed, the system generates PDF compilations for each expert domain. These documents summarize relevant answers provided by the tool developers and serve as input material for domain experts.
                   </p>
 
                   <div className="compilation-info">
@@ -405,8 +539,50 @@ const HowItWorksGuide = ({ setCurrentPage = () => {} }) => {
                       <li>Contextual notes to guide scoring</li>
                     </ul>
                   </div>
+
+                  <div className="grey-box">
+                    <p>The expert uses this compilation as a reference to complete their evaluation independently, helping ensure that the scoring reflects both internal knowledge and external assessment.</p>
+                </div>
                 </div>
               )}
+               {nestedExpanded.componentTab === "workbook" && (
+                <div>
+                  <h4>Workbook</h4>
+                  <p>All survey responses feed into a pre-formatted Excel workbook, which performs automated calculations and generates comprehensive reports.</p>
+                  <div className="grey-box">
+                    <strong>The workbook does:</strong>
+                    <ul>
+                      <li>Automatically calculates the overall MDII score (0–100%)</li>
+                      <li>Assigns a tier label (e.g. "Meeting Expectations")</li>
+                      <li>Breaks down results across 7 MDII dimensions</li>
+                      <li>Displays results using tables and radar/spider charts</li>
+                      <li>Suggests recommendations per dimension, including tier-based actions to improve</li>
+                    </ul>
+                  </div>
+                  <div className="grey-box">
+                    <p>The workbook is structured with separate tabs for scores and recommendations. No manual calculation is needed — scores and outputs are generated automatically once data is entered.</p>
+                  </div>
+                </div>
+               )}
+              {nestedExpanded.componentTab === "outputs" && (
+                <div>
+                  <h4>Outputs</h4>
+                  <p>After reviewing the Excel workbook, users generate two key outputs by exporting the relevant tabs as PDFs.</p>
+                  <div className="grey-box">
+                    <ul><li>Score Report (PDF)</li></ul>
+                    <p>Summarizes the final MDII score, tier label, visual charts, and a dimension-level breakdown of inclusiveness performance.</p>
+                  </div>
+                  <div className="grey-box">
+                    <ul><li>Recommendation Brief (PDF)</li></ul>
+                    <p>Lists practical, evidence-based actions to improve the tool. These suggestions are framed as "steps to reach the next tier" and are organized by MDII dimension.</p>
+                  </div>
+
+                  <div className="grey-box">
+                    <p>These files are designed to support internal planning, external discussions, and roadmap decisions — giving teams a concrete snapshot of where they stand and where to go next.</p>
+                  </div>
+                </div>
+              )}
+
             </div>
           </div>
         </div>
@@ -418,33 +594,96 @@ const HowItWorksGuide = ({ setCurrentPage = () => {} }) => {
       icon: <GoGlobe />,
       content: (
         <div className="content-body">
+          <h3>MDII Ecosystem</h3>
           <p>
-            The MDII ecosystem consists of different tools and platforms
-            designed to accommodate various working conditions and user needs.
+            MDII is more than this desktop app. It's a <strong>modular ecosystem </strong> of tools tailored to different needs and connectivity environments.
           </p>
+          <p>Besides this offline-friendly desktop app, there are 3 additional tools:</p>
+           <div className="component-tabs">
+            <div className="tab-header">
+              <button
+                className={`tab-button ${
+                  !nestedExpanded.componentTab ||
+                  nestedExpanded.componentTab === "fullassessment"
+                    ? "active"
+                    : ""
+                }`}
+                onClick={() => toggleNested("componentTab")}
+              >
+                <GoGlobe/> Full Assessment
+              </button>
+              <button
+                className={`tab-button ${
+                  nestedExpanded.componentTab === "rapidassessment" ? "active" : ""
+                }`}
+                onClick={() =>
+                  setNestedExpanded((prev) => ({
+                    ...prev,
+                    componentTab: "rapidassessment",
+                  }))
+                }
+              >
+                <GiLightBulb/> AI-Rapid Assessment
+              </button>
+              <button
+                className={`tab-button ${
+                  nestedExpanded.componentTab === "mdiidashboard" ? "active" : ""
+                }`}
+                onClick={() =>
+                  setNestedExpanded((prev) => ({
+                    ...prev,
+                    componentTab: "mdiidashboard",
+                  }))
+                }
+              >
+                <GrDashboard/> MDII Dashboard
+              </button>
+            </div>
 
-          <div className="ecosystem-grid">
-            <div className="ecosystem-item">
-              <h4>Online Platform</h4>
-              <p>
-                Full-featured web platform with real-time collaboration and
-                advanced analytics.
-              </p>
+            <div className="tab-content">
+              {(!nestedExpanded.componentTab ||
+                nestedExpanded.componentTab === "fullassessment") && (
+                <div>
+                  <h4>Full Assessment</h4>
+                  <p className="tag">Fully Online</p>
+                  <div >
+                    <ul>
+                      <li>A detailed, survey-based version of MDII, designed for use entirely through the MDII web application.</li>
+                      <li>Includes automated flows to collect responses, calculate scores, and generate reports and recommendations.</li>
+                      <li>Suitable for projects with reliable internet access, where users can stay connected throughout the process.</li>
+                      <li>May not be ideal in low-connectivity environments, as it depends on online infrastructure to function.</li>
+                    </ul>
+                  </div>
+                </div>
+              )}
+              {(nestedExpanded.componentTab === "rapidassessment") && (
+                <div>
+                  <h4>AI-Rapid Assessment</h4>
+                  <p className="tag">Fully Online</p>
+                  <div >
+                    <ul>
+                      <li>A fast, AI-powered assessment tool.</li>
+                      <li>Offers immediate feedback based on limited inputs</li>
+                      <li>Perfect for early-stage prototypes or fast reviews</li>
+                    </ul>
+                  </div>
+                </div>
+                )}
+                {(nestedExpanded.componentTab === "mdiidashboard") && (
+                <div>
+                  <h4>MDII Dashboard</h4>
+                  <p className="tag">Fully Online</p>
+                  <div >
+                    <ul>
+                      <li>A centralized space to explore your results once reports are generated.</li>
+                      <li>Enables tool comparison, performance tracking, and access to aggregated insights.</li>
+                      <li>Useful for coordinators, decision-makers, and funders looking at multiple tools or countries.</li>
+                    </ul>
+                  </div>
+                </div>
+                )}
+              </div>
             </div>
-            <div className="ecosystem-item">
-              <h4>Desktop App (Current)</h4>
-              <p>
-                Offline-friendly solution for field work and areas with limited
-                connectivity.
-              </p>
-            </div>
-            <div className="ecosystem-item">
-              <h4>Mobile Tools</h4>
-              <p>
-                Survey collection tools optimized for mobile data collection.
-              </p>
-            </div>
-          </div>
         </div>
       ),
     },
@@ -454,31 +693,22 @@ const HowItWorksGuide = ({ setCurrentPage = () => {} }) => {
       icon: <GoGlobe />,
       content: (
         <div className="content-body">
-          <h3>Online and Offline Capabilities</h3>
+          <h3>Internet Needs</h3>
+          <div>
+            <strong>Connection Required For:</strong>
+            <ul>
+              <li>Data fetching during compilation and score generation</li>
+              <li>Opening KoboToolbox form URL for the first time (caching for offline use)</li>
+            </ul>
+          </div>
           <p>
             The MDII Desktop App is designed to work effectively in environments
             with limited or intermittent internet access.
           </p>
 
-          <div className="connectivity-grid">
-            <div className="connectivity-item offline">
-              <h4>Offline Capabilities</h4>
-              <ul>
-                <li>Complete surveys and assessments</li>
-                <li>View and edit existing data</li>
-                <li>Generate preliminary reports</li>
-                <li>Access all documentation and guides</li>
-              </ul>
-            </div>
-            <div className="connectivity-item online">
-              <h4>Internet Required For</h4>
-              <ul>
-                <li>Initial tool registration</li>
-                <li>Syncing data with MDII platform</li>
-                <li>Downloading updated materials</li>
-                <li>Final report generation</li>
-              </ul>
-            </div>
+          <div className="grey-box">
+            <p>For more information on how to use KoboToolbox in offline settings, please consult: </p>
+            <p><a href="https://support.kobotoolbox.org/data_through_webforms.html?highlight=offline">KoboToolbox Offline Documentation</a></p>
           </div>
         </div>
       ),
@@ -489,39 +719,114 @@ const HowItWorksGuide = ({ setCurrentPage = () => {} }) => {
       icon: <GoPeople />,
       content: (
         <div className="content-body">
-          <p>
-            MDII recognizes different types of users, each with specific roles
-            and perspectives in the evaluation process.
-          </p>
+          <h3>User Types</h3>
+          <p>Different types of users contribute to an MDII evaluation:</p>
+          
+          <div className="component-tabs">
+            <div className="tab-header">
+              <button
+                className={`tab-button ${
+                  !nestedExpanded.componentTab ||
+                  nestedExpanded.componentTab === "innovators1 "
+                    ? "active"
+                    : ""
+                }`}
+                onClick={() => toggleNested("componentTab")}
+              >
+                Innovators
+              </button>
+              <button
+                className={`tab-button ${
+                  nestedExpanded.componentTab === "domain-experts" ? "active" : ""
+                }`}
+                onClick={() =>
+                  setNestedExpanded((prev) => ({
+                    ...prev,
+                    componentTab: "domain-experts",
+                  }))
+                }
+              >
+                Domain Experts
+              </button>
+              <button
+                className={`tab-button ${
+                  nestedExpanded.componentTab === "end-users" ? "active" : ""
+                }`}
+                onClick={() =>
+                  setNestedExpanded((prev) => ({
+                    ...prev,
+                    componentTab: "end-users",
+                  }))
+                }
+              >
+                End Users
+              </button>
+              <button
+                className={`tab-button ${
+                  nestedExpanded.componentTab === "downstream-beneficiaries" ? "active" : ""
+                }`}
+                onClick={() =>
+                  setNestedExpanded((prev) => ({
+                    ...prev,
+                    componentTab: "downstream-beneficiaries",
+                  }))
+                }
+              >
+                Downstream Beneficiaries
+              </button>
+            <div/>
+            </div>
+            <div className="tab-content">
+              {(!nestedExpanded.componentTab ||
+                nestedExpanded.componentTab === "innovators1") && (
+                <div>
+                  <p className="tag" style={{ backgroundColor: '#ff0000'}}>Mandatory</p>
+                  <h4>Innovators (Type 1)</h4>
+                  <p>The people or teams who developed the digital tool</p>
+                  <p className="tag-text">Provide essential context about the tool's design, goals, and implementation approach.</p>
+                  <div className="grey-box">
+                    <p><strong>Sample Size:</strong> No minimum required — more responses provide better results</p>
+                  </div>
+                </div>
+              )}
 
-          <div className="user-types-grid">
-            <div className="user-type">
-              <h4>Project Leaders</h4>
-              <p>Overall strategic oversight of the tool or initiative</p>
+              {(nestedExpanded.componentTab === "domain-experts") && (
+                <div>
+                  <p className="tag" style={{ backgroundColor: '#ff0000'}}>Mandatory</p>
+                  <h4>Domain Experts (Type 2)</h4>
+                  <p>Technical or thematic specialists who review the tool based on specific dimensions</p>
+                  <p className="tag-text">Offer independent professional assessment across GESI, ICT, Data, Economics, and other critical areas.</p>
+                  <div className="grey-box">
+                    <p><strong>Sample Size:</strong> No minimum required — more responses provide better results.</p>
+                  </div>
+                </div>
+              )}
+
+              {(nestedExpanded.componentTab === "end-users") && (
+                <div>
+                  <p className="tag" style={{ backgroundColor: '#ff0000'}}>Mandatory</p>
+                  <h4>End Users (Type 3)</h4>
+                  <p>Individuals who interact directly with the tool. Can be farmers, extension agents, or governmental individuals.</p>
+                  <p className="tag-text">Provide real-world usage feedback on usability, trust, and accessibility from direct experience.</p>
+                  <div className="grey-box">
+                    <p><strong>Sample Size:</strong> No minimum required — more responses provide better results.</p>
+                  </div>
+                </div>
+              )}
+
+              {(nestedExpanded.componentTab === "downstream-beneficiaries") && (
+                <div>
+                  <p className="tag" >Optional</p>
+                  <h4>Downstream Beneficiaries (Type 4)</h4>
+                  <p>People impacted by the tool's use or decisions, even if they don't interact with it directly.</p>
+                  <p className="tag-text">Share perspectives on indirect impacts and broader consequences of the tool's deployment.</p>
+                  <div className="grey-box">
+                    <p><strong>Sample Size:</strong> No minimum required — more responses provide better results.</p>
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="user-type">
-              <h4>Project Managers</h4>
-              <p>Day-to-day implementation and operational details</p>
             </div>
-            <div className="user-type">
-              <h4>Technical Managers</h4>
-              <p>Technical architecture and system implementation knowledge</p>
-            </div>
-            <div className="user-type">
-              <h4>Domain Experts</h4>
-              <p>Subject matter specialists who evaluate tool effectiveness</p>
-            </div>
-            <div className="user-type">
-              <h4>End Users</h4>
-              <p>Direct users of the digital tool being evaluated</p>
-            </div>
-            <div className="user-type">
-              <h4>Downstream Beneficiaries</h4>
-              <p>
-                Indirect beneficiaries who are affected by the tool's impact
-              </p>
-            </div>
-          </div>
         </div>
       ),
     },
@@ -531,34 +836,120 @@ const HowItWorksGuide = ({ setCurrentPage = () => {} }) => {
       icon: <HiOutlineUserGroup />,
       content: (
         <div className="content-body">
-          <h3>Managing Domain Experts</h3>
+          <h3>Expert Management</h3>
           <p>
-            Domain experts play a crucial role in the MDII evaluation process by
-            providing specialized knowledge and assessment of digital tools.
+            Managing domain experts and their contributions to the MDII evaluation.
           </p>
 
-          <div className="expert-process">
-            <h4>Expert Assignment Process</h4>
-            <ol>
-              <li>
-                Identify required expertise areas based on tool characteristics
-              </li>
-              <li>Recruit experts with relevant domain knowledge</li>
-              <li>Provide experts with tool-specific compilation documents</li>
-              <li>Guide experts through the evaluation survey</li>
-              <li>Collect and integrate expert assessments</li>
-            </ol>
-          </div>
+          <div className="component-tabs">
+            <div className="tab-header">
+              <button
+                className={`tab-button ${
+                  !nestedExpanded.componentTab ||
+                  nestedExpanded.componentTab === "expert-roles"
+                    ? "active"
+                    : ""
+                }`}
+                onClick={() => toggleNested("componentTab")}
+              >
+                Expert Roles
+              </button>
+              <button
+                className={`tab-button ${
+                  nestedExpanded.componentTab === "selection-criteria" ? "active" : ""
+                }`}
+                onClick={() =>
+                  setNestedExpanded((prev) => ({
+                    ...prev,
+                    componentTab: "selection-criteria",
+                  }))
+                }
+              >
+                Selection Criteria
+              </button>
+              <button
+                className={`tab-button ${
+                  nestedExpanded.componentTab === "selection-process" ? "active" : ""
+                }`}
+                onClick={() =>
+                  setNestedExpanded((prev) => ({
+                    ...prev,
+                    componentTab: "selection-process",
+                  }))
+                }
+              >
+                Selection Process
+              </button>
+              
+            <div/>
+            </div>
+            <div className="tab-content">
+              {(!nestedExpanded.componentTab ||
+                nestedExpanded.componentTab === "expert-roles") && (
+                <div>
+                  <h4>Role of Domain Experts</h4>
+                  <p>Domain experts provide an independent perspective on how inclusive a digital tool is across critical dimensions like GESI, ICT, Data, Economics, and more. They <strong> do not represent tool developers or project teams.</strong> Their role is to apply their subject-matter knowledge to interpret and assess the information provided by innovators.</p>
+                  <p>Each MDII evaluation should include at least one expert per relevant domain, depending on the version being used (Regular or Ex-Ante). These experts help validate the inclusiveness of the tool from different disciplinary angles.</p>
+                </div>
+              )}
 
-          <div className="expert-criteria">
-            <h4>Expert Selection Criteria</h4>
-            <ul>
-              <li>Relevant subject matter expertise</li>
-              <li>Experience with digital tools in their domain</li>
-              <li>Understanding of target user populations</li>
-              <li>Availability for evaluation timeline</li>
-            </ul>
-          </div>
+              {(nestedExpanded.componentTab === "selection-criteria") && (
+                <div>
+                  <h4>Selection Criteria</h4>
+                  <p>Domain experts can be internal or external to the organization conducting the evaluation, but they must meet two key criteria:</p>
+                  <div>
+                    <p><strong>1. Subject-matter Relevance</strong></p>
+                    <p>The individual should have recognized expertise in one of the required domains:</p>
+                    <ul>
+                      <li>Gender Equality and Social Inclusion</li>
+                      <li>Data</li>
+                      <li>Human-Centered Design (Regular Version only)</li>
+                      <li>Information and Communication Technologies</li>
+                      <li>Economics</li>
+                      <li>Country Expert</li>
+                    </ul>
+                </div>
+                <div>
+                  <p><strong>2. Independence from the Tools</strong></p>
+                  <p>Experts must not have been involved in the development, design, implementation, or promotion of the tool under evaluation. Their perspective should be impartial and based on professional knowledge of the domain.</p>
+                  </div>
+                </div>
+              )}
+
+              {(nestedExpanded.componentTab === "selection-process") && (
+                <div>
+                  <h4>How to Identify and Select Experts</h4>
+                  <p>The person coordinating the evaluation should take the following steps:</p>
+                  <p> 1. Start with your institution or program team - look for subject-matter expertise without direct tool involvement.<br/>
+                    2. Expand to trusted networks - partner institutions, universities, domain-specific networks.<br/>
+                    3. Verify eligibility - ensure both domain relevance and independence criteria are met.<br/>
+                    4. Send clear invitation - explain purpose, contribution, time commitment (30-60 minutes), and importance of independence.
+                  </p>
+                  <div className="blue-box">
+                    <h4>Coordination Tips</h4>
+                    <ul>
+                      <li>Aim for diversity across the expert pool—gender, geography, and institutional backgrounds.</li>
+                      <li>Experts can be identified at any stage, but surveys should only be shared after innovator inputs are complete.</li>
+                      <li>Keep track of which domains have been assigned and who is responsible for each.</li>
+                    </ul>
+                  </div>
+
+                </div>
+              )}
+
+              {(nestedExpanded.componentTab === "downstream-beneficiaries") && (
+                <div>
+                  <p className="tag" >Optional</p>
+                  <h4>Downstream Beneficiaries (Type 4)</h4>
+                  <p>People impacted by the tool's use or decisions, even if they don't interact with it directly.</p>
+                  <p className="tag-text">Share perspectives on indirect impacts and broader consequences of the tool's deployment.</p>
+                  <div className="grey-box">
+                    <p><strong>Sample Size:</strong> No minimum required — more responses provide better results.</p>
+                  </div>
+                </div>
+              )}
+            </div>
+            </div>
         </div>
       ),
     },
@@ -568,136 +959,44 @@ const HowItWorksGuide = ({ setCurrentPage = () => {} }) => {
       icon: <HiOutlineChartBar />,
       content: (
         <div className="content-body">
+          <h3>Evaluation Workflow</h3>
           <p>
-            This section outlines the full journey of evaluating a digital
-            tool's inclusiveness using the MDII desktop toolkit. Whether you're
-            a field coordinator, evaluator, or project lead, these are the steps
-            you'll follow from requesting your evaluation code to generating
-            your final report.
+            This section outlines the full journey of evaluating a digital tool's inclusiveness using the MDII desktop toolkit. Whether you're a field coordinator, evaluator, or project lead, these are the steps you'll follow from requesting your evaluation code to generating your final report.
           </p>
 
           <div className="timeline-note">
-            <BsCheckCircle />
             <p>
-              <strong>Timeline Information:</strong> The duration of an MDII
-              evaluation depends on how fast you can make your respondents fill
-              out their surveys. As an evaluation coordinator, your work is easy
-              and almost instantaneous.
+              <strong>Timeline Information:</strong> The duration of an MDII evaluation depends on how fast you can make your respondents fill out their surveys. As an evaluation coordinator, your work is easy and almost instantaneous.
             </p>
           </div>
 
-          <div className="workflow-steps">
-            <div className="workflow-step">
-              <div className="step-number">1</div>
-              <div className="step-content">
-                <h4>Request Code</h4>
-                <p className="step-duration">
-                  Duration: 2-3 minutes (internet required)
-                </p>
-                <p>
-                  Start by submitting an evaluation request. You'll receive a
-                  unique Tool ID via email that links your tool to the correct
-                  maturity version and evaluation materials.
-                </p>
-              </div>
-            </div>
-
-            <div className="workflow-step">
-              <div className="step-number">2</div>
-              <div className="step-content">
-                <h4>Innovator Survey</h4>
-                <p className="step-duration">Duration: immediate, 0 minutes</p>
-                <p>
-                  Our system sends the innovators focal points an email to
-                  complete a structured survey. No action is required here. You
-                  will be notified as soon as the answers start coming.
-                </p>
-              </div>
-            </div>
-
-            <div className="workflow-step">
-              <div className="step-number">3</div>
-              <div className="step-content">
-                <h4>Assign Experts</h4>
-                <p className="step-duration">
-                  Duration: hours or days (depends on expert availability)
-                </p>
-                <p>
-                  Identify domain-specific evaluators that will evaluate the
-                  innovators answers.
-                </p>
-              </div>
-            </div>
-
-            <div className="workflow-step">
-              <div className="step-number">4</div>
-              <div className="step-content">
-                <h4>Generate Expert PDFs</h4>
-                <p className="step-duration">
-                  Duration: 3-4 minutes (internet required)
-                </p>
-                <p>
-                  Select <strong>Get Experts PDF</strong> to generate structured
-                  documents that extract and organize relevant information from
-                  the focal points' responses.
-                </p>
-              </div>
-            </div>
-
-            <div className="workflow-step">
-              <div className="step-number">5</div>
-              <div className="step-content">
-                <h4>End User Data Collection</h4>
-                <p className="step-duration">
-                  Duration: days to weeks (no internet required)
-                </p>
-                <p>
-                  Generate unique survey links for End Users and Downstream
-                  Beneficiaries. You can send links via email, run workshops, or
-                  collect data in the field.
-                </p>
-              </div>
-            </div>
-
-            <div className="workflow-step">
-              <div className="step-number">6</div>
-              <div className="step-content">
-                <h4>Get MDII Report</h4>
-                <p className="step-duration">
-                  Duration: 4-5 minutes (internet required)
-                </p>
-                <p>
-                  After receiving all evaluations, go to{" "}
-                  <strong>Get MDII Report</strong>. Insert your tool ID and the
-                  excel file will be updated with the evaluation data.
-                </p>
-
-                <div className="final-step-note">
-                  <p>
-                    <strong>Final Steps:</strong> Open the excel file and find
-                    your tool assessment in the MDII Score and MDII
-                    Recommendations tabs. Print each as PDFs - you've completed
-                    an MDII evaluation!
-                  </p>
+        <div className="workflow-steps">
+              {steps.map((step, index) => (
+                <div className="workflow-step" key={index}>
+                  <div className="step-header" onClick={() => toggle(index)}>
+                    <div className="step-number">{step.number}</div>
+                    <div className="step-title">
+                      <h4>{step.title}</h4>
+                      <p className="step-duration">Duration: {step.duration}</p>
+                    </div>
+                    <div className="dropdown-icon">{openIndex === index ? "▲" : "▼"}</div>
+                  </div>
+                  {openIndex === index && <div className="step-content">{step.content}</div>}
                 </div>
-              </div>
-            </div>
-          </div>
+              ))}
+        </div>
         </div>
       ),
     },
 
     outputs: {
-      title: "Expected Outputs",
+      title: "Outputs",
       icon: <HiOutlineDocumentText />,
       content: (
         <div className="content-body">
           <div className="outputs-intro">
             <p>
-              Once you complete your evaluation, the MDII Desktop App provides
-              both a final score and a set of actionable recommendations. This
-              section guides you through interpreting results, identifying
-              patterns, and planning next steps for improvement.
+              Once you complete your evaluation, the MDII Desktop App provides both a final score and a set of actionable recommendations. But how do you make sense of these outputs? This section guides you through interpreting results, identifying patterns, and planning next steps for improvement.
             </p>
           </div>
 

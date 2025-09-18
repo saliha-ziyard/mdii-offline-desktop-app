@@ -24,7 +24,7 @@
     ],
     "extraResources": [
       {
-        "from": "backend/python/",
+        "from": "backend/",
         "to": "python",
         "filter": [
           "**/*"
@@ -39,14 +39,14 @@
       }
     ],
     "win": {
-      "target": "portable",
-      "icon": "build/icon.ico"
+      "target": "nsis"
+      
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-      "installerIcon": "build/icon.ico",
-      "uninstallerIcon": "build/icon.ico",
+     
+      
       "uninstallDisplayName": "CGIAR MDII Inclusiveness Index"
     },
     "mac": {
@@ -63,7 +63,6 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.5.0",
-    "requests": "^0.3.0",
     "wait-on": "^7.2.0"
   },
   "keywords": [],
