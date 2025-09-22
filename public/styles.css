@@ -1408,13 +1408,6 @@ hr {
   padding-left: 35px;
 }
 
-.final-step-note {
-  margin-top: 10px;
-  background-color: #ede9fe;
-  padding: 10px;
-  border-left: 4px solid #8b5cf6;
-  border-radius: 5px;
-}
 
 .score-tiers {
   margin: 2rem 0;
@@ -1677,4 +1670,942 @@ hr {
   .outputs-grid {
     grid-template-columns: 1fr;
   }
+}
+/* Container */
+.mdii-container {
+  font-family: Arial, sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+/* Header Section */
+.header-section {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #e0e0e0;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.header-icon {
+  color: #666;
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+.header-text {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.header-description {
+  margin: 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* Guide Section */
+.guide-section {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #e0e0e0;
+}
+
+.guide-title {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  color: #333;
+}
+
+/* Step Cards */
+.step-card {
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border: 1px solid;
+}
+
+.step-content {
+  display: flex;
+  align-items: flex-start;
+}
+
+.step-number {
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.step-text {
+  flex: 1;
+}
+
+.step-title {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+}
+
+.step-description {
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Blue Step */
+.step-blue {
+  background-color: #e3f2fd;
+  border-color: #bbdefb;
+}
+
+.step-number-blue {
+  background-color: #2196f3;
+}
+
+.step-title-blue {
+  color: #1976d2;
+}
+
+.step-description-blue {
+  color: #1565c0;
+}
+
+/* Green Step */
+.step-green {
+  background-color: #e8f5e8;
+  border-color: #c8e6c9;
+}
+
+.step-number-green {
+  background-color: #4caf50;
+}
+
+.step-title-green {
+  color: #388e3c;
+}
+
+.step-description-green {
+  color: #2e7d32;
+}
+
+/* Purple Step */
+.step-purple {
+  background-color: #f3e5f5;
+  border-color: #e1bee7;
+}
+
+.step-number-purple {
+  background-color: #9c27b0;
+}
+
+.step-title-purple {
+  color: #7b1fa2;
+}
+
+.step-description-purple {
+  color: #6a1b9a;
+}
+
+/* Orange Step */
+.step-orange {
+  background-color: #fff3e0;
+  border-color: #ffcc02;
+}
+
+.step-number-orange {
+  background-color: #ff9800;
+}
+
+.step-title-orange {
+  color: #f57c00;
+}
+
+.step-description-orange {
+  color: #ef6c00;
+}
+
+/* Pro Tip */
+.pro-tip {
+  background-color: #e0f2f1;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #b2dfdb;
+}
+
+.pro-tip-content {
+  display: flex;
+  align-items: center;
+}
+
+.pro-tip-icon {
+  color: #00695c;
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+.pro-tip-label {
+  color: #00695c;
+}
+
+.pro-tip-text {
+  color: #004d40;
+  margin-left: 8px;
+}
+
+/* Scenarios Section */
+.scenarios-section {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.scenarios-title {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.scenarios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+/* Scenario Cards */
+.scenario-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.scenario-header {
+  padding: 15px;
+  border-bottom: 1px solid #e0e0e0;
+  cursor: pointer;
+}
+
+.scenario-title-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.scenario-icon {
+  margin-right: 8px;
+}
+
+.scenario-title {
+  color: #333;
+}
+
+.scenario-description {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.scenario-content {
+  padding: 15px;
+  background-color: #fafafa;
+}
+
+.scenario-content-title {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.scenario-list {
+  margin: 0;
+  padding-left: 20px;
+  color: #666;
+  font-size: 14px;
+}
+
+/* Scenario Header Colors */
+.scenario-orange-header {
+  background-color: #fff3e0;
+}
+
+.scenario-orange-header .scenario-icon {
+  color: #ff9800;
+}
+
+.scenario-red-header {
+  background-color: #ffebee;
+}
+
+.scenario-red-header .scenario-icon {
+  color: #f44336;
+}
+
+.scenario-green-header {
+  background-color: #e8f5e8;
+}
+
+.scenario-green-header .scenario-icon {
+  color: #4caf50;
+}
+
+/* Output Cards */
+.output-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: white;
+}
+
+.output-header {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.output-title-row {
+  display: flex;
+  align-items: center;
+}
+
+.output-icon {
+  margin-right: 12px;
+  font-size: 20px;
+}
+
+.output-icon-blue {
+  color: #2196f3;
+}
+
+.output-icon-yellow {
+  color: #ffc107;
+}
+
+.output-title {
+  color: #333;
+  font-size: 16px;
+}
+
+.output-content {
+  padding: 20px;
+}
+
+.output-intro {
+  color: #555;
+  margin: 0 0 15px 0;
+  font-weight: 500;
+}
+
+.output-list {
+  margin: 0 0 20px 0;
+  padding-left: 20px;
+  color: #666;
+  line-height: 1.6;
+}
+
+.output-list li {
+  margin-bottom: 5px;
+}
+
+.output-callout {
+  padding: 15px;
+  border-radius: 6px;
+  margin: 0;
+}
+
+.output-callout-blue {
+  background-color: #e3f2fd;
+  border: 1px solid #bbdefb;
+}
+
+.output-callout-yellow {
+  background-color: #fff8e1;
+  border: 1px solid #ffecb3;
+}
+
+/* Troubleshooting Styles */
+.troubleshooting-tabs {
+  display: flex;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.tab-button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+  transition: all 0.2s;
+  border-right: 1px solid #e0e0e0;
+}
+
+.tab-button:last-child {
+  border-right: none;
+}
+
+.tab-button:hover {
+  background-color: #f5f5f5;
+}
+
+.tab-button.tab-active {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  font-weight: 500;
+}
+
+.tab-icon {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+.tab-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.tab-section-title {
+  margin: 0 0 25px 0;
+  font-size: 20px;
+  color: #333;
+  font-weight: 600;
+}
+
+/* Problem Cards */
+.problem-card {
+  background-color: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.problem-header {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #fff8e1;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.problem-icon {
+  margin-right: 12px;
+  font-size: 18px;
+}
+
+.problem-icon-warning {
+  color: #ff9800;
+}
+
+.problem-title {
+  margin: 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.problem-content {
+  padding: 20px;
+}
+
+.problem-section {
+  margin-bottom: 15px;
+}
+
+.problem-section:last-child {
+  margin-bottom: 0;
+}
+
+.problem-label {
+  color: #555;
+  font-weight: 600;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.problem-text {
+  color: #666;
+}
+
+.problem-list {
+  margin: 8px 0 0 0;
+  padding-left: 20px;
+  color: #666;
+}
+
+.problem-list li {
+  margin-bottom: 5px;
+  line-height: 1.4;
+}
+
+/* Issue Categories */
+.issue-category {
+  background-color: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.category-icon {
+  margin-right: 12px;
+  font-size: 18px;
+  color: #666;
+}
+
+.category-title {
+  margin: 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.category-list {
+  margin: 0;
+  padding-left: 20px;
+  color: #666;
+}
+
+.category-list li {
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+/* Help Sections */
+.help-section {
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.help-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.help-title {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.help-list {
+  margin: 0;
+  padding-left: 20px;
+  color: #666;
+}
+
+.help-list li {
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+/* Help Callout */
+.help-callout {
+  background-color: #f3e5f5;
+  border: 1px solid #e1bee7;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 25px;
+}
+
+.help-callout-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.help-callout-icon {
+  margin-right: 12px;
+  font-size: 18px;
+  color: #9c27b0;
+}
+
+.help-callout-title {
+  margin: 0;
+  color: #7b1fa2;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.help-callout-text {
+  margin: 0 0 12px 0;
+  color: #6a1b9a;
+  font-weight: 500;
+}
+
+.help-callout-list {
+  margin: 0;
+  padding-left: 20px;
+  color: #6a1b9a;
+}
+
+/* Additional Support Styles */
+.support-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.support-card {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.support-header {
+  margin-bottom: 20px;
+}
+
+.support-title {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.support-description {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.support-contact {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+}
+
+.contact-field {
+  display: flex;
+  align-items: center;
+}
+
+.contact-icon {
+  margin-right: 10px;
+  color: #666;
+  font-size: 16px;
+}
+
+.contact-link {
+  color: #a855f7;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.contact-link:hover {
+  text-decoration: underline;
+}
+
+.response-info {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.response-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.response-icon {
+  margin-right: 10px;
+  color: #666;
+  font-size: 16px;
+}
+
+.response-label {
+  font-weight: 600;
+  color: #555;
+}
+
+.response-text {
+  margin: 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* Further Reading Styles */
+.reading-section {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 25px;
+}
+
+.reading-highlight {
+  background-color: #fffbf0;
+  border-color: #ffd700;
+}
+
+.reading-title {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.website-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.website-label {
+  display: flex;
+  align-items: center;
+  color: #666;
+  font-weight: 500;
+}
+
+.website-icon {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+.website-link {
+  display: flex;
+  align-items: center;
+  color: #a855f7;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.website-link:hover {
+  text-decoration: underline;
+}
+
+.external-icon {
+  margin-left: 5px;
+  font-size: 12px;
+}
+
+.resources-title {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.resource-item {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+.resource-description {
+  margin: 0 0 12px 0;
+  color: #555;
+  line-height: 1.5;
+}
+
+.resource-citation {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.citation-text {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.resource-link {
+  display: flex;
+  align-items: center;
+  color: #a855f7;
+  text-decoration: none;
+  font-size: 14px;
+  word-break: break-all;
+}
+
+.resource-link:hover {
+  text-decoration: underline;
+}
+
+/* Acknowledgments & Team Styles */
+.team-section {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 25px;
+  margin-bottom: 20px;
+}
+
+.team-main-title {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.team-intro {
+  margin: 0 0 25px 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+.team-subsection {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 20px;
+}
+
+.team-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.team-icon {
+  margin-right: 10px;
+  color: #666;
+  font-size: 16px;
+}
+
+.team-subtitle {
+  margin: 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.team-description {
+  margin: 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+.acknowledgments-section {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 25px;
+  margin-bottom: 20px;
+}
+
+.ack-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.ack-icon {
+  margin-right: 12px;
+  color: #e91e63;
+  font-size: 18px;
+}
+
+.ack-title {
+  margin: 0;
+  color: #333;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.ack-intro {
+  margin: 0 0 20px 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+.special-thanks {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 20px;
+}
+
+.thanks-text {
+  margin: 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+.funding-section {
+  background-color: #fff8e1;
+  border: 1px solid #ffecb3;
+  border-radius: 8px;
+  padding: 25px;
+}
+
+.funding-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.funding-icon {
+  margin-right: 12px;
+  color: #f57c00;
+  font-size: 18px;
+}
+
+.funding-title {
+  margin: 0;
+  color: #333;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.funding-description {
+  margin: 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+.help-callout-list li {
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.output-callout-text {
+  margin: 0;
+  color: #333;
+  font-weight: 500;
+  font-size: 14px;
 }

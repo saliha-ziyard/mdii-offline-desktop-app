@@ -26,6 +26,7 @@ import {
 } from "react-icons/hi2";
 import { GiLightBulb } from "react-icons/gi";
 import { GrDashboard } from "react-icons/gr";
+import {FiMail, FiUsers,FiClock, FiHeart, FiDollarSign, FiExternalLink,FiGlobe, FiInfo, FiSettings, FiHelpCircle, FiAlertTriangle, FiMonitor, FiDatabase, FiMessageSquare, FiFileText, FiTrendingUp, FiEye, FiTarget, FiCheckCircle } from 'react-icons/fi';
 
 const steps = [
   {
@@ -144,6 +145,14 @@ const HowItWorksGuide = ({ setCurrentPage = () => {} }) => {
   const [nestedExpanded, setNestedExpanded] = useState({});
     const [openIndex, setOpenIndex] = useState(null);
 
+const [activeTab, setActiveTab] = useState('common-issues');
+
+  const tabs = [
+    { id: 'common-issues', label: 'Common Issues', icon: <FiInfo /> },
+    { id: 'app-problems', label: 'App Problems', icon: <FiSettings /> },
+    { id: 'evaluation-help', label: 'Evaluation Help', icon: <FiHelpCircle /> }
+  ];
+
   const toggle = (i) => {
     setOpenIndex(openIndex === i ? null : i);
   };
@@ -164,6 +173,23 @@ const HowItWorksGuide = ({ setCurrentPage = () => {} }) => {
     });
   };
 
+  const scoreTiers = [
+    { range: "90–100%", label: "Exceeding Expectations", className: "exceeding" },
+    { range: "70–89%", label: "Meeting Expectations", className: "meeting" },
+    { range: "50–69%", label: "Approaching Expectations", className: "approaching" },
+    { range: "25–49%", label: "Below Expectations", className: "below" },
+    { range: "0–24%", label: "Significantly Below Expectations", className: "significantly-below" }
+  ];
+  const faqItems = [
+    {
+      question: "What if my score is low?",
+      answer: "A low score is an opportunity, not a failure. Focus on the Recommendation Brief to identify quick wins and high-impact improvements. Many tools start with lower scores and improve significantly through iterative enhancements."
+    },
+    {
+      question: "How are tiers calculated?",
+      answer: "Tiers are based on weighted averages across seven dimensions, incorporating input from innovators, domain experts, end-users, and downstream beneficiaries. Each user type contributes different perspectives to create a comprehensive inclusiveness score."
+    },
+  ]
   // Centralized content storage
   const contentData = {
     welcome: {
@@ -994,100 +1020,348 @@ const HowItWorksGuide = ({ setCurrentPage = () => {} }) => {
       icon: <HiOutlineDocumentText />,
       content: (
         <div className="content-body">
-          <div className="outputs-intro">
+          <h3>Expected Outputs</h3>
             <p>
               Once you complete your evaluation, the MDII Desktop App provides both a final score and a set of actionable recommendations. But how do you make sense of these outputs? This section guides you through interpreting results, identifying patterns, and planning next steps for improvement.
             </p>
-          </div>
 
-          <div className="score-tiers">
-            <h4>Overall MDII Score Tiers</h4>
-            <div className="tier-list">
-              <div className="tier exceeding">
-                <span className="tier-range">90–100%:</span> Exceeding
-                Expectations
-              </div>
-              <div className="tier meeting">
-                <span className="tier-range">70–89%:</span> Meeting Expectations
-              </div>
-              <div className="tier approaching">
-                <span className="tier-range">50–69%:</span> Approaching
-                Expectations
-              </div>
-              <div className="tier below">
-                <span className="tier-range">25–49%:</span> Below Expectations
-              </div>
-              <div className="tier significantly-below">
-                <span className="tier-range">0–24%:</span> Significantly Below
-                Expectations
+          <div className="component-tabs">
+              <div className="tab-header">
+                <button
+                  className={`tab-button ${
+                    !nestedExpanded.componentTab ||
+                    nestedExpanded.componentTab === "score-tiers"
+                      ? "active"
+                      : ""
+                  }`}
+                  onClick={() => toggleNested("componentTab")}
+                >
+                  Score Tiers
+                </button>
+                <button
+                  className={`tab-button ${
+                    nestedExpanded.componentTab === "interpreting-results" ? "active" : ""
+                  }`}
+                  onClick={() =>
+                    setNestedExpanded((prev) => ({
+                      ...prev,
+                      componentTab: "interpreting-results",
+                    }))
+                  }
+                >
+                  Interpreting Results
+                </button>
+                <button
+                  className={`tab-button ${
+                    nestedExpanded.componentTab === "what-u-recieve" ? "active" : ""
+                  }`}
+                  onClick={() =>
+                    setNestedExpanded((prev) => ({
+                      ...prev,
+                      componentTab: "what-u-recieve",
+                    }))
+                  }
+                >
+                  What You'll Receive
+                </button>
+              <div/>
               </div>
             </div>
-          </div>
 
-          <div className="interpretation-guide">
-            <h4>How to Read Your Report: Step-by-Step Guide</h4>
-            <div className="guide-steps">
-              <div className="guide-step">
-                <div className="guide-number">1</div>
-                <div>
-                  <strong>Start with Your Tier</strong>
-                  <p>
-                    The overall percentage and tier help situate the tool — but
-                    it's just the beginning.
-                  </p>
+           <div className="tab-content">
+              {(!nestedExpanded.componentTab ||
+                nestedExpanded.componentTab === "score-tiers") && (
+              
+              <div className="score-tiers">
+                <h4>Overall MDII Score Tiers</h4>
+                <div className="tier-list">
+                  <div className="tier exceeding">
+                    <span className="tier-range">90–100%:</span> Exceeding
+                    Expectations
+                  </div>
+                  <div className="tier meeting">
+                    <span className="tier-range">70–89%:</span> Meeting Expectations
+                  </div>
+                  <div className="tier approaching">
+                    <span className="tier-range">50–69%:</span> Approaching
+                    Expectations
+                  </div>
+                  <div className="tier below">
+                    <span className="tier-range">25–49%:</span> Below Expectations
+                  </div>
+                  <div className="tier significantly-below">
+                    <span className="tier-range">0–24%:</span> Significantly Below
+                    Expectations
+                  </div>
                 </div>
-              </div>
-              <div className="guide-step">
-                <div className="guide-number">2</div>
-                <div>
-                  <strong>Dive into Each Dimension</strong>
-                  <p>
-                    Examine each of the seven dimensions. Where are the blind
-                    spots?
-                  </p>
-                </div>
-              </div>
-              <div className="guide-step">
-                <div className="guide-number">3</div>
-                <div>
-                  <strong>Compare by User Type</strong>
-                  <p>Different respondents offer distinct perspectives.</p>
-                </div>
-              </div>
-              <div className="guide-step">
-                <div className="guide-number">4</div>
-                <div>
-                  <strong>Use Your Recommendation Brief</strong>
-                  <p>
-                    Each tool receives tailored, evidence-based suggestions.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <div className="outputs-grid">
-            <div className="output-item">
-              <HiOutlineDocumentText />
-              <div>
-                <h5>1. Score Report (PDF)</h5>
-                <p>
-                  Overall result with percentage score, tier label, dimension
-                  breakdown, and visual charts.
-                </p>
+                <h4> Frequently asked Questions</h4>
+                <div className="grey-box">
+                {faqItems.map((step, index) => (
+                <div className="workflow-step" key={index}>
+                  <div className="step-header" onClick={() => toggle(index)}>
+                    <div className="step-title">
+                      <h4>{step.question}</h4>
+                    </div>
+                    <div className="dropdown-icon">{openIndex === index ? "▲" : "▼"}</div>
+                  </div>
+                  {openIndex === index && <div className="step-content">{step.answer}</div>}
+                </div>
+              ))}
+                </div>
               </div>
+              )}
+
+              {(nestedExpanded.componentTab === "interpreting-results") && (
+              <div className="mdii-container">
+                    {/* Header Section */}
+                    <div className="header-section">
+                      <div className="header-title">
+                        <FiInfo className="header-icon" />
+                        <h2 className="header-text">
+                          MDII Is Not a Judgment Tool — It's a Feedforward System
+                        </h2>
+                      </div>
+                      <p className="header-description">
+                        The MDII evaluation was designed to shift the mindset away from static scoring and toward 
+                        informed improvement. It's not just about how inclusive your tool is today — it's about how it can 
+                        become more inclusive tomorrow.
+                      </p>
+                    </div>
+
+                    {/* Step-by-Step Guide */}
+                    <div className="guide-section">
+                      <h3 className="guide-title">
+                        How to Read Your Report: Step-by-Step Guide
+                      </h3>
+
+                      {/* Step 1 */}
+                      <div className="step-card step-blue">
+                        <div className="step-content">
+                          <div className="step-number step-number-blue">
+                            1
+                          </div>
+                          <div className="step-text">
+                            <h4 className="step-title step-title-blue">
+                              Start with Your Tier
+                            </h4>
+                            <p className="step-description step-description-blue">
+                              The overall percentage and tier help situate the tool — but it's just the beginning. Don't fixate 
+                              on the number; focus on the why behind each score.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Step 2 */}
+                      <div className="step-card step-green">
+                        <div className="step-content">
+                          <div className="step-number step-number-green">
+                            2
+                          </div>
+                          <div className="step-text">
+                            <h4 className="step-title step-title-green">
+                              Dive into Each Dimension
+                            </h4>
+                            <p className="step-description step-description-green">
+                              Examine each of the seven dimensions. Where is the tool already aligned with inclusion goals? 
+                              Where are the blind spots (e.g., data risks, downstream access, training gaps)?
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Step 3 */}
+                      <div className="step-card step-purple">
+                        <div className="step-content">
+                          <div className="step-number step-number-purple">
+                            3
+                          </div>
+                          <div className="step-text">
+                            <h4 className="step-title step-title-purple">
+                              Compare by User Type
+                            </h4>
+                            <p className="step-description step-description-purple">
+                              Different respondents offer distinct perspectives. If scores diverge across innovators, experts, 
+                              and end-users — that's a signal, not a problem.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Step 4 */}
+                      <div className="step-card step-orange">
+                        <div className="step-content">
+                          <div className="step-number step-number-orange">
+                            4
+                          </div>
+                          <div className="step-text">
+                            <h4 className="step-title step-title-orange">
+                              Use Your Recommendation Brief
+                            </h4>
+                            <p className="step-description step-description-orange">
+                              Each tool receives tailored, evidence-based suggestions. These prioritize low-effort, high-
+                              impact improvements and guide internal discussions.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Pro Tip */}
+                      <div className="pro-tip">
+                        <div className="pro-tip-content">
+                          <FiCheckCircle className="pro-tip-icon" />
+                          <div>
+                            <strong className="pro-tip-label">Pro Tip:</strong>
+                            <span className="pro-tip-text">
+                              MDII evaluations can be repeated after modifications to track improvements over time.
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Common Scenarios */}
+                    <div className="scenarios-section">
+                      <h3 className="scenarios-title">
+                        Common Scenarios & Next Steps
+                      </h3>
+
+                      <div className="scenarios-grid">
+                        {/* Scenario 1 */}
+                        <div className="scenario-card">
+                          <div>
+                            <div className="scenario-title-row">
+                              <FiTrendingUp className="scenario-icon" />
+                              <strong className="scenario-title">"Our score was 43%"</strong>
+                            </div>
+                            <p className="scenario-description">
+                              You're in the "Below Expectations" tier, but this is just a starting point for improvement.
+                            </p>
+                            <p>Next Steps:</p>
+                            <ul>
+                              <li> Focus on Recommendation Brief quick wins</li>
+                              <li> Identify 2-3 dimensions with lowest scores</li>
+                              <li>Plan iterative improvements over 3-6 months</li>
+                            </ul>
+                          </div>
+                        </div>
+
+                        {/* Scenario 2 */}
+                        <div className="scenario-card">
+                          <div 
+                            className="scenario-header scenario-red-header"
+                          >
+                            <div className="scenario-title-row">
+                              <FiEye className="scenario-icon" />
+                              <strong className="scenario-title">"Views Conflict"</strong>
+                            </div>
+                            <p className="scenario-description">
+                              Innovators rate high but end-users score low? This reveals important gaps in perception vs. reality.
+                            </p>
+                            <p>Why It Matters:</p>
+                            <ul>
+                              <li>Shows disconnect between design intent and user experience</li>
+                              <li>Highlights need for user-centered improvements</li>
+                              <li>Indicates areas for stakeholder alignment</li>
+                            </ul>
+                          </div>
+                        </div>
+
+                        {/* Scenario 3 */}
+                        <div className="scenario-card">
+                          <div 
+                            className="scenario-header scenario-green-header"
+                          >
+                            <div className="scenario-title-row">
+                              <FiTarget className="scenario-icon" />
+                              <strong className="scenario-title">"We Improved!"</strong>
+                            </div>
+                            <p className="scenario-description">
+                              From 43% to 67% in 3 months by following the Recommendation Brief systematically.
+                            </p>
+                            <p>Success Strategy:</p>
+                              <ul>
+                                <li>Implemented quick wins first</li>
+                                <li>Focused on user training and support</li>
+                                <li>Re-evaluated to track progress</li>
+                              </ul>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              )}
+
+              {(nestedExpanded.componentTab === "what-u-recieve") && (
+              <div className="mdii-container">
+                    {/* Introduction */}
+                    <div className="header-section">
+                      <p className="header-description">
+                        After running your evaluation, the MDII Desktop App will generate two key outputs:
+                      </p>
+                    </div>
+
+                    {/* Two Output Cards */}
+                    <div className="scenarios-grid">
+                      {/* Score Report Card */}
+                      <div className="output-card">
+                        <div className="output-header">
+                          <div className="output-title-row">
+                            <FiFileText className="output-icon output-icon-blue" />
+                            <strong className="output-title">1. Score Report (PDF)</strong>
+                          </div>
+                        </div>
+                        
+                        <div className="output-content">
+                          <p className="output-intro">This file provides the overall result, presenting:</p>
+                          
+                          <ul className="output-list">
+                            <li>A percentage score (0–100%)</li>
+                            <li>A tier label (as shown in Score Tiers)</li>
+                            <li>A breakdown across each dimension</li>
+                            <li>A visual spider/radar chart showing strengths and gaps</li>
+                            <li>Tables summarizing results by user type and version</li>
+                          </ul>
+                          
+                          <div className="output-callout output-callout-blue">
+                            <p className="output-callout-text">
+                              Use this score report as a snapshot of where the tool stands today.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Recommendation Brief Card */}
+                      <div className="output-card">
+                        <div className="output-header">
+                          <div className="output-title-row">
+                            <FiCheckCircle className="output-icon output-icon-yellow" />
+                            <strong className="output-title">2. Recommendation Brief (PDF)</strong>
+                          </div>
+                        </div>
+                        
+                        <div className="output-content">
+                          <p className="output-intro">This second file provides:</p>
+                          
+                          <ul className="output-list">
+                            <li>Targeted suggestions for each MDII dimension</li>
+                            <li>Practical actions framed as "Possible actions to reach the next tier"</li>
+                            <li>A tier legend showing where the tool currently sits per dimension</li>
+                            <li>Highlighted quick wins — low-effort changes with high inclusiveness value</li>
+                          </ul>
+                          
+                          <div className="output-callout output-callout-yellow">
+                            <p className="output-callout-text">
+                              Use this brief as a planning and discussion tool with your team or partners.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              )}
             </div>
-            <div className="output-item">
-              <BsLightbulb />
-              <div>
-                <h5>2. Recommendation Brief (PDF)</h5>
-                <p>
-                  Practical actions framed as "steps to reach the next tier"
-                  organized by MDII dimension.
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
       ),
     },
@@ -1096,31 +1370,51 @@ const HowItWorksGuide = ({ setCurrentPage = () => {} }) => {
       title: "Troubleshooting",
       icon: <BsExclamationTriangle />,
       content: (
-        <div className="content-body">
-          <div className="troubleshooting-intro">
-            <BsExclamationTriangle />
-            <p>
-              Encountering issues with the MDII Desktop App or evaluation
-              process? This section provides solutions to common problems and
-              step-by-step troubleshooting guides.
-            </p>
-          </div>
+      <div className="content-body">
+          <h3>Troubleshooting</h3>
+      <div className="mdii-container">
+      {/* Header Section */}
+      <div className="header-section">
+        <p className="header-description">
+          Encountering issues with the MDII Desktop App or evaluation process? This section 
+          provides solutions to common problems, step-by-step troubleshooting guides, and tips 
+          to ensure a smooth evaluation experience.
+        </p>
+      </div>
 
-          <div className="common-issues">
-            <h4>Frequently Encountered Problems</h4>
+      {/* Tab Navigation */}
+      <div className="troubleshooting-tabs">
+        {tabs.map(tab => (
+          <button 
+            key={tab.id}
+            className={`tab-button ${activeTab === tab.id ? 'tab-active' : ''}`}
+            onClick={() => setActiveTab(tab.id)}
+          >
+            <span className="tab-icon">{tab.icon}</span>
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
-            <div className="issue-item">
-              <div className="issue-header">
-                <BsExclamationTriangle />
-                <h5>Tool Not Loading Properly</h5>
+      {/* Common Issues Tab */}
+      {activeTab === 'common-issues' && (
+        <div className="tab-content">
+          <h3 className="tab-section-title">Frequently Encountered Problems</h3>
+          
+          {/* Tool Not Loading Problem */}
+          <div className="problem-card">
+            <div className="problem-header">
+              <FiAlertTriangle className="problem-icon problem-icon-warning" />
+              <h4 className="problem-title">Tool Not Loading Properly</h4>
+            </div>
+            <div className="problem-content">
+              <div className="problem-section">
+                <strong className="problem-label">Symptoms:</strong>
+                <span className="problem-text">App crashes, blank screens, or frozen interface</span>
               </div>
-              <p>
-                <strong>Symptoms:</strong> App crashes, blank screens, or frozen
-                interface
-              </p>
-              <div className="solutions">
-                <strong>Solutions:</strong>
-                <ul>
+              <div className="problem-section">
+                <strong className="problem-label">Solutions:</strong>
+                <ul className="problem-list">
                   <li>Restart the MDII Desktop App</li>
                   <li>Check your internet connection</li>
                   <li>Clear application cache and restart</li>
@@ -1128,19 +1422,22 @@ const HowItWorksGuide = ({ setCurrentPage = () => {} }) => {
                 </ul>
               </div>
             </div>
+          </div>
 
-            <div className="issue-item">
-              <div className="issue-header">
-                <BsExclamationTriangle />
-                <h5>Survey Responses Not Saving</h5>
+          {/* Survey Responses Problem */}
+          <div className="problem-card">
+            <div className="problem-header">
+              <FiAlertTriangle className="problem-icon problem-icon-warning" />
+              <h4 className="problem-title">Survey Responses Not Saving</h4>
+            </div>
+            <div className="problem-content">
+              <div className="problem-section">
+                <strong className="problem-label">Symptoms:</strong>
+                <span className="problem-text">Progress lost when returning to surveys</span>
               </div>
-              <p>
-                <strong>Symptoms:</strong> Progress lost when returning to
-                surveys
-              </p>
-              <div className="solutions">
-                <strong>Solutions:</strong>
-                <ul>
+              <div className="problem-section">
+                <strong className="problem-label">Solutions:</strong>
+                <ul className="problem-list">
                   <li>Check network connectivity during survey completion</li>
                   <li>Complete surveys in one session when possible</li>
                   <li>Use the "Save Progress" feature regularly</li>
@@ -1148,49 +1445,335 @@ const HowItWorksGuide = ({ setCurrentPage = () => {} }) => {
                 </ul>
               </div>
             </div>
+          </div>
 
-            <div className="issue-item">
-              <div className="issue-header">
-                <BsExclamationTriangle />
-                <h5>Report Generation Problems</h5>
+          {/* Tool Version Problem */}
+          <div className="problem-card">
+            <div className="problem-header">
+              <FiAlertTriangle className="problem-icon problem-icon-warning" />
+              <h4 className="problem-title">Incorrect Tool Version Selected</h4>
+            </div>
+            <div className="problem-content">
+              <div className="problem-section">
+                <strong className="problem-label">Symptoms:</strong>
+                <span className="problem-text">Evaluation questions don't match your tool's maturity level</span>
               </div>
-              <p>
-                <strong>Symptoms:</strong> Reports appear incomplete or fail to
-                generate
-              </p>
-              <div className="solutions">
-                <strong>Solutions:</strong>
-                <ul>
-                  <li>Ensure all required sections are completed</li>
-                  <li>Check that expert consensus has been reached</li>
-                  <li>Verify PDF export settings</li>
-                  <li>
-                    Try regenerating reports if initial export appears
-                    incomplete
-                  </li>
+              <div className="problem-section">
+                <strong className="problem-label">Solutions:</strong>
+                <ul className="problem-list">
+                  <li>Verify your tool profile in the database is accurate</li>
+                  <li>Contact support if automatic detection seems incorrect</li>
+                  <li>Review tool maturity criteria to confirm appropriate version</li>
                 </ul>
               </div>
             </div>
           </div>
+        </div>
+      )}
 
-          <div className="help-note">
-            <GoQuestion />
-            <div>
-              <h4>Need Additional Help?</h4>
-              <p>
-                If you're still experiencing issues after trying these
-                solutions:
-              </p>
-              <ul>
-                <li>Document the specific error messages or behaviors</li>
-                <li>Note your system specifications and app version</li>
-                <li>Contact technical support with detailed information</li>
-              </ul>
+      {/* App Problems Tab */}
+      {activeTab === 'app-problems' && (
+        <div className="tab-content">
+          <h3 className="tab-section-title">Desktop Application Issues</h3>
+          
+          {/* Installation Problems */}
+          <div className="issue-category">
+            <div className="category-header">
+              <FiMonitor className="category-icon" />
+              <h4 className="category-title">Installation Problems</h4>
+            </div>
+            <ul className="category-list">
+              <li>Ensure your system meets minimum requirements</li>
+              <li>Run installer as administrator (Windows)</li>
+              <li>Check available disk space (minimum 500MB required)</li>
+              <li>Temporarily disable antivirus during installation</li>
+            </ul>
+          </div>
+
+          {/* Performance Issues */}
+          <div className="issue-category">
+            <div className="category-header">
+              <FiSettings className="category-icon" />
+              <h4 className="category-title">Performance Issues</h4>
+            </div>
+            <ul className="category-list">
+              <li>Close unnecessary applications to free up memory</li>
+              <li>Check for app updates in the settings menu</li>
+              <li>Restart your computer if app becomes sluggish</li>
+              <li>Consider upgrading RAM if consistently slow</li>
+            </ul>
+          </div>
+
+          {/* Data Sync Issues */}
+          <div className="issue-category">
+            <div className="category-header">
+              <FiDatabase className="category-icon" />
+              <h4 className="category-title">Data Sync Issues</h4>
+            </div>
+            <ul className="category-list">
+              <li>Verify internet connection stability</li>
+              <li>Check firewall settings aren't blocking the app</li>
+              <li>Try manual sync from the settings menu</li>
+              <li>Contact support if sync consistently fails</li>
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {/* Evaluation Help Tab */}
+      {activeTab === 'evaluation-help' && (
+        <div className="tab-content">
+          <h3 className="tab-section-title">Evaluation Process Support</h3>
+          
+          {/* Understanding Questions */}
+          <div className="help-section">
+            <h4 className="help-title">Understanding Questions</h4>
+            <ul className="help-list">
+              <li>Use the built-in help tooltips next to each question</li>
+              <li>Refer to the framework documentation for detailed definitions</li>
+              <li>Contact your evaluation coordinator for clarification</li>
+              <li>Mark questions for review and return later if needed</li>
+            </ul>
+          </div>
+
+          {/* Expert Panel Coordination */}
+          <div className="help-section">
+            <h4 className="help-title">Expert Panel Coordination</h4>
+            <ul className="help-list">
+              <li>Ensure all experts have completed their individual evaluations</li>
+              <li>Schedule consensus meetings well in advance</li>
+              <li>Prepare discussion points for areas with high disagreement</li>
+              <li>Use the disagreement reports to focus discussions efficiently</li>
+            </ul>
+          </div>
+
+          {/* Report Generation Problems */}
+          <div className="help-section">
+            <h4 className="help-title">Report Generation Problems</h4>
+            <ul className="help-list">
+              <li>Ensure all required sections are completed before generating reports</li>
+              <li>Check that expert consensus has been reached for all dimensions</li>
+              <li>Verify PDF export settings match your organization's requirements</li>
+              <li>Try regenerating reports if initial export appears incomplete</li>
+            </ul>
+          </div>
+
+          {/* Need Additional Help */}
+          <div className="help-callout">
+            <div className="help-callout-header">
+              <FiMessageSquare className="help-callout-icon" />
+              <h4 className="help-callout-title">Need Additional Help?</h4>
+            </div>
+            <p className="help-callout-text">If you're still experiencing issues after trying these solutions:</p>
+            <ul className="help-callout-list">
+              <li>Document the specific error messages or behaviors</li>
+              <li>Note your system specifications and app version</li>
+              <li>Contact technical support with detailed information</li>
+              <li>Consider scheduling a screen-share session for complex issues</li>
+            </ul>
+          </div>
+        </div>
+      )}
+    </div>
+    </div>
+      ),
+    },
+
+    "additional-support": {
+      title: "Additional Support",
+      icon: <BsExclamationTriangle />,
+      content: (
+      <div className="content-body">
+          <h3>Additional Support</h3>
+<div className="mdii-container">
+      <div className="support-grid">
+        {/* Technical Support Card */}
+        <div className="support-card">
+          <div className="support-header">
+            <h4 className="support-title">Technical Support</h4>
+            <p className="support-description">
+              For technical issues or system-related questions
+            </p>
+          </div>
+          
+          <div className="support-contact">
+            <div className="contact-field">
+              <FiMail className="contact-icon" />
+              <a href="mailto:mdii@cgiar.org" className="contact-link">
+                mdii@cgiar.org
+              </a>
             </div>
           </div>
         </div>
-      ),
+
+        {/* Methodology Questions Card */}
+        <div className="support-card">
+          <div className="support-header">
+            <h4 className="support-title">Methodology Questions</h4>
+            <p className="support-description">
+              For evaluation methodology and process guidance
+            </p>
+          </div>
+          
+          <div className="support-contact">
+            <div className="contact-field">
+              <FiMail className="contact-icon" />
+              <a href="mailto:mdii@cgiar.org" className="contact-link">
+                mdii@cgiar.org
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Response Time Information */}
+      <div className="response-info">
+        <div className="response-header">
+          <FiClock className="response-icon" />
+          <span className="response-label">Response Time:</span>
+        </div>
+        <p className="response-text">
+          We typically respond to support requests within 1-2 business days. For urgent 
+          technical issues, please indicate "URGENT" in your subject line.
+        </p>
+      </div>
+    </div>
+    </div>
+      )
     },
+
+      "further-reading": {
+      title: "Further Reading",
+      icon: <BsExclamationTriangle />,
+      content: (
+      <div className="content-body">
+          <h3>Further Reading</h3>
+<div className="mdii-container">
+      {/* Discover More Section */}
+      <div className="reading-section reading-highlight">
+        <h3 className="reading-title">Discover more about MDII</h3>
+        
+        <div className="website-info">
+          <div className="website-label">
+            <FiGlobe className="website-icon" />
+            <span>Website:</span>
+          </div>
+          <a href="https://mdii.iwmi.org" className="website-link" target="_blank" rel="noopener noreferrer">
+            mdii.iwmi.org
+            <FiExternalLink className="external-icon" />
+          </a>
+        </div>
+
+        <h4 className="resources-title">Resources</h4>
+        
+        {/* Resource 1 */}
+        <div className="resource-item">
+          <p className="resource-description">
+            A multi-dimensional framework for responsible and socially inclusive digital innovation in 
+            food, water, and land systems
+          </p>
+          <div className="resource-citation">
+            <span className="citation-text">
+              Opola, F., Langan, S., Arulingam, I., Schumann, C., Singaraju, N., Joshi, D., Ghosh, S. (2025).
+            </span>
+            <a href="https://hdl.handle.net/10568/174461" className="resource-link" target="_blank" rel="noopener noreferrer">
+              https://hdl.handle.net/10568/174461
+              <FiExternalLink className="external-icon" />
+            </a>
+          </div>
+        </div>
+
+        {/* Resource 2 */}
+        <div className="resource-item">
+          <p className="resource-description">
+            Development of the conceptual framework (version 2.0) of the Multidimensional Digital 
+            Inclusiveness Index
+          </p>
+          <div className="resource-citation">
+            <span className="citation-text">
+              Martins, C. I., Opola, F., Jacobs-Mata, I., Garcia Andancia, M., Nortle, K., Joshi, D., Singaraju, N., Muller, A., 
+              Christen, R., Malhotra, A. (2023).
+            </span>
+            <a href="https://hdl.handle.net/10568/138705" className="resource-link" target="_blank" rel="noopener noreferrer">
+              https://hdl.handle.net/10568/138705
+              <FiExternalLink className="external-icon" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+      )
+    },
+      "acknowledgments-dev-team": {
+      title: "Acknowledgments & Development Team",
+      icon: <BsExclamationTriangle />,
+      content: (
+      <div className="content-body">
+          <h3>Acknowledgments & Development Team</h3>
+<div className="mdii-container">
+      {/* Development Team Section */}
+      <div className="team-section">
+        <h3 className="team-main-title">Development Team</h3>
+        <p className="team-intro">
+          The MDII framework and desktop application were developed through collaborative effort 
+          by researchers and practitioners dedicated to advancing digital inclusiveness in agricultural 
+          systems.
+        </p>
+
+        {/* Core Development Team */}
+        <div className="team-subsection">
+          <div className="team-header">
+            <FiUsers className="team-icon" />
+            <h4 className="team-subtitle">Core Development Team</h4>
+          </div>
+          <p className="team-description">
+            Led by the International Water Management Institute (IWMI) in collaboration with various research 
+            institutions and development organizations worldwide.
+          </p>
+        </div>
+      </div>
+
+      {/* Acknowledgments Section */}
+      <div className="acknowledgments-section">
+        <div className="ack-header">
+          <FiHeart className="ack-icon" />
+          <h3 className="ack-title">Acknowledgments</h3>
+        </div>
+        
+        <p className="ack-intro">
+          We extend our gratitude to the numerous experts, practitioners, and communities who 
+          contributed their insights and feedback during the development and testing phases of this 
+          framework.
+        </p>
+
+        {/* Special Thanks */}
+        <div className="special-thanks">
+          <p className="thanks-text">
+            Special thanks to the domain experts, end-users, and innovators who participated in pilot 
+            evaluations and provided valuable input that shaped the current version of the MDII desktop 
+            application.
+          </p>
+        </div>
+      </div>
+
+      {/* Funding Section */}
+      <div className="funding-section">
+        <div className="funding-header">
+          <FiDollarSign className="funding-icon" />
+          <h3 className="funding-title">Funding & Support</h3>
+        </div>
+        
+        <p className="funding-description">
+          This work was supported by various funding organizations committed to promoting inclusive digital 
+          transformation in agriculture and development.
+        </p>
+      </div>
+    </div>
+    </div>
+      )
+    },
+
   };
 
   const navigationItems = [
@@ -1223,6 +1806,21 @@ const HowItWorksGuide = ({ setCurrentPage = () => {} }) => {
     {
       id: "troubleshooting",
       title: "10. Troubleshooting",
+      icon: <BsExclamationTriangle />,
+    },
+    {
+      id: "additional-support",
+      title: "11. Additional Support",
+      icon: <BsExclamationTriangle />,
+    },
+    {
+      id: "further-reading",
+      title: "12. Further Reading",
+      icon: <BsExclamationTriangle />,
+    },
+    {
+      id: "acknowledgments-dev-team",
+      title: "13. Acknowledgments & Development Team",
       icon: <BsExclamationTriangle />,
     },
   ];
