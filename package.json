@@ -15,38 +15,25 @@
     "files": [
       "src/main.js",
       "src/preload.js",
-      "public/**/*",
-      "backend/**/*",
-      "templates/**/*"
-    ],
-    "asarUnpack": [
-      "backend/**/*"
+      "public/**/*"
     ],
     "extraResources": [
       {
-        "from": "backend/",
-        "to": "python",
-        "filter": [
-          "**/*"
-        ]
+        "from": "dist/main.exe",
+        "to": "scripts/main.exe"
       },
       {
-        "from": "kobo_output/",
-        "to": "kobo_output",
-        "filter": [
-          "**/*"
-        ]
+        "from": "templates/",
+        "to": "templates",
+        "filter": ["**/*"]
       }
     ],
     "win": {
       "target": "nsis"
-      
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-     
-      
       "uninstallDisplayName": "CGIAR MDII Inclusiveness Index"
     },
     "mac": {
