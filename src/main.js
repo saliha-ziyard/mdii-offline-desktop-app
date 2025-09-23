@@ -18,143 +18,192 @@ function createWindow() {
     win.loadFile('public/index.html');
     win.webContents.openDevTools(); // Keep this for debugging
 
-    // In your main.js, add logging to see which function is called:
-
     ipcMain.handle('generateInnovatorExcel', async (event, toolId) => {
         console.log('*** STEP 1: generateInnovatorExcel called ***');
-        return executePythonScript(toolId, '--innovator-only'); // For compilation page
+        return executePythonScript(toolId, '--innovator-only');
     });
 
     ipcMain.handle('generateFullExcel', async (event, toolId) => {
         console.log('*** STEP 2: generateFullExcel called ***');
-        return executePythonScript(toolId); // Full mode (default)
+        return executePythonScript(toolId);
     });
 
-    // Keep the old function for backward compatibility
     ipcMain.handle('generateExcel', async (event, toolId) => {
         return executePythonScript(toolId);
     });
 
+    function ensureTemplatesExist() {
+        const templatesSource = path.join(__dirname, '..', 'backend', 'templates');
+        const templatesDestination = path.join(process.resourcesPath, 'templates');
+        
+        try {
+            if (!fs.existsSync(templatesDestination) && fs.existsSync(templatesSource)) {
+                console.log('Copying templates to resources...');
+                fs.mkdirSync(templatesDestination, { recursive: true });
+                
+                const files = fs.readdirSync(templatesSource);
+                files.forEach(file => {
+                    const srcFile = path.join(templatesSource, file);
+                    const destFile = path.join(templatesDestination, file);
+                    if (fs.statSync(srcFile).isFile()) {
+                        fs.copyFileSync(srcFile, destFile);
+                        console.log(`Copied: ${file}`);
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Error ensuring templates exist:', error);
+        }
+    }
+
     function executePythonScript(toolId, mode = null) {
         return new Promise((resolve, reject) => {
-            const scriptPath = path.join(__dirname, '..', 'backend', 'main.py');
+            const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
             
-            // Check if Python script exists
-            if (!fs.existsSync(scriptPath)) {
-                console.error('Python script not found at:', scriptPath);
-                reject(`Python script not found at: ${scriptPath}`);
-                return;
+            if (!isDev) {
+                ensureTemplatesExist();
             }
-
-            console.log('Executing Python script:', scriptPath);
-            console.log('Tool ID:', toolId);
-            console.log('Mode:', mode || 'full');
-
-            // Prepare arguments
-            const args = [scriptPath, toolId];
+            
+            let command, args;
+            
+            if (isDev) {
+                // Development: use Python script directly
+                command = 'python';
+                args = [path.join(__dirname, '..', 'backend', 'main.py'), toolId];
+            } else {
+                // Production: use PyInstaller executable
+                command = path.join(process.resourcesPath, 'scripts', 'main.exe');
+                args = [toolId];
+            }
+            
             if (mode) {
                 args.push(mode);
             }
 
-            // Try different Python commands in order of preference
-            const pythonCommands = ['python', 'python3', 'py'];
-            let currentCommandIndex = 0;
-
-            function tryNextPythonCommand() {
-                if (currentCommandIndex >= pythonCommands.length) {
-                    reject('No working Python interpreter found. Please ensure Python is installed and in PATH.');
-                    return;
-                }
-
-                const pythonCmd = pythonCommands[currentCommandIndex];
-                console.log(`Trying Python command: ${pythonCmd}`);
-
-                const child = spawn(pythonCmd, args, {
-                    cwd: path.join(__dirname, '..', 'backend'),
-                    env: { ...process.env },
-                    shell: true
-                });
-
-                let stdout = '';
-                let stderr = '';
-
-                child.stdout.on('data', (data) => {
-                    const output = data.toString();
-                    stdout += output;
-                    console.log('Python stdout:', output);
-                });
-
-                child.stderr.on('data', (data) => {
-                    const output = data.toString();
-                    stderr += output;
-                    console.error('Python stderr:', output);
-                });
-
-                child.on('error', (error) => {
-                    console.error(`Failed to start Python with ${pythonCmd}:`, error.message);
-                    currentCommandIndex++;
-                    tryNextPythonCommand();
-                });
-
-                child.on('close', (code) => {
-                    console.log(`Python process exited with code: ${code}`);
+            // Debug logging
+            console.log('=== EXECUTION DEBUG INFO ===');
+            console.log('isDev:', isDev);
+            console.log('app.isPackaged:', app.isPackaged);
+            console.log('process.resourcesPath:', process.resourcesPath);
+            console.log('Command to execute:', command);
+            console.log('Args:', args);
+            
+            // Check if command exists
+            if (!isDev && !fs.existsSync(command)) {
+                console.error('Executable not found at:', command);
+                
+                // List what files ARE in the scripts directory
+                const scriptsDir = path.dirname(command);
+                console.log('Scripts directory path:', scriptsDir);
+                
+                if (fs.existsSync(scriptsDir)) {
+                    const files = fs.readdirSync(scriptsDir);
+                    console.log('Files in scripts directory:', files);
+                } else {
+                    console.log('Scripts directory does not exist');
                     
-                    if (code === 0) {
-                        // Success
-                        const lines = stdout.trim().split('\n');
-                        const lastLine = lines[lines.length - 1];
-                        
-                        // Look for the success message with file path
-                        if (lastLine.includes('Excel file created:') || lastLine.includes('Success!')) {
-                            const pathMatch = stdout.match(/([A-Z]:\\[^\\/:*?"<>|]+\\[^\\/:*?"<>|]*\.xlsm)/i) || 
-                                            stdout.match(/(\/[^\\/:*?"<>|]+\/[^\\/:*?"<>|]*\.xlsm)/i);
-                            if (pathMatch) {
-                                resolve(pathMatch[1]);
-                            } else {
-                                resolve('File created successfully (path not found in output)');
-                            }
-                        } else {
-                            resolve(stdout.trim() || 'Excel file generated successfully');
-                        }
-                    } else {
-                        // Error
-                        const errorMsg = stderr || stdout || `Python script failed with code ${code}`;
-                        reject(errorMsg);
+                    // Check what's in resources
+                    if (fs.existsSync(process.resourcesPath)) {
+                        const resourceFiles = fs.readdirSync(process.resourcesPath);
+                        console.log('Files in resources directory:', resourceFiles);
                     }
-                });
+                }
+                
+                reject(`Executable not found at: ${command}`);
+                return;
             }
 
-            tryNextPythonCommand();
+            console.log(`Executing: ${command} ${args.join(' ')}`);
+
+            const child = spawn(command, args, {
+                stdio: ['pipe', 'pipe', 'pipe'],
+                cwd: isDev ? path.join(__dirname, '..', 'backend') : path.dirname(command),
+                env: { 
+                    ...process.env,
+                    // Set environment variable to help Python find templates
+                    TEMPLATES_PATH: isDev ? 
+                        path.join(__dirname, '..', 'backend', 'templates') : 
+                        path.join(process.resourcesPath, 'templates')
+                },
+                shell: false
+            });
+
+            let stdout = '';
+            let stderr = '';
+
+            child.stdout.on('data', (data) => {
+                const output = data.toString();
+                stdout += output;
+                console.log('Process stdout:', output);
+            });
+
+            child.stderr.on('data', (data) => {
+                const output = data.toString();
+                stderr += output;
+                console.error('Process stderr:', output);
+            });
+
+            child.on('error', (error) => {
+                console.error('Failed to start process:', error.message);
+                reject(`Failed to start process: ${error.message}`);
+            });
+
+            child.on('close', (code) => {
+                console.log(`Process exited with code: ${code}`);
+                
+                if (code === 0) {
+                    const lines = stdout.trim().split('\n');
+                    const lastLine = lines[lines.length - 1];
+                    
+                    if (lastLine.includes('Excel file created:') || lastLine.includes('Success!')) {
+                        const pathMatch = stdout.match(/([A-Z]:\\[^\\/:*?"<>|]+\\[^\\/:*?"<>|]*\.xlsm)/i) || 
+                                        stdout.match(/(\/[^\\/:*?"<>|]+\/[^\\/:*?"<>|]*\.xlsm)/i);
+                        if (pathMatch) {
+                            resolve(pathMatch[1]);
+                        } else {
+                            resolve('File created successfully (path not found in output)');
+                        }
+                    } else {
+                        resolve(stdout.trim() || 'Excel file generated successfully');
+                    }
+                } else {
+                    const errorMsg = stderr || stdout || `Process failed with code ${code}`;
+                    console.error('Process execution failed:', errorMsg);
+                    reject(errorMsg);
+                }
+            });
+
+            setTimeout(() => {
+                if (!child.killed) {
+                    child.kill();
+                    reject('Process timed out after 5 minutes');
+                }
+            }, 300000);
         });
     }
 
-ipcMain.handle('openFile', async (event, filePath) => {
-    const { shell } = require('electron');
-    const path = require('path');
-    console.log('Received filePath:', filePath);
-    
-    // Extract just the file path if it contains extra text
-    let actualFilePath = filePath;
-    
-    // Check if the filePath contains "Excel file created:" prefix
-    if (filePath.includes('Excel file created:')) {
-        actualFilePath = filePath.replace('Excel file created:', '').trim();
-    }
-    
-    console.log('Cleaned filePath:', actualFilePath);
-    
-    // Extract the directory from the file path
-    const folderPath = path.dirname(actualFilePath);
-    console.log('Opening folder:', folderPath);
-    
-    // Check if folder exists
-    if (!fs.existsSync(folderPath)) {
-        throw new Error(`Folder not found: ${folderPath}`);
-    }
-    
-    // Open the folder instead of the file
-    return shell.openPath(folderPath);
-});
+    ipcMain.handle('openFile', async (event, filePath) => {
+        const { shell } = require('electron');
+        const path = require('path');
+        console.log('Received filePath:', filePath);
+        
+        let actualFilePath = filePath;
+        
+        if (filePath.includes('Excel file created:')) {
+            actualFilePath = filePath.replace('Excel file created:', '').trim();
+        }
+        
+        console.log('Cleaned filePath:', actualFilePath);
+        
+        const folderPath = path.dirname(actualFilePath);
+        console.log('Opening folder:', folderPath);
+        
+        if (!fs.existsSync(folderPath)) {
+            throw new Error(`Folder not found: ${folderPath}`);
+        }
+        
+        return shell.openPath(folderPath);
+    });
 }
 
 app.whenReady().then(createWindow);

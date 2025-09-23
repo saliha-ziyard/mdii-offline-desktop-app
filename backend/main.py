@@ -48,12 +48,51 @@ USERTYPE4_FORMS = {
 # Second tool ID field for survey forms
 SURVEY_TOOL_ID_FIELD = "Q_13110000"
 
+def get_script_directory():
+    """Get the directory where this script is located, handling PyInstaller bundle"""
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        # PyInstaller bundle
+        return Path(sys._MEIPASS)
+    else:
+        # Normal Python script
+        return Path(__file__).parent.absolute()
+
+def get_templates_directory():
+    """Get the templates directory, checking multiple possible locations"""
+    # Check environment variable first (set by Electron)
+    env_path = os.environ.get('TEMPLATES_PATH')
+    if env_path and Path(env_path).exists():
+        debug_print(f"Found templates via environment: {env_path}")
+        return Path(env_path)
+    
+    # Check script directory (for PyInstaller bundle)
+    script_dir = get_script_directory()
+    templates_dir = script_dir / "templates"
+    if templates_dir.exists():
+        debug_print(f"Found templates in bundle: {templates_dir}")
+        return templates_dir
+    
+    # Check alongside executable (fallback)
+    if getattr(sys, 'frozen', False):
+        exe_dir = Path(sys.executable).parent
+        templates_dir = exe_dir / "templates"
+        if templates_dir.exists():
+            debug_print(f"Found templates alongside exe: {templates_dir}")
+            return templates_dir
+    
+    # Development fallback
+    debug_print(f"Using development templates path: {script_dir / 'templates'}")
+    return script_dir / "templates"
+
 # Get the directory where this script is located
-SCRIPT_DIR = Path(__file__).parent.absolute()
+SCRIPT_DIR = get_script_directory()
+TEMPLATES_DIR = get_templates_directory()
+
 TEMPLATES = {
-    "early": SCRIPT_DIR / "templates" / "MDII_OfflineToolKIT_EAV.xlsm",
-    "advanced": SCRIPT_DIR / "templates" / "MDII_OfflineToolKIT_RV.xlsm",
+    "early": TEMPLATES_DIR / "MDII_OfflineToolKIT_EAV.xlsm",
+    "advanced": TEMPLATES_DIR / "MDII_OfflineToolKIT_RV.xlsm",
 }
+
 
 OUTPUT_DIR = Path(os.path.expanduser("~/Downloads"))
 
