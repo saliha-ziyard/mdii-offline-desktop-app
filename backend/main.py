@@ -62,7 +62,7 @@ def get_templates_directory():
     # Check environment variable first (set by Electron)
     env_path = os.environ.get('TEMPLATES_PATH')
     if env_path and Path(env_path).exists():
-        debug_print(f"Found templates via environment: {env_path}")
+        # debug_print(f"Found templates via environment: {env_path}")
         return Path(env_path)
     
     # Check script directory (for PyInstaller bundle)
