@@ -8,6 +8,7 @@ function createWindow() {
         width: 1500,
         height: 1000,
         resizable: false,
+        icon: path.join(__dirname, 'public', 'images', 'MDII_Logo.png'), // App icon
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: false,
@@ -68,11 +69,9 @@ function createWindow() {
             let command, args;
             
             if (isDev) {
-                // Development: use Python script directly
                 command = 'python';
                 args = [path.join(__dirname, '..', 'backend', 'main.py'), toolId];
             } else {
-                // Production: use PyInstaller executable
                 command = path.join(process.resourcesPath, 'scripts', 'main.exe');
                 args = [toolId];
             }
@@ -81,7 +80,6 @@ function createWindow() {
                 args.push(mode);
             }
 
-            // Debug logging
             console.log('=== EXECUTION DEBUG INFO ===');
             console.log('isDev:', isDev);
             console.log('app.isPackaged:', app.isPackaged);
@@ -89,27 +87,19 @@ function createWindow() {
             console.log('Command to execute:', command);
             console.log('Args:', args);
             
-            // Check if command exists
             if (!isDev && !fs.existsSync(command)) {
                 console.error('Executable not found at:', command);
-                
-                // List what files ARE in the scripts directory
                 const scriptsDir = path.dirname(command);
-                console.log('Scripts directory path:', scriptsDir);
-                
                 if (fs.existsSync(scriptsDir)) {
                     const files = fs.readdirSync(scriptsDir);
                     console.log('Files in scripts directory:', files);
                 } else {
                     console.log('Scripts directory does not exist');
-                    
-                    // Check what's in resources
                     if (fs.existsSync(process.resourcesPath)) {
                         const resourceFiles = fs.readdirSync(process.resourcesPath);
                         console.log('Files in resources directory:', resourceFiles);
                     }
                 }
-                
                 reject(`Executable not found at: ${command}`);
                 return;
             }
@@ -121,7 +111,6 @@ function createWindow() {
                 cwd: isDev ? path.join(__dirname, '..', 'backend') : path.dirname(command),
                 env: { 
                     ...process.env,
-                    // Set environment variable to help Python find templates
                     TEMPLATES_PATH: isDev ? 
                         path.join(__dirname, '..', 'backend', 'templates') : 
                         path.join(process.resourcesPath, 'templates')
