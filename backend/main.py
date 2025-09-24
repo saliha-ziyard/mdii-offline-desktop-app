@@ -2125,7 +2125,7 @@ def debug_usertype2_data(tool_id, maturity_key):
     
     form_id = USERTYPE2_FORMS.get(maturity_key)
     if not form_id:
-        debug_print(f"❌ No form ID found for maturity '{maturity_key}'")
+        debug_print(f"No form ID found for maturity '{maturity_key}'")
         return
     
     debug_print(f"Using form ID: {form_id}")
@@ -2137,7 +2137,7 @@ def debug_usertype2_data(tool_id, maturity_key):
         debug_print(f"Total UserType2 records found: {len(usertype2_data)}")
         
         if len(usertype2_data) == 0:
-            debug_print("❌ NO UserType2 data found in this form at all!")
+            debug_print("NO UserType2 data found in this form at all!")
             debug_print("This means no UserType2 evaluations have been submitted yet.")
             return
         
@@ -2183,16 +2183,16 @@ def debug_usertype2_data(tool_id, maturity_key):
         debug_print(f"Found tool IDs in UserType2 data: {sorted(found_tool_ids)}")
         
         if str(tool_id) in found_tool_ids:
-            debug_print(f"✅ SUCCESS: Tool ID '{tool_id}' found in UserType2 data!")
+            debug_print(f" SUCCESS: Tool ID '{tool_id}' found in UserType2 data!")
         else:
-            debug_print(f"❌ PROBLEM: Tool ID '{tool_id}' NOT found in UserType2 data")
+            debug_print(f" PROBLEM: Tool ID '{tool_id}' NOT found in UserType2 data")
             debug_print("Possible reasons:")
             debug_print("1. No UserType2 evaluation submitted for this tool yet")
             debug_print("2. Tool ID was entered differently in UserType2 form")
             debug_print("3. Different field name used for tool ID")
         
     except Exception as e:
-        debug_print(f"❌ Error debugging UserType2 data: {e}")
+        debug_print(f" Error debugging UserType2 data: {e}")
 
 
 # ==== MAIN FUNCTION ====
