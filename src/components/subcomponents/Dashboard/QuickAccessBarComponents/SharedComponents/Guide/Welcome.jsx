@@ -11,30 +11,26 @@ const Welcome = ({ setCurrentPage, setActiveSection, activeSection }) => {
         supporting a country-level review, or facilitating a stakeholder workshop.
       </p>
 
-      <div>
         <h4>With this app, you can:</h4>
         <ul>
           <li>Collect feedback from users and domain experts</li>
           <li>Score a digital tool's level of inclusiveness</li>
           <li>Generate structured reports and recommendations</li>
         </ul>
-      </div>
 
       <p>
         Once your evaluation is complete, you only need to connect briefly
-        to the internet to <strong>sync your data</strong> or download
+        to the internet to <b>sync your data</b> or download
         updated materials from the MDII system.
       </p>
 
-      <div className="guidance-card">
-        <div className="icon"><BsArrowRight /></div>
-        <div>
-          <h3>Ready to explore the guide?</h3>
-          <p>
-            Click on any section in the <strong>Table of Contents</strong>{" "}
-            to view detailed information. Only one section will be displayed
-            at a time for easy reading.
-          </p>
+      <div className="blue-box">
+        <div className="content">
+          <h3>Ready to explore?</h3>
+          <p>Click any section in the <b>Table of Contents</b> to get started.</p>
+        </div>
+        <div className="icon">
+          <BsArrowRight />
         </div>
       </div>
     </div>

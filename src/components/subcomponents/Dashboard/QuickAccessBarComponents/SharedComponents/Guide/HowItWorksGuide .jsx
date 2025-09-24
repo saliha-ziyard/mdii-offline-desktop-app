@@ -67,7 +67,7 @@ const HowItWorksGuide = ({ setCurrentPage = () => {} }) => {
           <GoArrowLeft />
         </button>
         <div className="text">
-          <h1>MDII Offline-Friendly Desktop App</h1>
+          <h1><span>MDII</span> Offline-Friendly Desktop App</h1>
           <p>Complete User Guide</p>
         </div>
       </div>

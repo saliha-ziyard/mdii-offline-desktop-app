@@ -33,7 +33,7 @@ const WhatThisToolDoes = () => {
       <p className="section-description-main">
         This is the first offline-friendly version of the MDII, designed
         for low-connectivity settings.
-        <strong> Please read the user manual before you start.</strong>
+        <b> Please read the user manual before you start.</b>
       </p>
 
       <div className="features-grid">
