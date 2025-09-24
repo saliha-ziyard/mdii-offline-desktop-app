@@ -5,8 +5,9 @@ const fs = require('fs');
 
 function createWindow() {
     const win = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1500,
+        height: 1000,
+        resizable: false,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: false,
@@ -16,7 +17,7 @@ function createWindow() {
     });
     
     win.loadFile('public/index.html');
-    win.webContents.openDevTools(); // Keep this for debugging
+    // win.webContents.openDevTools(); // Keep this for debugging
 
     ipcMain.handle('generateInnovatorExcel', async (event, toolId) => {
         console.log('*** STEP 1: generateInnovatorExcel called ***');
