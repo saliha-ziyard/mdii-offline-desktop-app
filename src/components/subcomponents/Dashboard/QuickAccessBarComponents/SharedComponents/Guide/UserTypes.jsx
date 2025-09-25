@@ -25,7 +25,12 @@ const UserTypes = ({ setCurrentPage, setActiveSection, activeSection }) => {
                 ? "active"
                 : ""
             }`}
-            onClick={() => toggleNested("componentTab")}
+            onClick={() =>
+              setNestedExpanded((prev) => ({
+                ...prev,
+                componentTab: "innovators1",
+              }))
+            } 
           >
             Innovators
           </button>
@@ -74,11 +79,11 @@ const UserTypes = ({ setCurrentPage, setActiveSection, activeSection }) => {
           {(!nestedExpanded.componentTab ||
             nestedExpanded.componentTab === "innovators1") && (
             <div>
-              <p className="tag" style={{ backgroundColor: '#ff0000' }}>Mandatory</p>
+              <div className="red-tag tag">Mandatory</div>
               <h4>Innovators (Type 1)</h4>
               <p>The people or teams who developed the digital tool</p>
-              <p className="tag-text">Provide essential context about the tool's design, goals, and implementation approach.</p>
-              <div className="grey-box">
+              <p>Provide essential context about the tool's design, goals, and implementation approach.</p>
+              <div className="box purple-box">
                 <p><strong>Sample Size:</strong> No minimum required — more responses provide better results</p>
               </div>
             </div>
@@ -86,11 +91,11 @@ const UserTypes = ({ setCurrentPage, setActiveSection, activeSection }) => {
 
           {nestedExpanded.componentTab === "domain-experts" && (
             <div>
-              <p className="tag" style={{ backgroundColor: '#ff0000' }}>Mandatory</p>
+              <div className="red-tag tag" >Mandatory</div>
               <h4>Domain Experts (Type 2)</h4>
               <p>Technical or thematic specialists who review the tool based on specific dimensions</p>
-              <p className="tag-text">Offer independent professional assessment across GESI, ICT, Data, Economics, and other critical areas.</p>
-              <div className="grey-box">
+              <p>Offer independent professional assessment across GESI, ICT, Data, Economics, and other critical areas.</p>
+              <div className="box purple-box">
                 <p><strong>Sample Size:</strong> No minimum required — more responses provide better results.</p>
               </div>
             </div>
@@ -98,11 +103,11 @@ const UserTypes = ({ setCurrentPage, setActiveSection, activeSection }) => {
 
           {nestedExpanded.componentTab === "end-users" && (
             <div>
-              <p className="tag" style={{ backgroundColor: '#ff0000' }}>Mandatory</p>
+              <div className="red-tag tag ">Mandatory</div>
               <h4>End Users (Type 3)</h4>
               <p>Individuals who interact directly with the tool. Can be farmers, extension agents, or governmental individuals.</p>
-              <p className="tag-text">Provide real-world usage feedback on usability, trust, and accessibility from direct experience.</p>
-              <div className="grey-box">
+              <p>Provide real-world usage feedback on usability, trust, and accessibility from direct experience.</p>
+              <div className="box purple-box">
                 <p><strong>Sample Size:</strong> No minimum required — more responses provide better results.</p>
               </div>
             </div>
@@ -110,11 +115,11 @@ const UserTypes = ({ setCurrentPage, setActiveSection, activeSection }) => {
 
           {nestedExpanded.componentTab === "downstream-beneficiaries" && (
             <div>
-              <p className="tag">Optional</p>
+              <div className="tag">Optional</div>
               <h4>Downstream Beneficiaries (Type 4)</h4>
               <p>People impacted by the tool's use or decisions, even if they don't interact with it directly.</p>
-              <p className="tag-text">Share perspectives on indirect impacts and broader consequences of the tool's deployment.</p>
-              <div className="grey-box">
+              <p>Share perspectives on indirect impacts and broader consequences of the tool's deployment.</p>
+              <div className="box purple-box">
                 <p><strong>Sample Size:</strong> No minimum required — more responses provide better results.</p>
               </div>
             </div>
