@@ -24,7 +24,7 @@ const Welcome = ({ setCurrentPage, setActiveSection, activeSection }) => {
         updated materials from the MDII system.
       </p>
 
-      <div className="blue-box">
+      <div className="blue-box box">
         <div className="content">
           <h3>Ready to explore?</h3>
           <p>Click any section in the <b>Table of Contents</b> to get started.</p>

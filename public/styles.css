@@ -1187,24 +1187,21 @@ hr {
   margin-top: 20px;
   margin-bottom: 20px;
 }
-.blue-box h3 , .orange-box h3, .purple-box h3
-.grey-box h3{
+.box h3{
   color: #000;
   margin: 0 0 0.25rem 0;
   font-size: 16px;
   font-weight: 600;
 }
 
-.blue-box p, .orange-box p , .purple-box p,
-.grey-box p{
+.box p{
   margin: 0;
   color: #000;  
   font-size: var(--primary-font-size-paragraph);
   line-height: 1.4;
 }
 
-.blue-box .icon, .orange-box .icon , .purple-box .icon,
-.grey-box .icon{
+.box .icon{
   width: 40px;
   height: 40px;
   background: #fff;
@@ -1215,14 +1212,13 @@ hr {
   flex-shrink: 0;
 }
 
-.blue-box .icon svg , .orange-box .icon svg, .purple-box .icon svg,
-.grey-box .icon svg{
+.box .icon svg{
   width: 18px;
   height: 18px;
   color: #000;
 }
 
- .orange-box {
+.orange-box {
   background-color: #fff2ea;
   border: 1px solid #d67e42;
 }
@@ -1243,18 +1239,8 @@ hr {
   border: 1px solid #b0b0b0;       
 }
 
-/* .grey-box{
-  background-color: var(--bg-grey);
-  border-radius: 10px;
-  border: 1px solid var(--border-colour);
-  padding: 10px 15px;
-  margin-top: 20px;
-}
-.gry-box h4{
-  color: var(--font-grey);
-} */
-.framework-structure {
-  margin: 1rem 0;
+.structure-content{
+  margin-top: 8px;
 }
 .structure-grid {
   display: grid;
@@ -1352,18 +1338,7 @@ hr {
   padding: 0;
   margin: 0;
 }
-/* .blue-box{
-  background-color: #EFF6FF;
-  border: 2px solid #99c5fc;
-  padding: 10px 5px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  border-radius: 10px;
-} 
- .blue-box li::marker {
-  color: #659fe6;
-  font-size: 24px;           
-} */
+
 .tag {
   background-color: transparent;
   padding: 5px 10px;
