@@ -30,7 +30,12 @@ const MDIIComponents = ({ setCurrentPage, setActiveSection, activeSection }) => 
                 ? "active"
                 : ""
             }`}
-            onClick={() => toggleNested("componentTab")}
+            onClick={() =>
+            setNestedExpanded((prev) => ({
+              ...prev,
+              componentTab: "maturity",
+            }))
+          }
           >
             Tool Maturity
           </button>
@@ -98,13 +103,13 @@ const MDIIComponents = ({ setCurrentPage, setActiveSection, activeSection }) => 
               </p>
 
               <div className="maturity-grid">
-                <div className="maturity-item regular">
-                  <h4>Regular Version</h4>
+                <div className="box green-box">
+                  <h5>Regular Version</h5>
                   <p>
-                    <strong>
+                    <b>
                       For tools that are already deployed, piloted, or
                       tested
-                    </strong>
+                    </b>
                   </p>
                   <ul>
                     <li>Assesses actual user experience and impact</li>
@@ -114,13 +119,13 @@ const MDIIComponents = ({ setCurrentPage, setActiveSection, activeSection }) => 
                   </ul>
                 </div>
 
-                <div className="maturity-item ex-ante">
-                  <h4>Ex-Ante Version</h4>
+                <div className="box purple-box">
+                  <h5>Ex-Ante Version</h5>
                   <p>
-                    <strong>
+                    <b>
                       For tools in early stages: idea, research, or
                       prototyping
-                    </strong>
+                    </b>
                   </p>
                   <ul>
                     <li>
@@ -135,8 +140,8 @@ const MDIIComponents = ({ setCurrentPage, setActiveSection, activeSection }) => 
                 </div>
               </div>
 
-              <div className="grey-box">
-                <p>The desktop app is designed to <strong>automatically detect the tool's maturity level</strong> once it's loaded into the system and selects the appropriate version of the Index for scoring and reporting. You don't need to choose manually; the system adapts based on the tool profile already stored in our database.</p>
+              <div className="box grey-box">
+                <p>The desktop app is designed to <b>automatically detect the tool's maturity level</b> once it's loaded into the system and selects the appropriate version of the Index for scoring and reporting. You don't need to choose manually; the system adapts based on the tool profile already stored in our database.</p>
               </div>
             </div>
           )}
@@ -147,20 +152,20 @@ const MDIIComponents = ({ setCurrentPage, setActiveSection, activeSection }) => 
               <p>
                 MDII utilizes targeted surveys to gather comprehensive data from different stakeholder groups. These surveys collect both qualitative and quantitative insights to assess how digital tools perform across inclusiveness criteria.
               </p>
-              <div className="grey-box">
-                <p><strong>Innovators (Type 1)</strong></p>
+              <div className="box green-box">
+                <p><b>Innovators (Type 1)</b></p>
                 <p>Survey for tool developers and creators</p>
               </div>
-              <div className="grey-box">
-                <strong>Domain Experts (Type 2)</strong>
+              <div className="box purple-box">
+                <b>Domain Experts (Type 2)</b>
                 <p>Survey for subject matter specialists</p>
               </div>
-              <div className="grey-box">
-                <strong>End Users (Type 3)</strong>
+              <div className="box blue-box">
+                <b>End Users (Type 3)</b>
                 <p>Survey for direct tool users</p>
               </div>
-              <div className="grey-box">
-                <strong>Downstream Beneficiaries (Type 4 — optional)</strong>
+              <div className="box orange-box">
+                <b>Downstream Beneficiaries (Type 4 — optional)</b>
                 <p>Survey for indirect beneficiaries of the tool</p>
               </div>
               <div>
@@ -176,8 +181,6 @@ const MDIIComponents = ({ setCurrentPage, setActiveSection, activeSection }) => 
               <p>
                 Once the innovator survey is completed, the system generates PDF compilations for each expert domain. These documents summarize relevant answers provided by the tool developers and serve as input material for domain experts.
               </p>
-
-              <div className="compilation-info">
                 <h5>Each compilation includes:</h5>
                 <ul>
                   <li>General information about the tool</li>
@@ -186,9 +189,8 @@ const MDIIComponents = ({ setCurrentPage, setActiveSection, activeSection }) => 
                   </li>
                   <li>Contextual notes to guide scoring</li>
                 </ul>
-              </div>
 
-              <div className="grey-box">
+              <div className="box grey-box">
                 <p>The expert uses this compilation as a reference to complete their evaluation independently, helping ensure that the scoring reflects both internal knowledge and external assessment.</p>
               </div>
             </div>
@@ -198,8 +200,8 @@ const MDIIComponents = ({ setCurrentPage, setActiveSection, activeSection }) => 
             <div>
               <h4>Workbook</h4>
               <p>All survey responses feed into a pre-formatted Excel workbook, which performs automated calculations and generates comprehensive reports.</p>
-              <div className="grey-box">
-                <strong>The workbook does:</strong>
+              <div className="box grey-box">
+                <b>The workbook does:</b>
                 <ul>
                   <li>Automatically calculates the overall MDII score (0–100%)</li>
                   <li>Assigns a tier label (e.g. "Meeting Expectations")</li>
@@ -208,7 +210,7 @@ const MDIIComponents = ({ setCurrentPage, setActiveSection, activeSection }) => 
                   <li>Suggests recommendations per dimension, including tier-based actions to improve</li>
                 </ul>
               </div>
-              <div className="grey-box">
+              <div className="box green-box">
                 <p>The workbook is structured with separate tabs for scores and recommendations. No manual calculation is needed — scores and outputs are generated automatically once data is entered.</p>
               </div>
             </div>
@@ -218,16 +220,16 @@ const MDIIComponents = ({ setCurrentPage, setActiveSection, activeSection }) => 
             <div>
               <h4>Outputs</h4>
               <p>After reviewing the Excel workbook, users generate two key outputs by exporting the relevant tabs as PDFs.</p>
-              <div className="grey-box">
+              <div className="box grey-box">
                 <ul><li>Score Report (PDF)</li></ul>
                 <p>Summarizes the final MDII score, tier label, visual charts, and a dimension-level breakdown of inclusiveness performance.</p>
               </div>
-              <div className="grey-box">
+              <div className="box grey-box">
                 <ul><li>Recommendation Brief (PDF)</li></ul>
                 <p>Lists practical, evidence-based actions to improve the tool. These suggestions are framed as "steps to reach the next tier" and are organized by MDII dimension.</p>
               </div>
 
-              <div className="grey-box">
+              <div className="box green-box">
                 <p>These files are designed to support internal planning, external discussions, and roadmap decisions — giving teams a concrete snapshot of where they stand and where to go next.</p>
               </div>
             </div>
