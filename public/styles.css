@@ -1335,32 +1335,17 @@ hr {
   margin-bottom: 0;
 }
 
-
-/* Tags */
 .tag {
   background-color: var(--bg-grey);
   border: 1px solid var(--border-colour);
   border-radius: 20px;
-  padding: 0.25rem 0.75rem;
-  font-size: 0.75rem;
+  padding: 4px 10px;
   font-weight: 500;
   display: inline-block;
-  margin: 0.25rem 0.5rem 0.25rem 0;
+  margin:auto;
   color: var(--font-grey);
+  font-size: 11px;
 }
-
-.tag-text {
-  background-color: var(--bg-grey);
-  border: 1px solid var(--border-colour);
-  border-radius: 8px;
-  padding: 0.75rem;
-  font-size: 0.875rem;
-  display: inline-block;
-  margin: 0.5rem 0;
-  color: var(--primary-color);
-  font-weight: 500;
-}
-
 
 
 

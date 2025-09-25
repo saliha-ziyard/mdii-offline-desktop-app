@@ -221,11 +221,11 @@ const MDIIComponents = ({ setCurrentPage, setActiveSection, activeSection }) => 
               <h4>Outputs</h4>
               <p>After reviewing the Excel workbook, users generate two key outputs by exporting the relevant tabs as PDFs.</p>
               <div className="box grey-box">
-                <ul><li>Score Report (PDF)</li></ul>
+                <ul><li><b>Score Report (PDF)</b></li></ul>
                 <p>Summarizes the final MDII score, tier label, visual charts, and a dimension-level breakdown of inclusiveness performance.</p>
               </div>
               <div className="box grey-box">
-                <ul><li>Recommendation Brief (PDF)</li></ul>
+                <ul><li><b>Recommendation Brief (PDF)</b></li></ul>
                 <p>Lists practical, evidence-based actions to improve the tool. These suggestions are framed as "steps to reach the next tier" and are organized by MDII dimension.</p>
               </div>
 

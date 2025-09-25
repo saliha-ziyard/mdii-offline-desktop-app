@@ -29,7 +29,12 @@ const MDIIEcosystem = ({ setCurrentPage, setActiveSection, activeSection }) => {
                 ? "active"
                 : ""
             }`}
-            onClick={() => toggleNested("componentTab")}
+            onClick={() =>
+              setNestedExpanded((prev) => ({
+                ...prev,
+                componentTab: "fullassessment",
+              }))
+            } 
           >
             <GoGlobe /> Full Assessment
           </button>
@@ -61,12 +66,12 @@ const MDIIEcosystem = ({ setCurrentPage, setActiveSection, activeSection }) => {
           </button>
         </div>
 
-        <div className="tab-content">
+        {/* <div className="tab-content"> */}
           {(!nestedExpanded.componentTab ||
             nestedExpanded.componentTab === "fullassessment") && (
-            <div>
+            <div className="box blue-box">
               <h4>Full Assessment</h4>
-              <p className="tag">Fully Online</p>
+              <div className="tag">Fully Online</div>
               <div>
                 <ul>
                   <li>A detailed, survey-based version of MDII, designed for use entirely through the MDII web application.</li>
@@ -78,9 +83,9 @@ const MDIIEcosystem = ({ setCurrentPage, setActiveSection, activeSection }) => {
             </div>
           )}
           {nestedExpanded.componentTab === "rapidassessment" && (
-            <div>
+            <div className="box green-box">
               <h4>AI-Rapid Assessment</h4>
-              <p className="tag">Fully Online</p>
+              <div className="tag">Fully Online</div>
               <div>
                 <ul>
                   <li>A fast, AI-powered assessment tool.</li>
@@ -91,9 +96,9 @@ const MDIIEcosystem = ({ setCurrentPage, setActiveSection, activeSection }) => {
             </div>
           )}
           {nestedExpanded.componentTab === "mdiidashboard" && (
-            <div>
+            <div className="box purple-box">
               <h4>MDII Dashboard</h4>
-              <p className="tag">Fully Online</p>
+              <div className="tag">Fully Online</div>
               <div>
                 <ul>
                   <li>A centralized space to explore your results once reports are generated.</li>
@@ -105,7 +110,7 @@ const MDIIEcosystem = ({ setCurrentPage, setActiveSection, activeSection }) => {
           )}
         </div>
       </div>
-    </div>
+    // </div>
   );
 };
 
