@@ -11,7 +11,7 @@ const Welcome = ({ setCurrentPage, setActiveSection, activeSection }) => {
         supporting a country-level review, or facilitating a stakeholder workshop.
       </p>
 
-        <h4>With this app, you can:</h4>
+        <p>With this app, you can:</p>
         <ul>
           <li>Collect feedback from users and domain experts</li>
           <li>Score a digital tool's level of inclusiveness</li>

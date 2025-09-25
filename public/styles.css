@@ -17,6 +17,7 @@
   --link-font-colour: #3b82f6;
   --max-width-overall: 1080px;
   --padding: 32px;
+  --padding-boxes:20px;
 }
 
 * {
@@ -1067,7 +1068,7 @@ hr {
   background: white;
   border-right: 1px solid var(--border-colour);
   position: fixed;
-  top: 100px; 
+  top: 120px; 
   overflow-y: auto;
   z-index: 10;
 }
@@ -1125,12 +1126,12 @@ hr {
 
 .content-body h3 {
   font-weight: 600;
-  margin-top: 35px; 
+  margin-top: 50px; 
 }
 
 .content-body h4 {
   font-weight: 600;
-  margin-top: 20px;
+  /* margin-top: 20px; */
 }
 
 .content-body h5 {
@@ -1150,25 +1151,35 @@ hr {
 .content-body ol {
   margin-top: 5px;
   margin-bottom: 5px;
-  padding-left: 1.8rem;       
+  padding-left: 1.2rem;      
   list-style-position: outside;
 }
 
 .content-body li {
-  font-size:var(--primary-font-size-paragraph);
-  line-height: 1.8;           
+  font-size: var(--primary-font-size-paragraph);
+  line-height: 1.4;
+  padding-left: 0.2rem;     
 }
 
 .content-body li::marker {
   color: var(--primary-color);
-  font-size: 24px;           
+  font-size: 20px;          
 }
 
-.content-body .blue-box{
-  background-color: #d9eeff;
+
+.box{
+  border-radius: var(--border-radius);
+  padding: var(--padding-boxes);
+  color: black;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.blue-box{
+  background-color: #e7f4ff;
   border: 1px solid #4293d6;
   border-radius: var(--border-radius);
-  padding: 20px;
+  padding: var(--padding-boxes);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1176,21 +1187,24 @@ hr {
   margin-top: 20px;
   margin-bottom: 20px;
 }
-.blue-box h3 {
+.blue-box h3 , .orange-box h3, .purple-box h3
+.grey-box h3{
   color: #000;
   margin: 0 0 0.25rem 0;
   font-size: 16px;
   font-weight: 600;
 }
 
-.blue-box p {
+.blue-box p, .orange-box p , .purple-box p,
+.grey-box p{
   margin: 0;
   color: #000;  
   font-size: var(--primary-font-size-paragraph);
   line-height: 1.4;
 }
 
-.blue-box .icon {
+.blue-box .icon, .orange-box .icon , .purple-box .icon,
+.grey-box .icon{
   width: 40px;
   height: 40px;
   background: #fff;
@@ -1201,35 +1215,35 @@ hr {
   flex-shrink: 0;
 }
 
-.blue-box .icon svg {
+.blue-box .icon svg , .orange-box .icon svg, .purple-box .icon svg,
+.grey-box .icon svg{
   width: 18px;
   height: 18px;
   color: #000;
 }
 
-.highlight-box {
-  background: var(--light-secondary-colour);
-  border: 1px solid var(--dark-border-colour) ;
-  padding: 10px 15px;
-  border-radius: 10px;
-  margin: 1.5rem 0;
+ .orange-box {
+  background-color: #fff2ea;
+  border: 1px solid #d67e42;
 }
 
-.highlight-box h4 {
-  color: #92400e;
-  margin: 0 0 0.75rem 0;
+.purple-box {
+  background-color: #f2eaff;       
+  border: 1px solid #7d4ed6;      
 }
+
 .two-column-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2.6fr 2fr;
   gap: 2rem;
   margin: 2rem 0;
 }
-.grid-item h4 {
-  margin-top: 0;
-  color: #1e293b;
+.grey-box {
+  background-color: #f5f5f5;       
+  border: 1px solid #b0b0b0;       
 }
-.grey-box{
+
+/* .grey-box{
   background-color: var(--bg-grey);
   border-radius: 10px;
   border: 1px solid var(--border-colour);
@@ -1238,7 +1252,7 @@ hr {
 }
 .gry-box h4{
   color: var(--font-grey);
-}
+} */
 .framework-structure {
   margin: 1rem 0;
 }
@@ -1338,7 +1352,7 @@ hr {
   padding: 0;
   margin: 0;
 }
-.blue-box{
+/* .blue-box{
   background-color: #EFF6FF;
   border: 2px solid #99c5fc;
   padding: 10px 5px;
@@ -1349,7 +1363,7 @@ hr {
  .blue-box li::marker {
   color: #659fe6;
   font-size: 24px;           
-}
+} */
 .tag {
   background-color: transparent;
   padding: 5px 10px;
