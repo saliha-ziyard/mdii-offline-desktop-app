@@ -1346,7 +1346,12 @@ hr {
   color: var(--font-grey);
   font-size: 11px;
 }
-
+.box svg {
+  flex-shrink: 0;
+  color: #4caf50;    
+  font-size: 12px;  
+  margin-right: 4px;
+}
 
 
 
