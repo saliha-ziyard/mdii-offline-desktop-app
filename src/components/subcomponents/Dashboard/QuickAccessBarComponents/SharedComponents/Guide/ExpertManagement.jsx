@@ -102,7 +102,7 @@ const ExpertManagement = ({ setCurrentPage, setActiveSection, activeSection }) =
                 3. Verify eligibility - ensure both domain relevance and independence criteria are met.<br />
                 4. Send clear invitation - explain purpose, contribution, time commitment (30-60 minutes), and importance of independence.
               </p>
-              <div className="blue-box">
+              <div className="box blue-box">
                 <h4>Coordination Tips</h4>
                 <ul>
                   <li>Aim for diversity across the expert pool—gender, geography, and institutional backgrounds.</li>
