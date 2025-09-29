@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { HiOutlineChartBar } from "react-icons/hi2";
+import { HiOutlineChartBar, HiChevronUp, HiChevronDown } from "react-icons/hi2";
 
 const steps = [
   {
@@ -7,7 +7,7 @@ const steps = [
     title: "Request Code",
     duration: "2-3 minutes (internet required)",
     content: (
-      <>
+      <div className="box-dropdown">
         <p>
           Start by submitting an evaluation request. You'll receive a unique Tool ID via email that links your tool to the correct maturity version and evaluation materials. You need to already have the names and email addresses of the innovators focal points.
         </p>
@@ -23,25 +23,27 @@ const steps = [
             <strong>Technical Manager</strong>: Detailed knowledge of tool's architecture and data flows. Completes technical portions of the survey.
           </li>
         </ul>
-      </>
+      </div>
     ),
   },
   {
     number: 2,
     title: "Innovator Survey",
-    duration: "immediate, 0 minutes",
+    duration: "Immediate, 0 minutes",
     content: (
+      <div className="box-dropdown">
       <p>
         Our system sends the innovators focal points an email to complete a structured survey. This provides essential background and operational context about the tool being assessed. No action is required here. You will be notified as soon as the answers start coming.
       </p>
+      </div>
     ),
   },
   {
     number: 3,
     title: "Assign Experts",
-    duration: "hours or days (depends on expert availability)",
+    duration: "Hours or days (depends on expert availability)",
     content: (
-      <div>
+      <div className="box-dropdown">
         <p>
           Identify domain-specific evaluators that will evaluate the innovators' answers.
         </p>
@@ -77,17 +79,19 @@ const steps = [
     title: "Generate Expert PDFs",
     duration: "3-4 minutes (internet required)",
     content: (
+      <div className="box-dropdown">
       <p>
         After collecting survey responses from the three focal points, select <strong>Get Experts PDF</strong> to generate structured document (compilation) that extracts and organizes relevant information from the focal points' responses. This will generate an excel file and store it on your computer alongside the compilations. Send these to the experts you identified in the previous step.
       </p>
+      </div>
     ),
   },
   {
     number: 5,
     title: "End User Data Collection",
-    duration: "days to weeks (no internet required)",
+    duration: "Days to weeks (no internet required)",
     content: (
-      <div>
+      <div className="box-dropdown">
         <p>
           Generate unique survey links for End Users and Downstream Beneficiaries by going to <strong>Get Data Collection Link</strong>. You can send links via email, run workshops, or collect data in the field.
         </p>
@@ -102,7 +106,7 @@ const steps = [
     title: "Get MDII Report",
     duration: "4-5 minutes (internet required)",
     content: (
-      <>
+      <div className="box-dropdown">
         <p>
           After receiving all evaluations from users, downstream beneficiaries (optional) and experts, go to <strong>Get MDII Report</strong>. Insert your tool ID and wait for magic to happen. The excel file generated in step 4 will be updated with the evaluation data.
         </p>
@@ -111,12 +115,12 @@ const steps = [
             <strong>Final Steps:</strong> Open the excel file and find your tool assessment in the MDII Score and MDII Recommendations tabs. Print each as PDFs – you've completed an MDII evaluation!
           </p>
         </div>
-      </>
+      </div>
     ),
   },
 ];
 
-const EvaluationWorkflow = ({ setCurrentPage, setActiveSection, activeSection }) => {
+const EvaluationWorkflow = () => {
   const [openIndex, setOpenIndex] = useState(null);
 
   const toggle = (i) => {
@@ -127,27 +131,36 @@ const EvaluationWorkflow = ({ setCurrentPage, setActiveSection, activeSection })
     <div className="content-body">
       <h3>Evaluation Workflow</h3>
       <p>
-        This section outlines the full journey of evaluating a digital tool's inclusiveness using the MDII desktop toolkit. Whether you're a field coordinator, evaluator, or project lead, these are the steps you'll follow from requesting your evaluation code to generating your final report.
+        This section outlines the full journey of evaluating a digital tool's inclusiveness
+        using the MDII desktop toolkit. Whether you're a field coordinator, evaluator,
+        or project lead, these are the steps you'll follow from requesting your evaluation
+        code to generating your final report.
       </p>
 
-      <div className="timeline-note">
+      <div className="box blue-box">
         <p>
-          <strong>Timeline Information:</strong> The duration of an MDII evaluation depends on how fast you can make your respondents fill out their surveys. As an evaluation coordinator, your work is easy and almost instantaneous.
+          <b>Timeline Information:</b> The duration of an MDII evaluation depends
+          on how fast you can make your respondents fill out their surveys. As an evaluation
+          coordinator, your work is easy and almost instantaneous.
         </p>
       </div>
 
       <div className="workflow-steps">
         {steps.map((step, index) => (
-          <div className="workflow-step" key={index}>
-            <div className="step-header" onClick={() => toggle(index)}>
-              <div className="step-number">{step.number}</div>
-              <div className="step-title">
+          <div className="workflow-card" key={index}>
+            <div className="workflow-toggle" onClick={() => toggle(index)}>
+              <span className="workflow-number">{step.number}</span>
+              <div className="workflow-info">
                 <h4>{step.title}</h4>
-                <p className="step-duration">Duration: {step.duration}</p>
+                <p>Duration: {step.duration}</p>
               </div>
-              <div className="dropdown-icon">{openIndex === index ? "▲" : "▼"}</div>
+              <span className="workflow-arrow">
+                {openIndex === index ? "−" : "+"}
+              </span>
             </div>
-            {openIndex === index && <div className="step-content">{step.content}</div>}
+            {openIndex === index && (
+              <div className="workflow-content">{step.content}</div>
+            )}
           </div>
         ))}
       </div>
