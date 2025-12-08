@@ -1,38 +1,40 @@
 import React from "react";
-import { BsExclamationTriangle } from "react-icons/bs";
 
 const AcknowledgmentsDevTeam = ({ setCurrentPage, setActiveSection, activeSection }) => {
   return (
     <div className="content-body">
-      <h3>Acknowledgments & Development Team</h3>
+      <h3>Acknowledgment and Development Team</h3>
+      <h4> Development Team</h4>
       <p>
-        The MDII Desktop App was developed through a collaborative effort to advance digital inclusiveness in agrisystems, particularly in low- and middle-income countries (LMICs). We are grateful to the following contributors and supporters:
+        The MDII framework and desktop application were developed through collaborative effort by researchers and practitioners dedicated to advancing digital inclusiveness in agricultural systems.
       </p>
-      <div className="grey-box">
-        <h4>Development Team</h4>
-        <ul>
-          <li><strong>CGIAR Digital Innovation Initiative</strong>: Led the conceptualization and framework development.</li>
-          <li><strong>Technical Development Team</strong>: Designed and built the offline-friendly desktop app and Excel workbook.</li>
-          <li><strong>Domain Experts</strong>: Provided critical insights for GESI, ICT, Data, Economics, and Country-Specific contexts.</li>
-        </ul>
-      </div>
-      <div className="grey-box">
-        <h4>Acknowledgments</h4>
+      
+      <div className="grey-box box">
+        <h4>Core Development Team</h4>
         <p>
-          Special thanks to our partners, including KoboToolbox for enabling offline data collection, and the broader CGIAR network for their support in testing and refining the MDII framework.
-        </p>
-        <p>
-          We also acknowledge the contributions of field coordinators, evaluators, and end users who provided feedback to improve the app’s usability and effectiveness.
+          Led by the International Water Management Institute (IWMI) in collaboration with various research institutions and development organizations worldwide.
         </p>
       </div>
-      <div className="grey-box">
-        <h4>Contact</h4>
+
+      <h4>Acknowledgments</h4>
+      <p>
+        We extend our gratitude to the numerous experts, practitioners, and communities who contributed their insights and feedback during the development and testing phases of this framework.
+      </p>
+      
+      <div className="grey-box box">
         <p>
-          For inquiries about the MDII project or to join our community of contributors, please reach out to <a href="mailto:mdii-support@cgiar.org">mdii-support@cgiar.org</a>.
+          Special thanks to the domain experts, end-users, and innovators who participated in pilot evaluations and provided valuable input that shaped the current version of the MDII desktop application.
+        </p>
+      </div>
+
+      <div className="orange-box box">
+        <h4>Funding & Support</h4>
+        <p>
+          This work was supported by various funding organizations committed to promoting inclusive digital transformation in agriculture and development.
         </p>
       </div>
     </div>
   );
 };
 
-export default AcknowledgmentsDevTeam;
+export default AcknowledgmentsDevTeam

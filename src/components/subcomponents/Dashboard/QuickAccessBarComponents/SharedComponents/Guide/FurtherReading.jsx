@@ -1,38 +1,35 @@
 import React from "react";
-import { BsExclamationTriangle } from "react-icons/bs";
 
 const FurtherReading = ({ setCurrentPage, setActiveSection, activeSection }) => {
   return (
     <div className="content-body">
-      <h3>Further Reading</h3>
-      <p>
-        To deepen your understanding of the MDII framework and its applications, we recommend exploring the following resources:
-      </p>
-      <div className="grey-box">
-        <h4>Key Resources</h4>
-        <ul>
-          <li>
-            <a href="https://mdii.cgiar.org/docs/framework">MDII Framework Documentation</a>: Detailed guide on the methodology, dimensions, and indicators.
-          </li>
-          <li>
-            <a href="https://mdii.cgiar.org/docs/case-studies">MDII Case Studies</a>: Real-world examples of MDII evaluations in action.
-          </li>
-          <li>
-            <a href="https://support.kobotoolbox.org">KoboToolbox Support</a>: Comprehensive documentation for offline and online survey collection.
-          </li>
-          <li>
-            <a href="https://mdii.cgiar.org/docs/technical-guide">MDII Technical Guide</a>: In-depth explanation of the Excel workbook and data processing.
-          </li>
-        </ul>
-      </div>
-      <div className="grey-box">
-        <h4>Additional Materials</h4>
-        <p>
-          Visit the <a href="https://mdii.cgiar.org/resources">MDII Resource Hub</a> for white papers, webinars, and community forums on digital inclusiveness.
+      <h3>Discover more about MDII</h3>
+      
+      <p><h4>Website:</h4> <a href="https://mdii.iwmi.org" target="_blank" rel="noopener noreferrer">
+          mdii.iwmi.org
+        </a></p>
+      <h4>Resources</h4>
+      
+      <div className="grey-box box">
+        <h5>A multi-dimensional framework for responsible and socially inclusive digital innovation in food, water, and land systems</h5>
+        <p className="authors">
+          Opola, F., Langan, S., Arulingam, I., Schumann, C., Singaraju, N., Joshi, D., Ghosh, S. (2025).
         </p>
+        <a href="https://hdl.handle.net/10568/174461" target="_blank" rel="noopener noreferrer">
+          https://hdl.handle.net/10568/174461
+        </a>
+      </div>
+
+      <div className="grey-box box">
+        <h5>Development of the conceptual framework (version 2.0) of the Multidimensional Digital Inclusiveness Index</h5>
+        <p className="authors">
+          Martins, C. I., Opola, F., Jacobs-Mata, I., Garcia Andarcia, M., Nortje, K., Joshi, D., Singaraju, N., Muller, A., Christen, R., Malhotra, A. (2023).
+        </p>
+        <a href="https://hdl.handle.net/10568/138705" target="_blank" rel="noopener noreferrer">
+          https://hdl.handle.net/10568/138705
+        </a>
       </div>
     </div>
-  );
-};
+  )}
 
-export default FurtherReading;
+  export default FurtherReading;

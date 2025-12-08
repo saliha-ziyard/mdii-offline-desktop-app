@@ -7,7 +7,7 @@ function createWindow() {
     const win = new BrowserWindow({
         width: 1500,
         height: 1000,
-        resizable: false,
+        resizable: true,
         icon: path.join(__dirname, 'public', 'images', 'MDII_Logo.png'), // App icon
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),

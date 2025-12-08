@@ -2,14 +2,7 @@ import React, { useState } from "react";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 
 const ExpertManagement = ({ setCurrentPage, setActiveSection, activeSection }) => {
-  const [nestedExpanded, setNestedExpanded] = useState({ componentTab: "expert-roles" });
-
-  const toggleNested = (nestedId) => {
-    setNestedExpanded((prev) => ({
-      ...prev,
-      [nestedId]: nestedId === prev[nestedId] ? "expert-roles" : nestedId,
-    }));
-  };
+  const [componentTab, setComponentTab] = useState("expert-roles");
 
   return (
     <div className="content-body">
@@ -21,58 +14,44 @@ const ExpertManagement = ({ setCurrentPage, setActiveSection, activeSection }) =
       <div className="component-tabs">
         <div className="tab-header">
           <button
-            className={`tab-button ${
-              !nestedExpanded.componentTab ||
-              nestedExpanded.componentTab === "expert-roles"
-                ? "active"
-                : ""
-            }`}
-            onClick={() => toggleNested("componentTab")}
+            className={`tab-button ${componentTab === "expert-roles" ? "active" : ""}`}
+            onClick={() => setComponentTab("expert-roles")}
           >
             Expert Roles
           </button>
           <button
-            className={`tab-button ${
-              nestedExpanded.componentTab === "selection-criteria" ? "active" : ""
-            }`}
-            onClick={() =>
-              setNestedExpanded((prev) => ({
-                ...prev,
-                componentTab: "selection-criteria",
-              }))
-            }
+            className={`tab-button ${componentTab === "selection-criteria" ? "active" : ""}`}
+            onClick={() => setComponentTab("selection-criteria")}
           >
             Selection Criteria
           </button>
           <button
-            className={`tab-button ${
-              nestedExpanded.componentTab === "selection-process" ? "active" : ""
-            }`}
-            onClick={() =>
-              setNestedExpanded((prev) => ({
-                ...prev,
-                componentTab: "selection-process",
-              }))
-            }
+            className={`tab-button ${componentTab === "selection-process" ? "active" : ""}`}
+            onClick={() => setComponentTab("selection-process")}
           >
             Selection Process
           </button>
         </div>
 
         <div className="tab-content">
-          {(!nestedExpanded.componentTab ||
-            nestedExpanded.componentTab === "expert-roles") && (
+          {componentTab === "expert-roles" && (
             <div>
               <h4>Role of Domain Experts</h4>
-              <p>Domain experts provide an independent perspective on how inclusive a digital tool is across critical dimensions like GESI, ICT, Data, Economics, and more. They <strong> do not represent tool developers or project teams.</strong> Their role is to apply their subject-matter knowledge to interpret and assess the information provided by innovators.</p>
-              <p>Each MDII evaluation should include at least one expert per relevant domain, depending on the version being used (Regular or Ex-Ante). These experts help validate the inclusiveness of the tool from different disciplinary angles.</p>
+              <p>
+                Domain experts provide an independent perspective on how inclusive a digital tool is across critical dimensions like GESI, ICT, Data, Economics, and more. They <strong>do not represent tool developers or project teams.</strong> Their role is to apply their subject-matter knowledge to interpret and assess the information provided by innovators.
+              </p>
+              <p>
+                Each MDII evaluation should include at least one expert per relevant domain, depending on the version being used (Regular or Ex-Ante). These experts help validate the inclusiveness of the tool from different disciplinary angles.
+              </p>
             </div>
           )}
 
-          {nestedExpanded.componentTab === "selection-criteria" && (
+          {componentTab === "selection-criteria" && (
             <div>
               <h4>Selection Criteria</h4>
-              <p>Domain experts can be internal or external to the organization conducting the evaluation, but they must meet two key criteria:</p>
+              <p>
+                Domain experts can be internal or external to the organization conducting the evaluation, but they must meet two key criteria:
+              </p>
               <div>
                 <p><strong>1. Subject-matter Relevance</strong></p>
                 <p>The individual should have recognized expertise in one of the required domains:</p>
@@ -92,7 +71,7 @@ const ExpertManagement = ({ setCurrentPage, setActiveSection, activeSection }) =
             </div>
           )}
 
-          {nestedExpanded.componentTab === "selection-process" && (
+          {componentTab === "selection-process" && (
             <div>
               <h4>How to Identify and Select Experts</h4>
               <p>The person coordinating the evaluation should take the following steps:</p>

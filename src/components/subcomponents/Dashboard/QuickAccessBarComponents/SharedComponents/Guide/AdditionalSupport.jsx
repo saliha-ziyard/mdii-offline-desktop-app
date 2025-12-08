@@ -8,25 +8,28 @@ const AdditionalSupport = ({ setCurrentPage, setActiveSection, activeSection }) 
       <p>
         If you encounter issues not covered in the Troubleshooting section or need further assistance with the MDII Desktop App, our support team is here to help.
       </p>
-      <div className="grey-box">
-        <h4>Contact Us</h4>
+      <div className="grey-box box">
+        <h4>Technical Support</h4>
+          
+          <p>For technical issues or system-related questions</p>
         <p>
-          Email: <a href="mailto:mdii-support@cgiar.org">mdii-support@cgiar.org</a>
+          Email: <a href="mailto:mdii@cgiar.org">mdii@cgiar.org</a>
         </p>
+        <br/>
+        <h4>Methodology Questions</h4>
+       
+
+        <p>For evaluation methodology and process guidance</p>
         <p>
-          Please include your Tool ID, a brief description of the issue, and any relevant details (e.g., error messages, steps taken) to help us assist you quickly.
+          Email: <a href="mailto:mdii@cgiar.org">mdii@cgiar.org</a>
         </p>
+
+        
       </div>
-      <div className="grey-box">
-        <h4>Online Resources</h4>
+      <div className="box purple-box">
         <p>
-          Visit the <a href="https://mdii.cgiar.org">MDII Website</a> for additional resources, including:
+          <strong>Response Time:</strong> We typically respond to support requests within 1–2 business days. For urgent technical issues, please indicate <em>"URGENT"</em> in your subject line.
         </p>
-        <ul>
-          <li>User manuals and guides</li>
-          <li>FAQs and knowledge base</li>
-          <li>Links to KoboToolbox documentation for offline data collection</li>
-        </ul>
       </div>
     </div>
   );
