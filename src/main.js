@@ -163,12 +163,12 @@ function createWindow() {
                 }
             });
 
-            setTimeout(() => {
-                if (!child.killed) {
-                    child.kill();
-                    reject('Process timed out after 5 minutes');
-                }
-            }, 300000);
+            // setTimeout(() => {
+            //     if (!child.killed) {
+            //         child.kill();
+            //         reject('Process timed out after 5 minutes');
+            //     }
+            // }, 300000);
         });
     }
 

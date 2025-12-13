@@ -4,3 +4,7 @@ openpyxl==3.0.10
 # pyinstaller==5.6.2
 pandas
 pyinstaller
+pip install reportlab
+pip install requests
+pip install openpyxl
+pip install xlwings
