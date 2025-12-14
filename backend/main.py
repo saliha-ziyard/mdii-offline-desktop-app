@@ -14,6 +14,42 @@ import xlwings as xw
 # Import PDF generation functions from separate module
 from pdf_generator import generate_pdfs_from_excel
 
+def verify_template_integrity(template_path):
+    """Verify the template file is valid and has connections"""
+    import zipfile
+    try:
+        debug_print(f"Verifying template: {template_path}")
+        debug_print(f"File exists: {template_path.exists()}")
+        
+        if not template_path.exists():
+            debug_print("✗ Template file does not exist!")
+            return False
+            
+        file_size = template_path.stat().st_size
+        debug_print(f"File size: {file_size} bytes")
+        
+        # Check if it's a valid ZIP (Excel files are ZIP archives)
+        if zipfile.is_zipfile(template_path):
+            debug_print("✓ Template is a valid Excel file (ZIP format)")
+            with zipfile.ZipFile(template_path, 'r') as zip_ref:
+                # Check for connections
+                files = zip_ref.namelist()
+                connection_files = [f for f in files if 'connection' in f.lower() or 'query' in f.lower()]
+                debug_print(f"Found {len(connection_files)} connection-related files:")
+                for cf in connection_files:
+                    debug_print(f"  - {cf}")
+                    
+                if len(connection_files) == 0:
+                    debug_print("⚠ WARNING: No connection files found in template!")
+                    
+            return True
+        else:
+            debug_print("✗ Template is NOT a valid Excel file!")
+            return False
+    except Exception as e:
+        debug_print(f"✗ Error verifying template: {e}")
+        return False
+
 # ==== CONFIG ====
 API_TOKEN = "fc37a9329918014ef595b183adcef745a4beb217"
 BASE_URL = "https://kf.kobotoolbox.org/api/v2"
@@ -853,6 +889,15 @@ def main():
     if missing_templates:
         print(f"Error: Templates not found: {missing_templates}")
         sys.exit(1)
+
+    # ADD TEMPLATE VERIFICATION HERE:
+    debug_print("=== VERIFYING TEMPLATE INTEGRITY ===")
+    for key, template_path in TEMPLATES.items():
+        debug_print(f"\nChecking {key} template:")
+        if not verify_template_integrity(template_path):
+            print(f"Error: Template {key} is corrupted or invalid")
+            sys.exit(1)
+    debug_print("=== ALL TEMPLATES VERIFIED ===\n")
 
     # Fetch tool record
     record = find_tool_record(tool_id)
