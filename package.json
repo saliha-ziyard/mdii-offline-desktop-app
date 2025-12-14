@@ -23,14 +23,18 @@
         "to": "scripts/main.exe"
       },
       {
-        "from": "templates/",
+        "from": "backend/templates/",
         "to": "templates",
         "filter": ["**/*"]
       }
     ],
+    "asarUnpack": [
+      "**/*.xlsm",
+      "**/*.xlsx"
+    ],
     "win": {
       "target": "nsis",
-      "icon": "build/icons/MDII_Logo.ico" 
+      "icon": "build/icons/MDII_Logo.ico"
     },
     "mac": {
       "target": "dmg"

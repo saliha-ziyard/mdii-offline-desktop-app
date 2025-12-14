@@ -3,12 +3,23 @@ const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
+function getTemplatesPath() {
+    const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
+    
+    if (isDev) {
+        return path.join(__dirname, '..', 'backend', 'templates');
+    } else {
+        // In production, templates are in extraResources
+        return path.join(process.resourcesPath, 'templates');
+    }
+}
+
 function createWindow() {
     const win = new BrowserWindow({
         width: 1500,
         height: 1000,
         resizable: true,
-        icon: path.join(__dirname, 'public', 'images', 'MDII_Logo.png'), // App icon
+        icon: path.join(__dirname, 'public', 'images', 'MDII_Logo.png'),
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: false,
@@ -18,7 +29,6 @@ function createWindow() {
     });
     
     win.loadFile('public/index.html');
-    // win.webContents.openDevTools(); // Keep this for debugging
 
     ipcMain.handle('generateInnovatorExcel', async (event, toolId) => {
         console.log('*** STEP 1: generateInnovatorExcel called ***');
@@ -34,39 +44,59 @@ function createWindow() {
         return executePythonScript(toolId);
     });
 
-    function ensureTemplatesExist() {
-        const templatesSource = path.join(__dirname, '..', 'backend', 'templates');
-        const templatesDestination = path.join(process.resourcesPath, 'templates');
+    function verifyTemplates() {
+        const templatesPath = getTemplatesPath();
+        console.log('Verifying templates at:', templatesPath);
         
-        try {
-            if (!fs.existsSync(templatesDestination) && fs.existsSync(templatesSource)) {
-                console.log('Copying templates to resources...');
-                fs.mkdirSync(templatesDestination, { recursive: true });
-                
-                const files = fs.readdirSync(templatesSource);
-                files.forEach(file => {
-                    const srcFile = path.join(templatesSource, file);
-                    const destFile = path.join(templatesDestination, file);
-                    if (fs.statSync(srcFile).isFile()) {
-                        fs.copyFileSync(srcFile, destFile);
-                        console.log(`Copied: ${file}`);
-                    }
-                });
-            }
-        } catch (error) {
-            console.error('Error ensuring templates exist:', error);
+        if (!fs.existsSync(templatesPath)) {
+            console.error('Templates directory does not exist!');
+            return false;
         }
+        
+        const expectedFiles = [
+            'MDII_OfflineToolKIT_EAV.xlsm',
+            'MDII_OfflineToolKIT_RV.xlsm'
+        ];
+        
+        for (const file of expectedFiles) {
+            const filePath = path.join(templatesPath, file);
+            if (!fs.existsSync(filePath)) {
+                console.error(`Template missing: ${file}`);
+                return false;
+            }
+            
+            const stats = fs.statSync(filePath);
+            console.log(`Template found: ${file} (${stats.size} bytes)`);
+            
+            // Verify it's a valid Excel file by checking magic number
+            const buffer = Buffer.alloc(4);
+            const fd = fs.openSync(filePath, 'r');
+            fs.readSync(fd, buffer, 0, 4, 0);
+            fs.closeSync(fd);
+            
+            // Excel files start with PK (0x50 0x4B) - they're ZIP archives
+            if (buffer[0] !== 0x50 || buffer[1] !== 0x4B) {
+                console.error(`Template corrupted: ${file}`);
+                return false;
+            }
+        }
+        
+        console.log('All templates verified successfully');
+        return true;
     }
 
     function executePythonScript(toolId, mode = null) {
         return new Promise((resolve, reject) => {
             const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
             
-            if (!isDev) {
-                ensureTemplatesExist();
+            // Verify templates before execution
+            if (!verifyTemplates()) {
+                reject('Template files are missing or corrupted');
+                return;
             }
             
             let command, args;
+            const templatesPath = getTemplatesPath();
             
             if (isDev) {
                 command = 'python';
@@ -82,38 +112,24 @@ function createWindow() {
 
             console.log('=== EXECUTION DEBUG INFO ===');
             console.log('isDev:', isDev);
-            console.log('app.isPackaged:', app.isPackaged);
-            console.log('process.resourcesPath:', process.resourcesPath);
-            console.log('Command to execute:', command);
+            console.log('Templates path:', templatesPath);
+            console.log('Command:', command);
             console.log('Args:', args);
             
             if (!isDev && !fs.existsSync(command)) {
                 console.error('Executable not found at:', command);
-                const scriptsDir = path.dirname(command);
-                if (fs.existsSync(scriptsDir)) {
-                    const files = fs.readdirSync(scriptsDir);
-                    console.log('Files in scripts directory:', files);
-                } else {
-                    console.log('Scripts directory does not exist');
-                    if (fs.existsSync(process.resourcesPath)) {
-                        const resourceFiles = fs.readdirSync(process.resourcesPath);
-                        console.log('Files in resources directory:', resourceFiles);
-                    }
-                }
                 reject(`Executable not found at: ${command}`);
                 return;
             }
-
-            console.log(`Executing: ${command} ${args.join(' ')}`);
 
             const child = spawn(command, args, {
                 stdio: ['pipe', 'pipe', 'pipe'],
                 cwd: isDev ? path.join(__dirname, '..', 'backend') : path.dirname(command),
                 env: { 
                     ...process.env,
-                    TEMPLATES_PATH: isDev ? 
-                        path.join(__dirname, '..', 'backend', 'templates') : 
-                        path.join(process.resourcesPath, 'templates')
+                    TEMPLATES_PATH: templatesPath,
+                    // Ensure xlwings can find Excel
+                    PYTHONPATH: isDev ? undefined : path.join(process.resourcesPath, 'scripts')
                 },
                 shell: false
             });
@@ -162,19 +178,11 @@ function createWindow() {
                     reject(errorMsg);
                 }
             });
-
-            // setTimeout(() => {
-            //     if (!child.killed) {
-            //         child.kill();
-            //         reject('Process timed out after 5 minutes');
-            //     }
-            // }, 300000);
         });
     }
 
     ipcMain.handle('openFile', async (event, filePath) => {
         const { shell } = require('electron');
-        const path = require('path');
         console.log('Received filePath:', filePath);
         
         let actualFilePath = filePath;
