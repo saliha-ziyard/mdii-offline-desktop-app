@@ -7,7 +7,22 @@ a = Analysis(
     datas=[
         ('backend\\templates', 'templates'),  # Include templates folder
     ],
-    hiddenimports=['openpyxl', 'requests', 'xlwings', 'pathlib', 'json', 'collections', 're'],
+    hiddenimports=[
+        'openpyxl', 
+        'requests', 
+        'xlwings', 
+        'pathlib', 
+        'json', 
+        'collections', 
+        're',
+        # ADD THESE - they're needed for xlwings to work with Excel:
+        'win32com',
+        'win32com.client',
+        'pythoncom',
+        'pywintypes',
+        'win32api',
+        'win32con'
+    ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -30,7 +45,7 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=True,
+    console=True,  # Keep this True so you can see debug output
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
